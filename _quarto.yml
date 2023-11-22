@@ -6,11 +6,12 @@ execute:
   echo: true
 
 book:
-  title: "YOUR PROJECT TITLE"
+  title: "Car Collion within Montgomery County"
   author:
-    - AUTHOR1 (UNI1)
-    - AUTHOR2 (UNI2)
-  repo-url: https://github.com/YOUR_GITHUB_ACCOUNT/REPO_NAME
+    - Ethan Olivier (eto2111)
+    - Roy Madpis (rmm2286)
+
+  repo-url: https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023
   date: today
   page-footer:
     right: |
