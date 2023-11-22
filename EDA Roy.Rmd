@@ -7,24 +7,116 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+
+library(tidyverse)
+#library(GGally) #for the ggparcoord
+#library(plotly) #for interactive plots
+library(vcd) #for mosaic plots
+
+############### Roy Madpis Personal theme setting: #################
+# Using devtools and ggthemr (from github) to get a fabulous theme
+library(devtools)
+#devtools::install_github('cttobin/ggthemr') #need to run this line only if you don't ran it in the past
+library(ggthemr)
+### there are 17 built-in themes with ggthemr, all are listed in the github site: https://github.com/Mikata-Project/ggthemr#palettes
+### I like the "flat" and the "flat dark" option :)
+ggthemr("flat") #flat
+#ggthemr_reset() #if you wish to return to the "normal" setting, run this line
+########################################################################
+
+library(dplyr)
+
+#install.packages("remotes")
+remotes::install_github("jtr13/redav")
+library("redav")
+
+
+
 ```
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r}
+data <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv")
 
-```{r cars}
-summary(cars)
+### Preprocess:
+new_col_names <- colnames(data)
+# Replace spaces with underscores
+new_col_names <- gsub(" ", "_", new_col_names)
+new_col_names <- gsub("-", "_", new_col_names)
+colnames(data) <- new_col_names
+
+data |> head()
 ```
 
-## Including Plots
+```{r}
+# Function to replace "N/A" with NA in a vector
+replace_na <- function(x) {
+  x[x == "N/A"] <- NA
+  return(x)
+}
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Apply the function to each column of the data frame
+data <- as_tibble(lapply(data, replace_na))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+### Analyzing NAs
+
+```{r}
+b <- apply(data, 2, function(c) sum(is.na(c)))
+tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
+tibble_nas
+
+ggplot(tibble_nas |> filter(number_of_NA >0 ))+
+  geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA)) +
+  labs(title = "Number of Nas in the data columns",
+       subtitle = "Showing only columns with number of NAs > 0")
+
+```
+
+
+
+```{r}
+
+paste0("Number of columns with at least 1 NA = ", tibble_nas |> filter(number_of_NA > 0) |> nrow())
+
+paste0("Number of columns without any NAs = ", tibble_nas |> filter(number_of_NA == 0) |> nrow())
+
+```
+
+There are 9 columns with "too many" NAs (more than 45% of the rows)
+```{r}
+columns_with_too_many_nas <- tibble_nas|> filter(number_of_NA>0) |> arrange(number_of_NA) |> filter(number_of_NA > 45000)
+columns_with_too_many_nas
+```
+We will remove those columns
+
+```{r}
+data <- select(data,-as.vector(columns_with_too_many_nas$column_name))
+```
+
+
++ There are many columns with NA values that mostly overlap each other (If there is NA in one of those columns it appears also in the other ones), The following code reflect that fact --> if we filter the NAs from the column: Cross-Street Type --> and we can observe that the number of columns with NAs reduced significantly.
+
+
+```{r}
+filtered_data <- data[!is.na(data$Cross_Street_Type),]
+
+
+b <- apply(filtered_data, 2, function(c) sum(is.na(c)))
+tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
+tibble_nas
+
+ggplot(tibble_nas |> filter(number_of_NA >0 ))+
+  geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA)) +
+  labs(title = "Number of Nas in the data columns",
+       subtitle = "Showing only columns with number of NAs > 0")
+```
+
+For now we won't deal with those NAs. Later in the project we would choose the specific columns to analyze together and then we will decide on the best method to deal with the NAs in those columns.
+
+

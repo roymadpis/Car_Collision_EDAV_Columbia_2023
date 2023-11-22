@@ -1,5 +1,182 @@
 # Data
 
+The data we are analyzing in this project is provided by the Public-Safety website of the provided Montgomery County, MD (link = https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kfLinks to an external site).
+
+
+  
 ## Description
 
 ## Missing value analysis
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+library(tidyverse)
+#library(GGally) #for the ggparcoord
+#library(plotly) #for interactive plots
+library(vcd) #for mosaic plots
+
+############### Roy Madpis Personal theme setting: #################
+# Using devtools and ggthemr (from github) to get a fabulous theme
+library(devtools)
+#devtools::install_github('cttobin/ggthemr') #need to run this line only if you don't ran it in the past
+library(ggthemr)
+### there are 17 built-in themes with ggthemr, all are listed in the github site: https://github.com/Mikata-Project/ggthemr#palettes
+### I like the "flat" and the "flat dark" option :)
+ggthemr("flat") #flat
+#ggthemr_reset() #if you wish to return to the "normal" setting, run this line
+########################################################################
+
+library(dplyr)
+
+#install.packages("remotes")
+remotes::install_github("jtr13/redav")
+library("redav")
+
+
+```
+
+## R Markdown
+
+
+```{r}
+data <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv")
+
+### Preprocess:
+new_col_names <- colnames(data)
+# Replace spaces with underscores
+new_col_names <- gsub(" ", "_", new_col_names)
+new_col_names <- gsub("-", "_", new_col_names)
+colnames(data) <- new_col_names
+
+data |> head()
+```
+
+```{r}
+# Function to replace "N/A" with NA in a vector
+replace_na <- function(x) {
+  x[x == "N/A"] <- NA
+  return(x)
+}
+
+# Apply the function to each column of the data frame
+data <- as_tibble(lapply(data, replace_na))
+```
+
+
+
+### Analyzing NAs
+
+```{r}
+b <- apply(data, 2, function(c) sum(is.na(c)))
+tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
+tibble_nas
+
+ggplot(tibble_nas |> filter(number_of_NA >0 ))+
+  geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA)) +
+  labs(title = "Number of Nas in the data columns",
+       subtitle = "Showing only columns with number of NAs > 0")
+
+
+```
+
+
+
+```{r}
+
+paste0("Number of columns with at least 1 NA = ", tibble_nas |> filter(number_of_NA > 0) |> nrow())
+
+paste0("Number of columns without any NAs = ", tibble_nas |> filter(number_of_NA == 0) |> nrow())
+
+```
+
+There are 9 columns with "too many" NAs (more than 45% of the rows)
+```{r}
+columns_with_too_many_nas <- tibble_nas|> filter(number_of_NA>0) |> arrange(number_of_NA) |> filter(number_of_NA > 45000)
+columns_with_too_many_nas
+```
+We will remove those columns
+
+```{r}
+data <- select(data,-as.vector(columns_with_too_many_nas$column_name))
+
+```
+
+
++ There are many columns with NA values that mostly overlap each other (If there is NA in one of those columns it appears also in the other ones), The following code reflect that fact --> if we filter the NAs from the column: Cross-Street Type --> and we can observe that the number of columns with NAs reduced significantly.
+
+
+```{r}
+filtered_data <- data[!is.na(data$Cross_Street_Type),]
+
+
+b <- apply(filtered_data, 2, function(c) sum(is.na(c)))
+tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
+tibble_nas_filtered_data <- tibble_nas
+tibble_nas
+
+ggplot(tibble_nas |> filter(number_of_NA >0 ))+
+  geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA)) +
+  labs(title = "Number of Nas in the data columns",
+       subtitle = "Showing only columns with number of NAs > 0")
+```
+
+For now we won't deal with those NAs. Later in the project we would choose the specific columns to analyze together and then we will decide on the best method to deal with the NAs in those columns.
+
+
++ We want to get a list of columns that has the same "NA" pattern:
+
+```{r}
+b <- apply(data, 2, function(c) sum(is.na(c)))
+tibble_nas_data <- tibble(column_name = names(b), number_of_NA = b)
+
+a <- tibble_nas_data |> filter(number_of_NA<1000)
+b <- tibble_nas_filtered_data |> filter(number_of_NA<1000)
+a
+b
+
+
+difference_both_ways <- union(setdiff(a$column_name, b$column_name), setdiff(b$column_name, a$column_name))
+print(difference_both_ways)
+```
+## Repartition of the NAs in between columns
+
+
+We want to use the `plot_missing` function for `redav` package to see the NAs pattern regarding the columns that we suspect has NAs in the same rows:
+
+```{r}
+redav::plot_missing(data |>select(difference_both_ways,))
+
+```
+
+Using the `plot_missing` function, we can clearly see that those columns indeed has NAs in the same rows.
+
+We will take one of those columns: `Cross_Street_Type` and use it as a representative of the 12 columns group:
+
+```{r}
+b <- apply(data, 2, function(c) sum(is.na(c)))
+tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
+
+
+columns_with_na <- tibble_nas |> filter(number_of_NA>500) 
+
+columns_with_na <- columns_with_na$column_name
+
+differences <- union(setdiff(columns_with_na, difference_both_ways), setdiff(difference_both_ways, columns_with_na))
+
+differences <- c(differences, "Cross_Street_Type")
+print(differences)
+
+redav::plot_missing(data |>select(differences,))
+
+
+```
+
+In conclusion, for all the columns in the array 'difference_both_ways' we can deal with the NAs in the same way in the future. However, for the other columns which still has a lot of NAs like Weather or Traffic Control, we need to be more careful when removing the NAs because we could end up with very few rows in the data set. We will take care of them on a case-by-case basis.
+
+
+
+
+
