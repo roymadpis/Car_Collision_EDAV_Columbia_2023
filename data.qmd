@@ -1,8 +1,8 @@
 # Data
 
-The data we are analyzing in this project is provided by the Public-Safety website of the provided Montgomery County, MD (link = https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kfLinks to an external site). 
+The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD (link = https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kfLinks to an external site). 
 
-The data is supplied by all the police department of this county. Moreover, the description of the data set cite that :
+The data is supplied by all the police departments of this county. Moreover, the description of the data set mentions that :
 "Please note that these collision reports are based on preliminary information supplied to the Police Department by the reporting parties. Therefore, the collision data available on this web page may reflect:
 
 -Information not yet verified by further investigation
@@ -10,8 +10,9 @@ The data is supplied by all the police department of this county. Moreover, the 
 -Preliminary collision classifications may be changed at a later date based upon further investigation
 -Information may include mechanical or human error"
 
-It is said that the data is updated weekly. The source data has 95.6k rows and 44 columns, each row representing a car collision that happened.
-We can download the data as .csv file that can be found in the repository inside the file data. It was download on the 22th of November 2023 and the analysis is based on this data. It has position features as well as a time feature and combinations of categorical and numerical data describing the accident.
+According to the dataset description, the data is updated weekly. The source data comprises 95.6k rows and 44 columns, with each row representing a car collision that happened.
+The dataset, downloaded on November 22, 2023, is available as a .csv file in the repository under the 'data' file. We will stick to this version of the dataset fo the entire project. 
+The data has position features as well as a time feature and combinations of categorical and numerical data describing the accident.
 
   
 ## Description
