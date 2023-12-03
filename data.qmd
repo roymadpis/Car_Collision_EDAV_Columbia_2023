@@ -106,8 +106,7 @@ columns_with_too_many_nas
 We will remove those columns :
 
 ```{r}
-data <- select(data,-as.vector(columns_with_too_many_nas$column_name))
-
+data <- dplyr::select(data,-as.vector(columns_with_too_many_nas$column_name))
 ```
 
 
@@ -152,7 +151,7 @@ print(difference_both_ways)
 We want to use the `plot_missing` function for `redav` package to see the NAs pattern regarding the columns that we suspect has NAs in the same rows:
 
 ```{r}
-redav::plot_missing(data |>select(difference_both_ways,))
+redav::plot_missing(data |>dplyr::select(difference_both_ways,))
 ```
 
 Using the `plot_missing` function, we can clearly see that those columns indeed has NAs in the same rows. We can conclude that their NAs are correlated.
@@ -173,7 +172,7 @@ differences <- union(setdiff(columns_with_na, difference_both_ways), setdiff(dif
 differences <- c(differences, "Cross_Street_Type")
 print(differences)
 
-redav::plot_missing(data |>select(differences,))
+redav::plot_missing(data |>dplyr::select(differences,))
 
 
 ```
