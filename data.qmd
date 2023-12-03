@@ -45,7 +45,7 @@ library("redav")
 
 
 ```{r}
-data <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv")
+data <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv", col_types = cols('Local Case Number' = col_character())) # the 2nd column contains string and not number that's why we specify it.
 
 ### Preprocess:
 new_col_names <- colnames(data)
@@ -181,8 +181,6 @@ redav::plot_missing(data |>select(differences,))
 One can see that there is no common pattern between all the NAs for these 10 columns.
 
 In conclusion, for all the columns in the array 'difference_both_ways' we can deal with the NAs in the same way in the future. However, for the other columns which still has a lot of NAs like Weather or Traffic Control, we need to be more careful when removing the NAs because we could end up with very few rows in the data set. We will take care of them on a case-by-case basis.
-
-
 
 
 
