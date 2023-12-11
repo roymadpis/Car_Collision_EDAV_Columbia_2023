@@ -5,13 +5,13 @@ library(leaflet.extras)
 library(dplyr)
 library(ggplot2)
 library(ggmap)
-
+library(lubridate)
 ```
 
 ## Spatial Representation
 ```{r}
 # Sample the data
-dt_sampled <- data %>% sample_n(1000)
+dt_sampled <- data %>% sample_n(5000)
 
 # Display the random sample
 print(dt_sampled)
@@ -71,18 +71,39 @@ date_sequence <- seq(start_date, end_date, by = "week")
 dt_temporal$Crash_week <- cut(dt_temporal$Crash_Date, breaks = c(date_sequence, Inf), labels = as.factor(date_sequence), include.lowest = TRUE)
 
 dt_temporal_red <- dt_temporal %>%
-  filter(Crash_Date > as.Date("2022", format = '%Y')) %>%
+  filter(Crash_Date > as.Date("2013", format = '%Y')) %>%
   group_by(Crash_week) %>%
-  mutate(Count_week = n())
+  mutate(Count_week = n()) %>%
+  arrange(Crash_week)
 
+#Create a new table to remove the iteration where there are multiple time the same combination for the columns Crash_week and Count_week.
+dt_temporal_week <- dt_temporal_red %>%
+  distinct(Crash_week, Count_week, .keep_all = TRUE)%>%
+  mutate(Crash_week = as.Date(Crash_week, format = "%Y-%m-%d")) %>%
+  mutate(Crash_month = month(Crash_week))
+  
+dt_temporal_week
 
-dt_temporal_red
-ggplot(dt_temporal_red, aes(x = Crash_week, y = Count_week)) +
-  geom_line() +
+ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
+  geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
   geom_point() +
   labs(title='Number of car crash per weeks')+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+# Set breaks to 1 month interval
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
+  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
 ```
+
+
+```{r}
+dt_temporal_week
+
+ts_data<- ts(df_temporal_week$Crash_week)
+plot(decompose())
+
+
+```
+
 ### Weather Condition
 
 ```{r}
@@ -129,4 +150,6 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
   geom_bar()+
   labs(x = 'Hours in the day',y = 'Number of Crash')
 ```
+
+### Type of Lane
 
