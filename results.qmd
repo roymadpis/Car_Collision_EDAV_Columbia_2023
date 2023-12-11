@@ -1,9 +1,11 @@
 # Results
 ```{r}
 library(leaflet)
+library(leaflet.extras)
 library(dplyr)
 library(ggplot2)
 library(ggmap)
+
 ```
 
 ## Spatial Representation
@@ -23,11 +25,11 @@ print(dt_sampled)
 
 leaflet(dt_sampled) %>%
   addTiles() %>% 
-  addHeatmap(group="heat",
-  lat = ~Latitude,
-  lng = ~Longitude,
-  blur = 15,  # Adjust the blur parameter
-  radius = 10)  # Adjust the radius parameter
+  addHeatmap(
+    lat = ~Latitude,
+    lng = ~Longitude,
+    blur = 15,  # Adjust the blur parameter
+    radius = 10)  # Adjust the radius parameter
   
 #addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
 
@@ -43,12 +45,18 @@ head(dt_temporal)
 
 ```{r}
 
-dt_temporal$"Crash_Date/Time" <- as.POSIXct(dt_temporal$"Crash_Date/Time", format = "%m/%d/%Y %I:%M:%S %p", tz = "America/New_York")
+
 
 #Separate time and Date
-dt_temporal$Crash_Date <- as.Date(dt_temporal$"Crash_Date/Time")
-dt_temporal$Crash_Time <- format(dt_temporal$"Crash_Date/Time", "%H:%M:%S")
 
+
+dt_temporal$"Crash_Date/Time" <- as.POSIXct(dt_temporal$"Crash_Date/Time", format = "%m/%d/%Y %I:%M:%S %p", tz = "America/New_York")
+
+dt_temporal$Crash_Date <- as.Date(dt_temporal$"Crash_Date/Time", tz = "America/New_York")
+
+#I have a problem with the hours it doesn't show up well
+dt_temporal$Crash_Time <- format(dt_temporal$"Crash_Date/Time", "%H:%M:%S")
+dt_temporal
 #ggplot(dt_temporal, aes(x = as.factor(Crash_week))) +
        #stat_count() +
        #labs(title='Number of car crash per weeks')
@@ -65,11 +73,11 @@ dt_temporal$Crash_week <- cut(dt_temporal$Crash_Date, breaks = c(date_sequence, 
 dt_temporal_red <- dt_temporal %>%
   filter(Crash_Date > as.Date("2022", format = '%Y')) %>%
   group_by(Crash_week) %>%
-  mutate(Count = n())
+  mutate(Count_week = n())
 
 
 dt_temporal_red
-ggplot(dt_temporal_red, aes(x = Crash_week, y = Count)) +
+ggplot(dt_temporal_red, aes(x = Crash_week, y = Count_week)) +
   geom_line() +
   geom_point() +
   labs(title='Number of car crash per weeks')+
@@ -105,11 +113,20 @@ ggplot(dt_temporal, aes(x = Condition, fill = Weather)) +
 ### Hours of the day
 
 ```{r}
-unique(dt_temporal$Crash_Time)
+date <- dt_temporal$Crash_Time[1]
+substr(date, )
+
 ```
 
+
 ```{r}
-dt_temporal <- dt_temporal %>% 
-  cut(Crash_hours)
+# we only care about the hours not the minutes
+dt_temporal <- dt_temporal %>%
+  mutate(Crash_Time = paste0(substr(Crash_Time, start = 1, stop =2),'h')) 
+
+
+ggplot(dt_temporal, aes(x=Crash_Time))+
+  geom_bar()+
+  labs(x = 'Hours in the day',y = 'Number of Crash')
 ```
 
