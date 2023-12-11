@@ -1,9 +1,5 @@
 # Results
-<<<<<<< HEAD
 
-
-
-=======
 ```{r}
 library(leaflet)
 library(leaflet.extras)
@@ -18,11 +14,13 @@ data
 ## Spatial Representation
 ```{r}
 # Sample the data so that we do not have too much data ploted on the map
+
 dt_sampled <- data %>% 
   # rename(Hit_Run = 'Hit/Run') %>%
   # # filter(Hit_Run == 'Yes')
   # filter(Number_of_Lanes == 19) %>%
   sample_n(4000)
+
 
 # Display the random sample
 print(dt_sampled)
@@ -132,7 +130,9 @@ ggplot(dt_temporal, aes(x = Condition, fill = Weather)) +
 #ggplot(dt_temporal, aes(x= Weather))+
 #geom_bar()
 ```
+
 <u>Comment :</u> One can see an asymmetry between the bad and good conditions. It seems that bad conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.
+
 
 ### Hours of the day
 
@@ -314,6 +314,11 @@ mp2 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_B + NonTraffic,
 
 ```
 There is more Hit and Run instance when there is no traffic (yes instance for the column NonTraffic) most likely due to the fact that it is easier to go away without traffic on the road.
+
+
+
+
+<u>Comment :</u> One can see that crash accidents occur more during the commute time escpecially the way back home between 15h to 17h.
 
 
 
