@@ -1,1 +1,155 @@
 # Results
+```{r}
+library(leaflet)
+library(leaflet.extras)
+library(dplyr)
+library(ggplot2)
+library(ggmap)
+library(lubridate)
+```
+
+## Spatial Representation
+```{r}
+# Sample the data
+dt_sampled <- data %>% sample_n(5000)
+
+# Display the random sample
+print(dt_sampled)
+
+
+```
+
+```{r}
+# Spatial data
+
+
+leaflet(dt_sampled) %>%
+  addTiles() %>% 
+  addHeatmap(
+    lat = ~Latitude,
+    lng = ~Longitude,
+    blur = 15,  # Adjust the blur parameter
+    radius = 10)  # Adjust the radius parameter
+  
+#addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
+
+```
+
+## Time Series
+
+```{r}
+dt_temporal <- data[,c("Crash_Date/Time","Weather")]
+head(dt_temporal)
+```
+
+
+```{r}
+
+
+
+#Separate time and Date
+
+
+dt_temporal$"Crash_Date/Time" <- as.POSIXct(dt_temporal$"Crash_Date/Time", format = "%m/%d/%Y %I:%M:%S %p", tz = "America/New_York")
+
+dt_temporal$Crash_Date <- as.Date(dt_temporal$"Crash_Date/Time", tz = "America/New_York")
+
+#I have a problem with the hours it doesn't show up well
+dt_temporal$Crash_Time <- format(dt_temporal$"Crash_Date/Time", "%H:%M:%S")
+dt_temporal
+#ggplot(dt_temporal, aes(x = as.factor(Crash_week))) +
+       #stat_count() +
+       #labs(title='Number of car crash per weeks')
+
+```
+
+```{r}
+start_date = min(dt_temporal$Crash_Date)
+end_date = max(dt_temporal$Crash_Date)
+
+date_sequence <- seq(start_date, end_date, by = "week")
+dt_temporal$Crash_week <- cut(dt_temporal$Crash_Date, breaks = c(date_sequence, Inf), labels = as.factor(date_sequence), include.lowest = TRUE)
+
+dt_temporal_red <- dt_temporal %>%
+  filter(Crash_Date > as.Date("2013", format = '%Y')) %>%
+  group_by(Crash_week) %>%
+  mutate(Count_week = n()) %>%
+  arrange(Crash_week)
+
+#Create a new table to remove the iteration where there are multiple time the same combination for the columns Crash_week and Count_week.
+dt_temporal_week <- dt_temporal_red %>%
+  distinct(Crash_week, Count_week, .keep_all = TRUE)%>%
+  mutate(Crash_week = as.Date(Crash_week, format = "%Y-%m-%d")) %>%
+  mutate(Crash_month = month(Crash_week))
+  
+dt_temporal_week
+
+ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
+  geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
+  geom_point() +
+  labs(title='Number of car crash per weeks')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+# Set breaks to 1 month interval
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
+  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+```
+
+
+```{r}
+dt_temporal_week
+
+ts_data<- ts(df_temporal_week$Crash_week)
+plot(decompose())
+
+
+```
+
+### Weather Condition
+
+```{r}
+
+dt_temporal <- dt_temporal %>%
+  filter(!Weather %in% c("OTHER", "UNKNOWN")) %>%
+  filter(!is.na(Weather))
+
+dt_temporal <- dt_temporal %>%
+  mutate(Weather = if_else(Weather %in% c("SNOW", "SLEET","BLOWING SNOW"), "SNOW", Weather)) %>%
+  mutate(Weather = if_else(Weather %in% c("SEVERE WINDS", "WINTRY MIX", "BLOWING SAND, SOIL, DIRT"), "WIND", Weather))%>%
+  mutate(Condition = if_else(Weather %in% c("CLEAR","CLOUDY"),"Good","Bad"))
+
+color_scale <- c("RAINING" = "slateblue", "SNOW" = "whitesmoke", "CLOUDY" = "gray", "FOGGY" ="gray27", "WIND"="seagreen4", "CLEAR" ="skyblue")
+
+dt_temporal$Weather <- reorder(dt_temporal$Weather, X= as.numeric(factor(dt_temporal$Weather,levels = c('CLEAR','CLOUDY','FOGGY','WIND','SNOW','RAINING'))))
+
+ggplot(dt_temporal, aes(x = Condition, fill = Weather)) +
+  geom_bar() +
+  scale_fill_manual(values = color_scale)
+
+ 
+
+
+#ggplot(dt_temporal, aes(x= Weather))+
+#geom_bar()
+```
+### Hours of the day
+
+```{r}
+date <- dt_temporal$Crash_Time[1]
+substr(date, )
+
+```
+
+
+```{r}
+# we only care about the hours not the minutes
+dt_temporal <- dt_temporal %>%
+  mutate(Crash_Time = paste0(substr(Crash_Time, start = 1, stop =2),'h')) 
+
+
+ggplot(dt_temporal, aes(x=Crash_Time))+
+  geom_bar()+
+  labs(x = 'Hours in the day',y = 'Number of Crash')
+```
+
+### Type of Lane
+
