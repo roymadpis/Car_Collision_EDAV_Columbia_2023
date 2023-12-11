@@ -1,4 +1,9 @@
 # Results
+<<<<<<< HEAD
+
+
+
+=======
 ```{r}
 library(leaflet)
 library(leaflet.extras)
@@ -140,3 +145,4 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
 
 ### Type of Lane
 
+>>>>>>> 79fe72548c4d5dc8cda3bb0560fedeb39c50b4a9
