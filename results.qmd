@@ -1,4 +1,9 @@
 # Results
+<<<<<<< HEAD
+
+
+
+=======
 ```{r}
 library(leaflet)
 library(leaflet.extras)
@@ -10,8 +15,12 @@ library(lubridate)
 
 ## Spatial Representation
 ```{r}
-# Sample the data
-dt_sampled <- data %>% sample_n(5000)
+# Sample the data so that we do not have too much data ploted on the map
+dt_sampled <- data %>% 
+  rename(Hit_Run = 'Hit/Run') %>%
+  # filter(Hit_Run == 'Yes')
+  filter(Number_of_Lanes == 19) %>%
+  #sample_n(000)
 
 # Display the random sample
 print(dt_sampled)
@@ -26,29 +35,28 @@ print(dt_sampled)
 leaflet(dt_sampled) %>%
   addTiles() %>% 
   addHeatmap(
-    lat = ~Latitude,
-    lng = ~Longitude,
-    blur = 15,  # Adjust the blur parameter
-    radius = 10)  # Adjust the radius parameter
+  lat = ~Latitude,
+  lng = ~Longitude,
+  blur = 15,  # Adjust the blur parameter
+  radius = 10)  # Adjust the radius parameter
   
-#addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
+  #addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
 
 ```
+
+<u>Comment :</u> We can see from the map multiple ouliers, all the crash data should be in the Montgomery County so every data outside of this area can be considered as outliers. Maybe when the localisation was added to the police report some numbers were mistaken.
+*Should we remove all of them ?
 
 ## Time Series
 
 ```{r}
-dt_temporal <- data[,c("Crash_Date/Time","Weather")]
+dt_temporal <- data[,c("Crash_Date/Time","Weather","Light","Surface_Condition")]
 head(dt_temporal)
 ```
 
 
 ```{r}
-
-
-
 #Separate time and Date
-
 
 dt_temporal$"Crash_Date/Time" <- as.POSIXct(dt_temporal$"Crash_Date/Time", format = "%m/%d/%Y %I:%M:%S %p", tz = "America/New_York")
 
@@ -93,16 +101,7 @@ ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
   #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
 ```
-
-
-```{r}
-dt_temporal_week
-
-ts_data<- ts(df_temporal_week$Crash_week)
-plot(decompose())
-
-
-```
+<u>Comment :</u> We can visualize thanks to the time series representation the Covid crisis which lead to a reduction of car accident in 2020 since less cars were on the roads. Since then, the average number of accidents is a bit lower than pre-covid.
 
 ### Weather Condition
 
@@ -131,13 +130,9 @@ ggplot(dt_temporal, aes(x = Condition, fill = Weather)) +
 #ggplot(dt_temporal, aes(x= Weather))+
 #geom_bar()
 ```
+<u>Comment :</u> One can see an asymmetry between the bad and good conditions. It seems that bad conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.
+
 ### Hours of the day
-
-```{r}
-date <- dt_temporal$Crash_Time[1]
-substr(date, )
-
-```
 
 
 ```{r}
@@ -150,6 +145,149 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
   geom_bar()+
   labs(x = 'Hours in the day',y = 'Number of Crash')
 ```
+<u>Comment :</u> One can see that crash accidents occur more during the commute time especially the way back home between 15h to 17h.
 
 ### Type of Lane
+
+```{r}
+dt_lane <- data[,c("Hit/Run","Route_Type","Number_of_Lanes","NonTraffic","Road_Grade","At_Fault","Cross_Street_Type","Collision_Type","Traffic_Control","Driver_Substance_Abuse","Road_Alignment","Junction","Road_Condition","Road_Division","First_Harmful_Event","Light","Surface_Condition")]
+```
+
+```{r}
+# Assuming 'data' is your data frame
+unique_values <- lapply(dt_lane, unique)
+
+# Print unique values for each column
+for (col_name in names(unique_values)) {
+  cat("Column:", col_name, "\n")
+  print(unique_values[[col_name]])
+  cat("\n")
+}
+
+```
+
+```{r}
+count(data, Traffic_Control)
+```
+
+```{r}
+dt_sameNa <- data %>%
+  select(difference_both_ways) %>%
+  filter(rowSums(is.na(.)) < ncol(.))
+
+dt_lane <- data[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Number_of_Lanes")]
+
+
+dt_responsible <- data[,c("Hit/Run","NonTraffic","At_Fault","Driver_Substance_Abuse")]
+dt_responsible <- dt_responsible %>%
+rename(Hit_Run = "Hit/Run")
+```
+
+```{r}
+#Change the column Road_type to get rid of the Na and the values unknown
+dt_lane <- dt_lane %>%
+  mutate(Road_Division = recode(Road_Division,
+        "TWO-WAY, NOT DIVIDED WITH A CONTINUOUS LEFT TURN" = "2-way, not divided",
+        "TWO-WAY, NOT DIVIDED" = "2-way, not divided",
+        "TWO-WAY, DIVIDED, POSITIVE MEDIAN BARRIER" = '2-way, divided',
+        "TWO-WAY, DIVIDED, UNPROTECTED PAINTED MIN 4 FEET" = '2-way, divided',
+        "ONE-WAY TRAFFICWAY" = '1-way',
+        "OTHER" = 'Other')) %>%
+  filter(Road_Division != 'UNKNOWN') %>%
+  filter(Road_Division != 'Other') %>%
+  na.omit()
+
+#Change the column Number of Lanes to remove the lanes with more than ... lanes
+dt_lane <- dt_lane %>%
+  filter(Number_of_Lanes < 7) %>%
+  filter(Number_of_Lanes != 0)
+  
+
+
+dt_lane$Road_Division <- factor(dt_lane$Road_Division, levels = c("1-way", "2-way, not divided", "2-way, divided", 'Other'))
+
+ggplot(dt_lane, aes(x=Road_Division))+
+  geom_bar() +
+  facet_wrap(~Number_of_Lanes)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(dt_lane, aes(y=Road_Division))+
+  geom_bar() +
+  facet_grid(Number_of_Lanes~.)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  labs(title ='Facet by number of Lanes' )
+```
+<u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway). 
+
+
+```{r}
+Nbroads = n_distinct(data$Road_Name)
+count(dt_lane, Number_of_Lanes)
+
+road_counts <- dt_lane %>%
+  group_by(Road_Division) %>%
+  summarise(Unique_Roads = n_distinct(Road_Name)) %>%
+  mutate(Proportion = 100 * Unique_Roads / sum(Unique_Roads))
+
+
+print(road_counts)
+```
+
+
+```{r}
+dt_responsible <- dt_responsible %>%
+  mutate(Driver_Substance_Abuse = str_extract(Driver_Substance_Abuse, "^[^,]+")) %>%
+  mutate(Driver_Substance_Abuse = recode(Driver_Substance_Abuse,
+    "ALCOHOL CONTRIBUTED" ="alcohol",
+    "ALCOHOL PRESENT" = "alcohol",
+    "COMBINATION CONTRIBUTED" = "combined substance",
+    "COMBINED SUBSTANCE PRESENT" = "combined substance",
+    "ILLEGAL DRUG CONTRIBUTED" = "illegal drug",
+    "ILLEGAL DRUG PRESENT" = "illegal drug",
+    "MEDICATION CONTRIBUTED" = "under medication",
+    "MEDICATION PRESENT" = "under medication",
+    "UNKNOWN" = 'unknown',
+    "OTHER" = 'unknown',
+    "NONE DETECTED" = 'none detected'
+  )) %>%
+  filter(Driver_Substance_Abuse != "N/A")
+
+count(dt_responsible,Driver_Substance_Abuse)
+
+#redav::plot_missing(dt_responsible) # We see that more than 80% of the rows does not have Na so I will drop all the Na
+
+dt_responsible <- dt_responsible %>%
+  na.omit() %>%
+  filter(Driver_Substance_Abuse != 'none detected') # %>% # remove the none detected because they are too much
+  # filter(Driver_Substance_Abuse != 'alcohol') %>%
+  # filter(Driver_Substance_Abuse != 'unknown')
+
+ggplot(dt_responsible, aes(x=Driver_Substance_Abuse))+
+  geom_bar()
+```
+
+```{r}
+count(dt_responsible, Driver_Substance_Abuse)
+dt_responsible <- dt_responsible %>%
+  mutate(
+    Driver_Substance_Abuse_A = if_else(Driver_Substance_Abuse %in% c('alcohol', 'unknown'), Driver_Substance_Abuse, NA_character_),
+    Driver_Substance_Abuse_B = if_else(!Driver_Substance_Abuse %in% c('alcohol', 'unknown'), Driver_Substance_Abuse, NA_character_)
+  )
+
+
+vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_A + NonTraffic,
+ data = dt_responsible,
+ direction = c("v", "v","h" ),
+ axes_labels = c('Driver Substance Abuse', 'Traffic'))
+
+vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_B + NonTraffic,
+ data = dt_responsible,
+ direction = c("v", "v","h" ),
+ axes_labels = c('Driver Substance Abuse', 'Traffic'))
+
+```
+There is more Hit and Run instance when there is no traffic (yes instance for the column NonTraffic) most likely due to the fact that it is easier to go away without traffic on the road.
+
+
+
 
