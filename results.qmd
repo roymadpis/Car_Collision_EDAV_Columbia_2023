@@ -47,16 +47,17 @@ dt_temporal <- data[,c("Crash_Date/Time","Weather", "Hit/Run", "First_Harmful_Ev
                        "At_Fault")]
 dt_temporal <- rename(dt_temporal, "Hit_Run" = `Hit/Run`)
 
+# dt_temporal <- left_join(dt_temporal, holiday_data, by = c("Crash_Date" = "date"))
+# 
+# dt_temporal <- mutate(dt_temporal, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
+
+
 head(dt_temporal)
 ```
 
 
 ```{r}
-
-
-
 #Separate time and Date
-
 
 dt_temporal$"Crash_Date/Time" <- as.POSIXct(dt_temporal$"Crash_Date/Time", format = "%m/%d/%Y %I:%M:%S %p", tz = "America/New_York")
 
@@ -75,7 +76,7 @@ dt_temporal
 start_date = min(dt_temporal$Crash_Date)
 end_date = max(dt_temporal$Crash_Date)
 
-date_sequence <- seq(start_date, end_date, by = "week")
+date_sequence <- seq(as.Date("2014-12-28"), end_date, by = "week")
 dt_temporal$Crash_week <- cut(dt_temporal$Crash_Date, breaks = c(date_sequence, Inf), labels = as.factor(date_sequence), include.lowest = TRUE)
 
 dt_temporal_red <- dt_temporal %>%
@@ -84,13 +85,17 @@ dt_temporal_red <- dt_temporal %>%
   mutate(Count_week = n()) %>%
   arrange(Crash_week)
 
+
+
 #Create a new table to remove the iteration where there are multiple time the same combination for the columns Crash_week and Count_week.
 dt_temporal_week <- dt_temporal_red %>%
   distinct(Crash_week, Count_week, .keep_all = TRUE)%>%
   mutate(Crash_week = as.Date(Crash_week, format = "%Y-%m-%d")) %>%
   mutate(Crash_month = month(Crash_week))
-  
-dt_temporal_week
+#   
+#   mutate(is_holiday = ifelse(Week_with_holiday %in% weeks_with_holiday$Week_with_holiday, "Yes", is_holiday)) %>%
+#   select(-Week_with_holiday)
+
 
 ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
   geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
@@ -102,6 +107,49 @@ ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
   #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
 ```
 
+```{r}
+holiday_data
+
+# Create a new column for the week of the year
+# Step 1: Create a data frame with all days in the year
+all_days <- data.frame(date = seq(min(dt_temporal$Crash_Date), max(dt_temporal$Crash_Date), by = "days"))
+
+# Step 2: Merge the data frames based on the week
+merged_df <- merge(all_days, holiday_data, by = "date", all.x = TRUE)
+
+# Step 3: Create a new column "Is_Holiday" based on the merging results
+merged_df$is_holiday <- ifelse(!is.na(merged_df$is_holiday), "Yes", "No")
+merged_df$first_day_of_week_new <- floor_date(merged_df$date, "week")
+merged_df$weekday1 <- weekdays(merged_df$first_day_of_week)
+
+result_df <- merged_df %>%
+  group_by(first_day_of_week_new) %>%
+  summarise(is_holiday = if ("Yes" %in% is_holiday) "Yes" else "No")
+
+
+```
+
+
+```{r}
+holiday_data
+
+dt_temporal_week 
+
+dt_temporal_week <- left_join(dt_temporal_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
+
+dt_temporal_week <- mutate(dt_temporal_week, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
+
+
+ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
+  geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
+  geom_point(aes(color = is_holiday)) +
+  labs(title='Number of car crash per weeks')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+# Set breaks to 1 month interval
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
+  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+
+```
 
 
 ### Weather Condition
@@ -235,21 +283,50 @@ ggplot(dt_temporal_month) +
 ```
 
 ```{r}
-# Install and load the necessary packages if not already installed
-# install.packages("ggplot2")
-# install.packages("ggridges")
-# install.packages("patchwork")
+
 library(ggridges)
 library(patchwork)
 
+dt_temporal_1 <- dt_temporal
+# Convert the Month column to display the abbreviation version
+# Create a list of month abbreviations
+month_abbreviations <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+weekday_labels <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
-dt_temporal_month <- dt_temporal |> group_by(Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
+# Convert the Week_day column to display the abbreviation version
+dt_temporal_1$Week_day <- ifelse(dt_temporal_1$Week_day == "Sunday", "Sun",
+                             ifelse(dt_temporal_1$Week_day == "Monday", "Mon",
+                             ifelse(dt_temporal_1$Week_day == "Tuesday", "Tue",
+                             ifelse(dt_temporal_1$Week_day == "Wednesday", "Wed",
+                             ifelse(dt_temporal_1$Week_day == "Thursday", "Thu",
+                             ifelse(dt_temporal_1$Week_day == "Friday", "Fri",
+                             ifelse(dt_temporal_1$Week_day == "Saturday", "Sat", dt_temporal_1$Week_day)))))))
 
-dt_temporal_hour <- dt_temporal |> group_by(Month, first_day_of_month, Crash_Hour) |> summarise(total_accidents = n())
+dt_temporal_1$Week_day <- factor(dt_temporal_1$Week_day , levels = weekday_labels)
+
+# Convert the Month column to display the abbreviation version
+dt_temporal_1$Month <- ifelse(dt_temporal_1$Month == "January", "Jan",
+                          ifelse(dt_temporal_1$Month == "February", "Feb",
+                          ifelse(dt_temporal_1$Month == "March", "Mar",
+                          ifelse(dt_temporal_1$Month == "April", "Apr",
+                          ifelse(dt_temporal_1$Month == "May", "May",
+                          ifelse(dt_temporal_1$Month == "June", "Jun",
+                          ifelse(dt_temporal_1$Month == "July", "Jul",
+                          ifelse(dt_temporal_1$Month == "August", "Aug",
+                          ifelse(dt_temporal_1$Month == "September", "Sep",
+                          ifelse(dt_temporal_1$Month == "October", "Oct",
+                          ifelse(dt_temporal_1$Month == "November", "Nov",
+                          ifelse(dt_temporal_1$Month == "December", "Dec", dt_temporal_1$Month))))))))))))
+
+dt_temporal_1$Month <- factor(dt_temporal_1$Month, levels = month_abbreviations)
+
+dt_temporal_month <- dt_temporal_1 |> group_by(Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
+
+dt_temporal_hour <- dt_temporal_1 |> group_by(Month, first_day_of_month, Crash_Hour) |> summarise(total_accidents = n())
 
 
 # Distribution of total number of accidents by month (the total number of accidents is with the total within in Year-Month combination)
-plot_month <- ggplot(dt_temporal_month) +
+plot_month <- ggplot(dt_temporal_month |> mutate(Month = as.factor(Month))) +
   geom_boxplot(mapping = aes(x = total_accidents, y = Month)) +
   geom_density_ridges(mapping = aes(x = total_accidents, y = Month), alpha = 0.5) +
   theme_minimal() +
@@ -281,15 +358,27 @@ combined_plots <- plot_month + plot_weekday + plot_hours +
   plot_layout(ncol = 2, heights = c(2, 2)) +
   plot_annotation(title = "Distribution of total number of accidents")
 
+
 # Print the combined plots
 print(combined_plots)
 
 ```
 
-+ Using the histograms and the density plots together we can get some valuable insights regarding the distribution of total accidents (aggregated by months per yeras) across different months and weekdays.
++ By combining histograms and density plots, we gain valuable insights into the distribution of total accidents aggregated by months per year, examining variations across different months, weekdays, and day-hours
 
 
-can see there is an overall different distribution of number of accidents bteween  
++ **Number of accidents per month**:
+Analyzing the density plots reveals a similar distribution in the total number of accidents across different months. However, delving into boxplots exposes distinct variances; for instance, the interquartile range (IQR) for January is significantly wider than that of February.
+
+
++ **Number of accidents per weekday**:
+The density plots unveil noticeable differences in the distribution of total accidents between weekends and weekdays, providing insights into the varying patterns throughout the week.
+
+
+
+
++ **Number of accidents per Hour in day**:
+Exploring the density plots illustrates significant disparities in the distribution of total accidents across different times of the day. Notably, there is typically an increase in accidents during the middle of the day, aligning with the expected higher traffic volumes during those hours.
 
 
 
@@ -297,16 +386,14 @@ can see there is an overall different distribution of number of accidents btewee
 
 
 
+### Time-plot displaying the total number of accidents trend over the years faceted by weekdays
 
 ```{r}
-#dt_temporal_Year_month|>group_by(Year) |> summarise(Total_accidents = sum(total_accidents)
 
-ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
-  geom_line() + 
-  geom_point() + 
-  facet_grid(Week_day~.)
-
-
+# ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
+#   geom_line() + 
+#   geom_point() + 
+#   facet_grid(Week_day~.)
 
 # Filter data for December
 december_data <- dt_temporal_Year_month %>%
@@ -324,43 +411,13 @@ ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) +
   labs(title = "line plot of total accidents faceted by weekday",
        subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
 
-
-# ggplot(dt_temporal) + 
-#   geom_density(stat = "density",
-#                aes(x = first_day_of_month), fill = "skyblue", alpha = 0.7) +
-#   facet_grid(Week_day~.)
-
-
-
-
-dt_temporal_Year_month
-```
-In the graph we can see that the nuber of accidents per weekday have a simillar trend, however the magnitude is different - on weekends there are less accidents (reasonable).
-It seems that in the middle of he week there are more accidents.
-Moreover, we can look at the "black dots" that present for each year the month with the highest number of accident. We can compare those dots between the different week days but also observe the "max-trend" - if we drew another line connecting each one of the black dots, we would get a line trend similar to the loess blue line trend that is presented in the plot.
-
-
-
-
-```{r}
-count(data, )
 ```
 
-- Hit/Run
-- NonTraffic
-- At_Fault
-- Weather
-- Surface_Condition
-- Light
-- Traffic_Control
-- Driver_Substance_Abuse
-- First_Harmful_Event
++ In the faceted line graph, a consistent trend is apparent in the number of accidents per weekday, suggesting a similar pattern across the week. However, the magnitude of accidents varies, with fewer incidents occurring on weekends, which aligns with expectations. Notably, the middle of the week appears to experience a higher frequency of accidents.
+
++ Furthermore, an examination of the "black dots," representing each year's month with the highest number of accidents, provides additional insights. Comparing these dots across different weekdays reveals distinctions, and an intriguing observation emerges when connecting these dots. If we were to draw a line connecting each black dot, a trend similar to the loess blue line trend in the plot becomes evident, indicating a potential overarching pattern in the occurrence of maximum accidents over the years.
 
 
-
-```{r}
-count(data, Road_Division, Number_of_Lanes)
-```
 
 
 ### Hit/run
@@ -370,12 +427,12 @@ dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day
 
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
 
-ggplot(dt_temporal_Year_month_hit_run, aes(x=first_day_of_month, y=total_accidents)) + 
-  geom_line() + 
-  stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
-  facet_grid(~Hit_Run) +
-  labs(title = "line plot of total accidents faceted by weekday",
-       subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
+# ggplot(dt_temporal_Year_month_hit_run, aes(x=first_day_of_month, y=total_accidents)) + 
+#   geom_line() + 
+#   stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
+#   facet_grid(~Hit_Run) +
+#   labs(title = "line plot of total accidents faceted by weekday",
+#        subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
 ```
 
 
@@ -451,12 +508,6 @@ ggplot(dt_temporal %>%
 
 + Concerning the Hit-Run proportion per hour—there is an observed escalation in the proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
 
-```{r}
-ggplot()
-
-+ geom_bar(position = "dodge")
-```
-
 
 
 ### First_Harmful_Event
@@ -484,7 +535,7 @@ count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
  # scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
 
 ```
-We can see that the first harmful event has a great connection / correlation to the Hit-Run variable --> there are great variations between the proportion of Hit-Run vs. Not Hit-Run accidents given the different `First_Harmful_Event` categories.
++ We can see that the first harmful event has a great connection / correlation to the Hit-Run variable --> there are great variations between the proportion of Hit-Run vs. Not Hit-Run accidents given the different `First_Harmful_Event` categories.
 
 + Note that for "Parked-Vehicle" the proportion of Hit-Run is 0.45 which is more than twice as big as the overall Hit-Run proportion (0.18):
 
@@ -496,29 +547,9 @@ a|> mutate("prop" = n/sum(a$n))
 ```
 
 
-Lets take the biggest category: other_vehicle and analyze it even further
+## Weather
 
 ```{r}
-
-df_mosaic_by_hour_harmful <- df_for_harmful_event |> filter(grepl(c("Parked"), First_Harmful_Event, ignore.case = T)) |> group_by(First_Harmful_Event, Crash_Hour, Hit_Run) |> summarise(Freq = n())
-
-
-vcd:: mosaic(Hit_Run ~ First_Harmful_Event + Crash_Hour,
- data = df_mosaic_by_hour_harmful |> 
-   mutate(
-          First_Harmful_Event = as.character(First_Harmful_Event)),
- direction = c("v", "v", "h"), 
- highlighting_fill=c('tomato','darkgreen'))
-
-```
-
-
-
-
-## At_Fault
-
-```{r}
-dt_temporal
 
 df_mosaic_by_weather <- dt_temporal |> group_by(Weather, Hit_Run) |> summarise(Freq = n())
 
@@ -529,8 +560,6 @@ mosaicplot(table(dt_temporal$Weather, dt_temporal$Hit_Run), main= "Mosaic plot f
            las = 2  # Rotate labels by 90 degrees
 )
 
-
-Weather
 
 vcd:: mosaic(Hit_Run ~ Weather,
  data = df_mosaic_by_weather,
