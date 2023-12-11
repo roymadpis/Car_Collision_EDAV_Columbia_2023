@@ -43,7 +43,8 @@ leaflet(dt_sampled) %>%
 ## Time Series
 
 ```{r}
-dt_temporal <- data[,c("Crash_Date/Time","Weather", "Hit/Run", "First_Harmful_Event")]
+dt_temporal <- data[,c("Crash_Date/Time","Weather", "Hit/Run", "First_Harmful_Event",
+                       "At_Fault")]
 dt_temporal <- rename(dt_temporal, "Hit_Run" = `Hit/Run`)
 
 head(dt_temporal)
@@ -169,7 +170,7 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
 ################ Roy
 
 ```{r}
-data
+data |> head()
 ```
 
 ### Preprocessing for the df_temporal
@@ -204,40 +205,97 @@ dt_temporal_Year_month <- dt_temporal |> group_by(Year, Month, first_day_of_mont
 ### create a ts object
 first_date_in_data <- min(dt_temporal$first_day_of_month)
 last_date_in_data <- max(dt_temporal$first_day_of_month)
-
-# # Create a sequence of dates from first_date_in_data to last_date_in_data
-# all_dates <- seq(as.Date(first_date_in_data), as.Date(last_date_in_data), by = "1 day")
-# 
-# all_dates$Week_day <- weekdays(dt_temporal$Crash_Date)
-# all_dates$Month <-  months(dt_temporal$Crash_Date)
-# all_dates$Year <-  year(dt_temporal$Crash_Date)
-# all_dates$first_day_of_month <- as.Date(format(dt_temporal$Crash_Date, "%Y-%m-01"))
-
-# 
-# # Convert the sequence of dates to a data frame
-# all_dates_df <- data.frame(first_day_of_month = all_dates, total_accidents = 0)
-# 
-# # Merge the sequence of dates with your existing data
-# your_data_complete <- merge(all_dates_df, dt_temporal_Year_month, by = "first_day_of_month", all.x = TRUE)
-# 
-# 
-# ts_data_month <- ts(data = dt_temporal_Year_month$total_accidents,
-#                     start = c(2015,01), end = c(year(last_date_in_data)
-# ,month(last_date_in_data)), frequency = 51)
-# 
-# moving_average_centered <- forecast::ma(ts_data_month, order = 12) #Centered MA
-# 
-# length(moving_average_centered)
-# 
-# 
-# dt_temporal_Year_month$Moving_average <- moving_average_centered
 ```
 
 
 ```{r}
 ggplot(dt_temporal_month) +
   geom_boxplot(mapping=aes(x=Month, y=total_accidents))
+
+
+
+library(ggridges)
+
+### Distribution of total number of accidents by month
+ggplot(dt_temporal_month) +
+  geom_boxplot(mapping = aes(x = total_accidents, y = Month)) +
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Month), alpha = 0.5) +
+  theme_minimal() +
+  labs(title = "Distribution of total number of accidents by month")
+
+
+#Distribution of total number of accidents by Day of week
+ggplot(dt_temporal_month) +
+  geom_boxplot(mapping = aes(x = total_accidents, y = Week_day)) +
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Week_day), alpha = 0.5) +
+  theme_minimal() +
+  labs(title = "Distribution of total number of accidents by weekday")
+
+
 ```
+
+```{r}
+# Install and load the necessary packages if not already installed
+# install.packages("ggplot2")
+# install.packages("ggridges")
+# install.packages("patchwork")
+library(ggridges)
+library(patchwork)
+
+
+dt_temporal_month <- dt_temporal |> group_by(Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
+
+dt_temporal_hour <- dt_temporal |> group_by(Month, first_day_of_month, Crash_Hour) |> summarise(total_accidents = n())
+
+
+# Distribution of total number of accidents by month (the total number of accidents is with the total within in Year-Month combination)
+plot_month <- ggplot(dt_temporal_month) +
+  geom_boxplot(mapping = aes(x = total_accidents, y = Month)) +
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Month), alpha = 0.5) +
+  theme_minimal() +
+  labs(subtitle = "By month")
+
+# Distribution of total number of accidents by Day of week (the total number of accidents is with the total within in Year-Month combination)
+plot_weekday <- ggplot(dt_temporal_month) +
+  geom_boxplot(mapping = aes(x = total_accidents, y = Week_day)) +
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Week_day), alpha = 0.5) +
+  theme_minimal() +
+  labs(subtitle = "By weekday")
+
+
+# Distribution of total number of accidents by Hour (the total number of accidents is with the total within in Year-Month combination)
+
+plot_hours <- ggplot(dt_temporal_hour |> mutate(Crash_Hour = as.factor(Crash_Hour))) +
+  geom_boxplot(mapping = aes(x = total_accidents, y = Crash_Hour)) +
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Crash_Hour), alpha = 0.5) +
+  theme_minimal() +
+  labs(subtitle = "By weekday")
+
+
+
+# Combine the plots side by side
+# combined_plots <- plot_month + plot_weekday + plot_hours
+
+# Combine the plots side by side with one common title
+combined_plots <- plot_month + plot_weekday + plot_hours +
+  plot_layout(ncol = 2, heights = c(2, 2)) +
+  plot_annotation(title = "Distribution of total number of accidents")
+
+# Print the combined plots
+print(combined_plots)
+
+```
+
++ Using the histograms and the density plots together we can get some valuable insights regarding the distribution of total accidents (aggregated by months per yeras) across different months and weekdays.
+
+
+can see there is an overall different distribution of number of accidents bteween  
+
+
+
+
+
+
 
 
 ```{r}
@@ -393,6 +451,11 @@ ggplot(dt_temporal %>%
 
 + Concerning the Hit-Run proportion per hour—there is an observed escalation in the proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
 
+```{r}
+ggplot()
+
++ geom_bar(position = "dodge")
+```
 
 
 
@@ -408,18 +471,14 @@ df_for_harmful_event <- dt_temporal %>%
     First_Harmful_Event = tolower(First_Harmful_Event),
     First_Harmful_Event = factor(First_Harmful_Event) %>% fct_lump(n = 7, other_level = "Other"))
 
-
-ggplot(df_for_harmful_event) +
-  geom_bar(aes(x = Month, fill = First_Harmful_Event), position = "fill")
-
-
 ###Mosaic plot 1:
-mosaicplot(table(df_for_harmful_event$First_Harmful_Event, df_for_harmful_event$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
+mosaicplot(table(factor(df_for_harmful_event$First_Harmful_Event), df_for_harmful_event$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
            color = c('tomato', 'darkgreen'), 
            las = 2  # Rotate labels by 90 degrees
 )
 
 count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
+
 
 #+
  # scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
@@ -439,15 +498,50 @@ a|> mutate("prop" = n/sum(a$n))
 
 Lets take the biggest category: other_vehicle and analyze it even further
 
-
 ```{r}
 
-vcd:: mosaic(Hit_Run ~ First_Harmful_Event,
- data = df_for_harmful_event,
- direction = c("v", "h"), 
- highlighting_fill=c('tomato','darkgreen'), las = 2)
+df_mosaic_by_hour_harmful <- df_for_harmful_event |> filter(grepl(c("Parked"), First_Harmful_Event, ignore.case = T)) |> group_by(First_Harmful_Event, Crash_Hour, Hit_Run) |> summarise(Freq = n())
+
+
+vcd:: mosaic(Hit_Run ~ First_Harmful_Event + Crash_Hour,
+ data = df_mosaic_by_hour_harmful |> 
+   mutate(
+          First_Harmful_Event = as.character(First_Harmful_Event)),
+ direction = c("v", "v", "h"), 
+ highlighting_fill=c('tomato','darkgreen'))
 
 ```
+
+
+
+
+## At_Fault
+
+```{r}
+dt_temporal
+
+df_mosaic_by_weather <- dt_temporal |> group_by(Weather, Hit_Run) |> summarise(Freq = n())
+
+
+###Mosaic plot 1:
+mosaicplot(table(dt_temporal$Weather, dt_temporal$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
+           color = c('tomato', 'darkgreen'), 
+           las = 2  # Rotate labels by 90 degrees
+)
+
+
+Weather
+
+vcd:: mosaic(Hit_Run ~ Weather,
+ data = df_mosaic_by_weather,
+ direction = c("v", "h"), 
+ highlighting_fill=c('tomato','darkgreen'))
+```
+
+
+## Things we found from graphs we created"
++ We checked and there doesn't seem to be a correlation between the `Weather` and the `Hit_Run`
+
 
 
 
