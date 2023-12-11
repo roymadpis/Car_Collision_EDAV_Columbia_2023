@@ -11,16 +11,18 @@ library(dplyr)
 library(ggplot2)
 library(ggmap)
 library(lubridate)
+
+data
 ```
 
 ## Spatial Representation
 ```{r}
 # Sample the data so that we do not have too much data ploted on the map
 dt_sampled <- data %>% 
-  rename(Hit_Run = 'Hit/Run') %>%
-  # filter(Hit_Run == 'Yes')
-  filter(Number_of_Lanes == 19) %>%
-  #sample_n(000)
+  # rename(Hit_Run = 'Hit/Run') %>%
+  # # filter(Hit_Run == 'Yes')
+  # filter(Number_of_Lanes == 19) %>%
+  sample_n(4000)
 
 # Display the random sample
 print(dt_sampled)
@@ -171,6 +173,27 @@ count(data, Traffic_Control)
 ```
 
 ```{r}
+dt_intersection <- data %>%
+   mutate(Traffic_Control = recode(Traffic_Control,
+        "FLASHING TRAFFIC SIGNAL" = "Traffic Light",
+        "TRAFFIC SIGNAL" = "Traffic Light",
+        "NO CONTROLS" = 'No Controls',
+        "RAILWAY CROSSING DEVICE	" = 'Warning Sign',
+        "WARNING SIGN" = 'Warning Sign',
+        "SCHOOL ZONE SIGN DEVICE" = 'Warning Sign',
+        "YIELD SIGN" = 'Warning Sign',
+        "STOP SIGN" = 'Stop Sign',
+        .default  = 'Other')) %>%
+  filter(!is.na(Traffic_Control))
+
+#count(dt_intersection, Traffic_Control)
+  
+ggplot(dt_intersection, aes(x=Traffic_Control))+
+  geom_bar()
+```
+
+
+```{r}
 dt_sameNa <- data %>%
   select(difference_both_ways) %>%
   filter(rowSums(is.na(.)) < ncol(.))
@@ -214,7 +237,7 @@ ggplot(dt_lane, aes(x=Road_Division))+
 ggplot(dt_lane, aes(y=Road_Division))+
   geom_bar() +
   facet_grid(Number_of_Lanes~.)+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  #theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   labs(title ='Facet by number of Lanes' )
 ```
 <u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway). 
@@ -267,6 +290,7 @@ ggplot(dt_responsible, aes(x=Driver_Substance_Abuse))+
 ```
 
 ```{r}
+library(gridExtra)
 count(dt_responsible, Driver_Substance_Abuse)
 dt_responsible <- dt_responsible %>%
   mutate(
@@ -275,15 +299,18 @@ dt_responsible <- dt_responsible %>%
   )
 
 
-vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_A + NonTraffic,
+
+mp1 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_A + NonTraffic,
  data = dt_responsible,
  direction = c("v", "v","h" ),
  axes_labels = c('Driver Substance Abuse', 'Traffic'))
 
-vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_B + NonTraffic,
+mp2 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_B + NonTraffic,
  data = dt_responsible,
  direction = c("v", "v","h" ),
  axes_labels = c('Driver Substance Abuse', 'Traffic'))
+
+
 
 ```
 There is more Hit and Run instance when there is no traffic (yes instance for the column NonTraffic) most likely due to the fact that it is easier to go away without traffic on the road.
