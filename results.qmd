@@ -43,7 +43,9 @@ leaflet(dt_sampled) %>%
 ## Time Series
 
 ```{r}
-dt_temporal <- data[,c("Crash_Date/Time","Weather")]
+dt_temporal <- data[,c("Crash_Date/Time","Weather", "Hit/Run", "First_Harmful_Event")]
+dt_temporal <- rename(dt_temporal, "Hit_Run" = `Hit/Run`)
+
 head(dt_temporal)
 ```
 
@@ -170,13 +172,18 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
 data
 ```
 
-
+### Preprocessing for the df_temporal
 ```{r}
 ### add some "date slicers" columns
 dt_temporal$Week_day <- weekdays(dt_temporal$Crash_Date)
 dt_temporal$Month <-  months(dt_temporal$Crash_Date)
 dt_temporal$Year <-  year(dt_temporal$Crash_Date)
 dt_temporal$first_day_of_month <- as.Date(format(dt_temporal$Crash_Date, "%Y-%m-01"))
+
+library(hms)
+dt_temporal$Crash_Time <- as_hms(dt_temporal$Crash_Time)
+dt_temporal$Crash_Hour <- hour(dt_temporal$Crash_Time) #Crash hour
+
 
 ### Transform some colkumns to factors
 dt_temporal <- mutate(dt_temporal, Week_day = factor(Week_day,
@@ -281,6 +288,166 @@ Moreover, we can look at the "black dots" that present for each year the month w
 count(data, )
 ```
 
+- Hit/Run
+- NonTraffic
+- At_Fault
+- Weather
+- Surface_Condition
+- Light
+- Traffic_Control
+- Driver_Substance_Abuse
+- First_Harmful_Event
+
+
+
+```{r}
+count(data, Road_Division, Number_of_Lanes)
+```
+
+
+### Hit/run
+
+```{r}
+dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
+
+dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
+
+ggplot(dt_temporal_Year_month_hit_run, aes(x=first_day_of_month, y=total_accidents)) + 
+  geom_line() + 
+  stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
+  facet_grid(~Hit_Run) +
+  labs(title = "line plot of total accidents faceted by weekday",
+       subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
+```
+
+
+
+group by --> sum up the number of accident with No and with Yes 
+road
+
+##Is it more likely to Hit and Run in a specific Month / Week day / Hour?
+
+```{r}
+library(patchwork)
+
+# Filter out NA values for Hit_Run
+filtered_data <- dt_temporal %>%
+  filter(!is.na(Hit_Run))
+
+# Abbreviate the Month and Weekday names
+month_labels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+weekday_labels <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+
+# Create a bar plot for Month
+plot_month <- ggplot(filtered_data) +
+  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill") +
+  scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
+  labs(title = "Proportion of Hit-Run Accidents",
+       subtitle = "Per Month of Year",
+       x = "Month",
+       y = "Proportion") +
+  scale_x_discrete(labels = month_labels) +  # Abbreviate Month names
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
+# Create a bar plot for Weekday
+plot_weekday <- ggplot(filtered_data) +
+  geom_bar(aes(x = Week_day, fill = Hit_Run), position = "fill") +
+  scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
+  labs(title = "Proportion of Hit-Run Accidents",
+       subtitle = "Per Weekday",
+       x = "Weekday",
+       y = "Proportion") +
+  scale_x_discrete(labels = weekday_labels) +  # Abbreviate Weekday names
+  theme_minimal()
+
+# Arrange the two plots side by side
+combined_plot <- plot_month + plot_weekday
+
+# Print the combined plot
+print(combined_plot)
+
+
+
+### Plot Hit-Run by hours
+### divide the crash hour into groups
+dt_temporal$Crash_Hour_Group <- cut(dt_temporal$Crash_Hour,
+  breaks = c(0, 4, 8, 12, 16, 20, 24),
+  labels = c("0-4", "4-8", "8-12", "12-16", "16-20", "20-24"),
+  include.lowest = TRUE
+)
+
+
+ggplot(dt_temporal %>%
+         filter(!is.na(Hit_Run))) +
+  geom_bar(aes(x = Crash_Hour_Group, fill = Hit_Run), position = "fill") +
+  labs(title = "Proportion of Hit and Run Incidents by Crash Hour",
+       x = "Crash Hour",
+       y = "Proportion") +
+  scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +  # Customize colors if needed
+  theme_minimal()
+
+```
++ There doesn't appear to be a correlation between the month and Hit-Run incidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
++ However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays.
+
++ Concerning the Hit-Run proportion per hour—there is an observed escalation in the proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
+
+
+
+
+### First_Harmful_Event
+
+```{r}
+#count(dt_temporal, First_Harmful_Event) |> arrange(desc(n))
+
+### taking only the 7 top categories in  First_Harmful_Event
+df_for_harmful_event <- dt_temporal %>%
+  filter(!is.na(First_Harmful_Event)) %>%  # Remove NA values
+  mutate(
+    First_Harmful_Event = tolower(First_Harmful_Event),
+    First_Harmful_Event = factor(First_Harmful_Event) %>% fct_lump(n = 7, other_level = "Other"))
+
+
+ggplot(df_for_harmful_event) +
+  geom_bar(aes(x = Month, fill = First_Harmful_Event), position = "fill")
+
+
+###Mosaic plot 1:
+mosaicplot(table(df_for_harmful_event$First_Harmful_Event, df_for_harmful_event$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
+           color = c('tomato', 'darkgreen'), 
+           las = 2  # Rotate labels by 90 degrees
+)
+
+count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
+
+#+
+ # scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
+
+```
+We can see that the first harmful event has a great connection / correlation to the Hit-Run variable --> there are great variations between the proportion of Hit-Run vs. Not Hit-Run accidents given the different `First_Harmful_Event` categories.
+
++ Note that for "Parked-Vehicle" the proportion of Hit-Run is 0.45 which is more than twice as big as the overall Hit-Run proportion (0.18):
+
+```{r}
+dt_temporal |> count(Hit_Run) |> mutate("prop" = n/nrow(dt_temporal))
+a <- dt_temporal |> filter(grepl(c("Parked"), First_Harmful_Event, ignore.case = T)) |> count(Hit_Run, First_Harmful_Event) 
+a|> mutate("prop" = n/sum(a$n)) 
+
+```
+
+
+Lets take the biggest category: other_vehicle and analyze it even further
+
+
+```{r}
+
+vcd:: mosaic(Hit_Run ~ First_Harmful_Event,
+ data = df_for_harmful_event,
+ direction = c("v", "h"), 
+ highlighting_fill=c('tomato','darkgreen'), las = 2)
+
+```
 
 
 
