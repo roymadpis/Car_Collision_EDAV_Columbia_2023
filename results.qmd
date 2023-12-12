@@ -262,7 +262,7 @@ Month_list <-  c("January", "February", "March", "April", "May", "June", "July",
 
 
 b <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
-write_csv2(b, "mean_crash_per_day_over_years.csv")
+write_csv2(b, "data/mean_crash_per_day_over_years.csv")
 
 
 b <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> filter(Month %in%Month_list[1:7]) |> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
