@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -138,7 +172,32 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#spatial-representation" id="toc-spatial-representation" class="nav-link active" data-scroll-target="#spatial-representation"><span class="header-section-number">3.1</span> Spatial Representation</a></li>
+  <li><a href="#time-series" id="toc-time-series" class="nav-link" data-scroll-target="#time-series"><span class="header-section-number">3.2</span> Time Series</a>
+  <ul class="collapse">
+  <li><a href="#preprocessing-for-the-df_temporal" id="toc-preprocessing-for-the-df_temporal" class="nav-link" data-scroll-target="#preprocessing-for-the-df_temporal"><span class="header-section-number">3.2.1</span> Preprocessing for the df_temporal</a></li>
+  </ul></li>
+  <li><a href="#show-the-same-plot-by-days" id="toc-show-the-same-plot-by-days" class="nav-link" data-scroll-target="#show-the-same-plot-by-days"><span class="header-section-number">3.3</span> Show the same plot by days</a>
+  <ul class="collapse">
+  <li><a href="#weather-condition" id="toc-weather-condition" class="nav-link" data-scroll-target="#weather-condition"><span class="header-section-number">3.3.1</span> Weather Condition</a></li>
+  <li><a href="#hours-of-the-day" id="toc-hours-of-the-day" class="nav-link" data-scroll-target="#hours-of-the-day"><span class="header-section-number">3.3.2</span> Hours of the day</a></li>
+  <li><a href="#type-of-lane" id="toc-type-of-lane" class="nav-link" data-scroll-target="#type-of-lane"><span class="header-section-number">3.3.3</span> Type of Lane</a></li>
+  </ul></li>
+  <li><a href="#roy" id="toc-roy" class="nav-link" data-scroll-target="#roy"><span class="header-section-number">3.4</span> Roy</a>
+  <ul class="collapse">
+  <li><a href="#time-plot-displaying-the-total-number-of-accidents-trend-over-the-years-faceted-by-weekdays" id="toc-time-plot-displaying-the-total-number-of-accidents-trend-over-the-years-faceted-by-weekdays" class="nav-link" data-scroll-target="#time-plot-displaying-the-total-number-of-accidents-trend-over-the-years-faceted-by-weekdays"><span class="header-section-number">3.4.1</span> Time-plot displaying the total number of accidents trend over the years faceted by weekdays</a></li>
+  <li><a href="#hitrun" id="toc-hitrun" class="nav-link" data-scroll-target="#hitrun"><span class="header-section-number">3.4.2</span> Hit/run</a></li>
+  <li><a href="#first_harmful_event" id="toc-first_harmful_event" class="nav-link" data-scroll-target="#first_harmful_event"><span class="header-section-number">3.4.3</span> First_Harmful_Event</a></li>
+  </ul></li>
+  <li><a href="#weather" id="toc-weather" class="nav-link" data-scroll-target="#weather"><span class="header-section-number">3.5</span> Weather</a></li>
+  <li><a href="#things-we-found-from-graphs-we-created" id="toc-things-we-found-from-graphs-we-created" class="nav-link" data-scroll-target="#things-we-found-from-graphs-we-created"><span class="header-section-number">3.6</span> Things we found from graphs we created”</a></li>
+  <li><a href="#ethan-part" id="toc-ethan-part" class="nav-link" data-scroll-target="#ethan-part"><span class="header-section-number">3.7</span> Ethan Part</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023/edit/main/results.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -160,8 +219,1611 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyverse' was built under R version 4.3.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggplot2' was built under R version 4.3.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'purrr' was built under R version 4.3.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'dplyr' was built under R version 4.3.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.4     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'leaflet' was built under R version 4.3.2</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet.extras)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'leaflet.extras' was built under R version 4.3.2</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggmap)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggmap' was built under R version 4.3.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Google's Terms of Service: &lt;https://mapsplatform.google.com&gt;
+  Stadia Maps' Terms of Service: &lt;https://stadiamaps.com/terms-of-service/&gt;
+  OpenStreetMap's Tile Usage Policy: &lt;https://operations.osmfoundation.org/policies/tiles/&gt;
+ℹ Please cite ggmap if you use it! Use `citation("ggmap")` for details.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>data_crash <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv2</span>(<span class="st">"data/data_crash.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: One or more parsing issues, call `problems()` on your data frame for details,
+e.g.:
+  dat &lt;- vroom(...)
+  problems(dat)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 95584 Columns: 35
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (28): Report_Number, Agency_Name, ACRS_Report_Type, Crash_Date_Time, Hit...
+dbl  (7): Local_Case_Number, Mile_Point, Lane_Number, Number_of_Lanes, Dista...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>holiday_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"data/holidays.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 198 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (1): holiday
+date (1): date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>holiday_data<span class="sc">$</span>is_holiday <span class="ot">&lt;-</span> <span class="st">"Yes"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="spatial-representation" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="spatial-representation"><span class="header-section-number">3.1</span> Spatial Representation</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample the data so that we do not have too much data ploted on the map</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#dt_sampled &lt;- sample_n(as.data.frame(data_crash), 4000)</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># rename(Hit_Run = 'Hit/Run') %&gt;%</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># # filter(Hit_Run == 'Yes')</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(Number_of_Lanes == 19) %&gt;%</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the random sample</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#print(dt_sampled)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Spatial data</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># leaflet(dt_sampled) %&gt;%</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   addTiles() %&gt;% </span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   addHeatmap(</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   lat = ~Latitude,</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   lng = ~Longitude,</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   blur = 15,  # Adjust the blur parameter</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   radius = 10)  # Adjust the radius parameter</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><u>Comment :</u> We can see from the map multiple ouliers, all the crash data should be in the Montgomery County so every data outside of this area can be considered as outliers. Maybe when the localisation was added to the police report some numbers were mistaken. *Should we remove all of them ?</p>
+</section>
+<section id="time-series" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="time-series"><span class="header-section-number">3.2</span> Time Series</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dt_temporal &lt;- data_crash[,]</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>dt_temporal <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">select</span>(data_crash,<span class="fu">c</span>(<span class="st">"Crash_Date_Time"</span>,<span class="st">"Weather"</span>, <span class="st">"Hit_Run"</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"First_Harmful_Event"</span>, <span class="st">"At_Fault"</span>))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># dt_temporal &lt;- left_join(dt_temporal, holiday_data, by = c("Crash_Date" = "date"))</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># dt_temporal &lt;- mutate(dt_temporal, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dt_temporal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  Crash_Date_Time        Weather Hit_Run First_Harmful_Event At_Fault
+  &lt;chr&gt;                  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;   
+1 06/30/2023 10:55:00 PM CLEAR   No      FIXED OBJECT        DRIVER  
+2 06/30/2023 08:00:00 PM CLEAR   No      OTHER VEHICLE       DRIVER  
+3 06/29/2023 11:53:00 AM CLEAR   No      FIXED OBJECT        DRIVER  
+4 07/01/2023 01:48:00 AM CLOUDY  Yes     PARKED VEHICLE      UNKNOWN 
+5 07/01/2023 12:52:00 PM CLEAR   No      PARKED VEHICLE      DRIVER  
+6 06/30/2023 12:00:00 PM CLEAR   No      OTHER VEHICLE       DRIVER  </code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Separate time and Date</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span><span class="st">"Crash_Date_Time"</span> <span class="ot">&lt;-</span> <span class="fu">as.POSIXct</span>(dt_temporal<span class="sc">$</span><span class="st">"Crash_Date_Time"</span>, <span class="at">format =</span> <span class="st">"%m/%d/%Y %I:%M:%S %p"</span>, <span class="at">tz =</span> <span class="st">"America/New_York"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Crash_Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(dt_temporal<span class="sc">$</span><span class="st">"Crash_Date_Time"</span>, <span class="at">tz =</span> <span class="st">"America/New_York"</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#I have a problem with the hours it doesn't show up well</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Crash_Time <span class="ot">&lt;-</span> <span class="fu">format</span>(dt_temporal<span class="sc">$</span><span class="st">"Crash_Date_Time"</span>, <span class="st">"%H:%M:%S"</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>dt_temporal</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 95,584 × 7
+   Crash_Date_Time     Weather Hit_Run First_Harmful_Event At_Fault Crash_Date
+   &lt;dttm&gt;              &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;    &lt;date&gt;    
+ 1 2023-06-30 22:55:00 CLEAR   No      FIXED OBJECT        DRIVER   2023-06-30
+ 2 2023-06-30 20:00:00 CLEAR   No      OTHER VEHICLE       DRIVER   2023-06-30
+ 3 2023-06-29 11:53:00 CLEAR   No      FIXED OBJECT        DRIVER   2023-06-29
+ 4 2023-07-01 01:48:00 CLOUDY  Yes     PARKED VEHICLE      UNKNOWN  2023-07-01
+ 5 2023-07-01 12:52:00 CLEAR   No      PARKED VEHICLE      DRIVER   2023-07-01
+ 6 2023-06-30 12:00:00 CLEAR   No      OTHER VEHICLE       DRIVER   2023-06-30
+ 7 2023-06-30 18:00:00 CLEAR   Yes     PARKED VEHICLE      DRIVER   2023-06-30
+ 8 2023-06-29 13:03:00 CLEAR   No      FIXED OBJECT        DRIVER   2023-06-29
+ 9 2023-06-26 16:26:00 CLEAR   No      OTHER VEHICLE       DRIVER   2023-06-26
+10 2023-06-29 12:59:00 CLEAR   No      OFF ROAD            DRIVER   2023-06-29
+# ℹ 95,574 more rows
+# ℹ 1 more variable: Crash_Time &lt;chr&gt;</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(dt_temporal, aes(x = as.factor(Crash_week))) +</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>       <span class="co">#stat_count() +</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>       <span class="co">#labs(title='Number of car crash per weeks')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="preprocessing-for-the-df_temporal" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="preprocessing-for-the-df_temporal"><span class="header-section-number">3.2.1</span> Preprocessing for the df_temporal</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="do">### add some "date slicers" columns</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Week_day <span class="ot">&lt;-</span> <span class="fu">weekdays</span>(dt_temporal<span class="sc">$</span>Crash_Date)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Month <span class="ot">&lt;-</span>  <span class="fu">months</span>(dt_temporal<span class="sc">$</span>Crash_Date)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Year <span class="ot">&lt;-</span>  <span class="fu">year</span>(dt_temporal<span class="sc">$</span>Crash_Date)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>first_day_of_month <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">format</span>(dt_temporal<span class="sc">$</span>Crash_Date, <span class="st">"%Y-%m-01"</span>))</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'hms'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:lubridate':
+
+    hms</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Crash_Time <span class="ot">&lt;-</span> <span class="fu">as_hms</span>(dt_temporal<span class="sc">$</span>Crash_Time)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Crash_Hour <span class="ot">&lt;-</span> <span class="fu">hour</span>(dt_temporal<span class="sc">$</span>Crash_Time) <span class="co">#Crash hour</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="do">### Transform some colkumns to factors</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>dt_temporal <span class="ot">&lt;-</span> <span class="fu">mutate</span>(dt_temporal, <span class="at">Week_day =</span> <span class="fu">factor</span>(Week_day,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Sunday"</span>, <span class="st">"Monday"</span>, <span class="st">"Tuesday"</span>, <span class="st">"Wednesday"</span>, <span class="st">"Thursday"</span>, <span class="st">"Friday"</span>, <span class="st">"Saturday"</span>)))</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Month <span class="ot">&lt;-</span> <span class="fu">factor</span>(dt_temporal<span class="sc">$</span>Month, </span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"January"</span>, <span class="st">"February"</span>, <span class="st">"March"</span>, <span class="st">"April"</span>, <span class="st">"May"</span>, <span class="st">"June"</span>,<span class="st">"July"</span>, <span class="st">"August"</span>, <span class="st">"September"</span>, <span class="st">"October"</span>, <span class="st">"November"</span>, <span class="st">"December"</span>),)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="do">### arrange the data by date</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>dt_temporal <span class="ot">&lt;-</span> dt_temporal <span class="sc">|&gt;</span> <span class="fu">arrange</span>(Crash_Date)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>dt_temporal_month <span class="ot">&lt;-</span> dt_temporal <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Month, first_day_of_month, Week_day) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_accidents =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Month', 'first_day_of_month'. You can
+override using the `.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_Year_month <span class="ot">&lt;-</span> dt_temporal <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Year, Month, first_day_of_month, Week_day) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_accidents =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Year', 'Month', 'first_day_of_month'. You
+can override using the `.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="do">### create a ts object</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>first_date_in_data <span class="ot">&lt;-</span> <span class="fu">min</span>(dt_temporal<span class="sc">$</span>first_day_of_month)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>last_date_in_data <span class="ot">&lt;-</span> <span class="fu">max</span>(dt_temporal<span class="sc">$</span>first_day_of_month)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>start_date <span class="ot">=</span> <span class="fu">min</span>(dt_temporal<span class="sc">$</span>Crash_Date)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>end_date <span class="ot">=</span> <span class="fu">max</span>(dt_temporal<span class="sc">$</span>Crash_Date)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>date_sequence <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">"2014-12-28"</span>), end_date, <span class="at">by =</span> <span class="st">"week"</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Crash_week <span class="ot">&lt;-</span> <span class="fu">cut</span>(dt_temporal<span class="sc">$</span>Crash_Date, <span class="at">breaks =</span> <span class="fu">c</span>(date_sequence, <span class="cn">Inf</span>), <span class="at">labels =</span> <span class="fu">as.factor</span>(date_sequence), <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>dt_temporal_red <span class="ot">&lt;-</span> dt_temporal <span class="sc">%&gt;%</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Crash_Date <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2013"</span>, <span class="at">format =</span> <span class="st">'%Y'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Crash_week) <span class="sc">%&gt;%</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Count_week =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Crash_week)</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Create a new table to remove the iteration where there are multiple time the same combination for the columns Crash_week and Count_week.</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>dt_temporal_week <span class="ot">&lt;-</span> dt_temporal_red <span class="sc">%&gt;%</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(Crash_week, Count_week, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Crash_week =</span> <span class="fu">as.Date</span>(Crash_week, <span class="at">format =</span> <span class="st">"%Y-%m-%d"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Crash_month =</span> <span class="fu">month</span>(Crash_week))</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(is_holiday = ifelse(Week_with_holiday %in% weeks_with_holiday$Week_with_holiday, "Yes", is_holiday)) %&gt;%</span></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(-Week_with_holiday)</span></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_week, <span class="fu">aes</span>(<span class="at">x =</span> Crash_week, <span class="at">y =</span> Count_week)) <span class="sc">+</span></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group=</span><span class="dv">1</span>)) <span class="sc">+</span> <span class="co">#because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">'Number of car crash per weeks'</span>)<span class="sc">+</span></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Set breaks to 1 month interval</span></span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"1 year"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new column for the week of the year</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Create a data frame with all days in the year</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>all_days <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">date =</span> <span class="fu">seq</span>(<span class="fu">min</span>(dt_temporal<span class="sc">$</span>Crash_Date), <span class="fu">max</span>(dt_temporal<span class="sc">$</span>Crash_Date), <span class="at">by =</span> <span class="st">"days"</span>))</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Merge the data frames based on the week</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>merged_df <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(all_days, holiday_data, <span class="at">by =</span> <span class="st">"date"</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Create a new column "Is_Holiday" based on the merging results</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>merged_df<span class="sc">$</span>is_holiday <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(merged_df<span class="sc">$</span>is_holiday), <span class="st">"Yes"</span>, <span class="st">"No"</span>)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>merged_dy_for_temporal_day <span class="ot">&lt;-</span> merged_df</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>merged_df<span class="sc">$</span>first_day_of_week_new <span class="ot">&lt;-</span> <span class="fu">floor_date</span>(merged_df<span class="sc">$</span>date, <span class="st">"week"</span>)</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>merged_df<span class="sc">$</span>weekday1 <span class="ot">&lt;-</span> <span class="fu">weekdays</span>(merged_df<span class="sc">$</span>first_day_of_week)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>result_df <span class="ot">&lt;-</span> merged_df <span class="sc">%&gt;%</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(first_day_of_week_new) <span class="sc">%&gt;%</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">is_holiday =</span> <span class="cf">if</span> (<span class="st">"Yes"</span> <span class="sc">%in%</span> is_holiday) <span class="st">"Yes"</span> <span class="cf">else</span> <span class="st">"No"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_week <span class="ot">&lt;-</span> <span class="fu">left_join</span>(dt_temporal_week, result_df, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Crash_week"</span> <span class="ot">=</span> <span class="st">"first_day_of_week_new"</span>))</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>dt_temporal_week <span class="ot">&lt;-</span> <span class="fu">mutate</span>(dt_temporal_week, <span class="at">is_holiday =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(is_holiday), <span class="st">"No"</span>, is_holiday))</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_week, <span class="fu">aes</span>(<span class="at">x =</span> Crash_week, <span class="at">y =</span> Count_week)) <span class="sc">+</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group=</span><span class="dv">1</span>)) <span class="sc">+</span> <span class="co">#because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> is_holiday)) <span class="sc">+</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">'Number of car crash per weeks'</span>)<span class="sc">+</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Set breaks to 1 month interval</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"1 year"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><u>Comment :</u> We can visualize thanks to the time series representation the Covid crisis which lead to a reduction of car accident in 2020 since less cars were on the roads. Since then, the average number of accidents is a bit lower than pre-covid.</p>
+</section>
+</section>
+<section id="show-the-same-plot-by-days" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="show-the-same-plot-by-days"><span class="header-section-number">3.3</span> Show the same plot by days</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_day <span class="ot">&lt;-</span> dt_temporal <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Year, Month, Crash_Date) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_crash =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Year', 'Month'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_day <span class="ot">&lt;-</span> <span class="fu">left_join</span>(dt_temporal_day, merged_dy_for_temporal_day, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Crash_Date"</span><span class="ot">=</span> <span class="st">"date"</span>))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_day <span class="sc">|&gt;</span> <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">2019</span>), <span class="fu">aes</span>(<span class="at">x =</span> Crash_Date, <span class="at">y =</span> total_crash)) <span class="sc">+</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group=</span><span class="dv">1</span>)) <span class="sc">+</span> <span class="co">#because we grouped earlier by Crash_Date we need now to specify that we treat all the data as one group.</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> is_holiday)) <span class="sc">+</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">'Number of car crash per weeks'</span>)<span class="sc">+</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Set breaks to 1 month interval</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"1 year"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_day <span class="sc">|&gt;</span>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="fu">which.max</span>(total_crash))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 6
+# Groups:   Year [9]
+   Year Month     Crash_Date total_crash holiday is_holiday
+  &lt;dbl&gt; &lt;fct&gt;     &lt;date&gt;           &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;     
+1  2015 November  2015-11-10          71 &lt;NA&gt;    &lt;NA&gt;      
+2  2016 November  2016-11-30          71 &lt;NA&gt;    &lt;NA&gt;      
+3  2017 December  2017-12-15          59 &lt;NA&gt;    &lt;NA&gt;      
+4  2018 November  2018-11-05          65 &lt;NA&gt;    &lt;NA&gt;      
+5  2019 October   2019-10-31          77 &lt;NA&gt;    &lt;NA&gt;      
+6  2020 January   2020-01-03          51 &lt;NA&gt;    &lt;NA&gt;      
+7  2021 September 2021-09-22          62 &lt;NA&gt;    &lt;NA&gt;      
+8  2022 March     2022-03-12          48 &lt;NA&gt;    &lt;NA&gt;      
+9  2023 February  2023-02-13          56 &lt;NA&gt;    &lt;NA&gt;      </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> dt_temporal_day <span class="sc">|&gt;</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year) <span class="sc">|&gt;</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">5</span>, total_crash) <span class="co">#|&gt; filter(Month %in% c("January"))</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(a) <span class="sc">+</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>Crash_Date, <span class="at">y=</span>total_crash)) <span class="sc">+</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">80</span>)) <span class="sc">+</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%Y-%m-%d"</span>, <span class="at">date_breaks =</span> <span class="st">"1 month"</span>)<span class="sc">+</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>a <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Month) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">count=</span><span class="fu">n</span>()) <span class="co">#count(Month)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   Month     count
+   &lt;fct&gt;     &lt;int&gt;
+ 1 January       9
+ 2 February      5
+ 3 March         4
+ 4 May           5
+ 5 July          1
+ 6 August        2
+ 7 September     4
+ 8 October       5
+ 9 November     10
+10 December     11</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co">#holiday_data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_day <span class="ot">&lt;-</span> <span class="fu">mutate</span>(dt_temporal_day,<span class="at">crash_day_no_year =</span> <span class="fu">format</span>(Crash_Date, <span class="st">"%m-%d"</span>))</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>Month_list <span class="ot">&lt;-</span>  <span class="fu">c</span>(<span class="st">"January"</span>, <span class="st">"February"</span>, <span class="st">"March"</span>, <span class="st">"April"</span>, <span class="st">"May"</span>, <span class="st">"June"</span>, <span class="st">"July"</span>, <span class="st">"August"</span>, <span class="st">"September"</span>, <span class="st">"October"</span>, <span class="st">"November"</span>, <span class="st">"December"</span>)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="do">##################################### data for d3 - mean crash per day over years</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> dt_temporal_day <span class="sc">|&gt;</span> <span class="fu">filter</span>(Year<span class="sc">!=</span><span class="dv">2020</span> <span class="sc">&amp;</span> Year<span class="sc">&lt;</span><span class="dv">2023</span>)<span class="sc">|&gt;</span> <span class="fu">group_by</span>(Month, crash_day_no_year) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_crash =</span> <span class="fu">mean</span>(total_crash)) <span class="sc">|&gt;</span>  <span class="fu">mutate</span>(<span class="at">day_only =</span> <span class="fu">factor</span>(<span class="fu">substr</span>(crash_day_no_year, <span class="dv">4</span>, <span class="dv">5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Month'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv2</span>(b, <span class="st">"data/mean_crash_per_day_over_years.csv"</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="do">###########################################################</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="do">### let's see how this graph should look like in d3:</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> dt_temporal_day <span class="sc">|&gt;</span> <span class="fu">filter</span>(Year<span class="sc">!=</span><span class="dv">2020</span> <span class="sc">&amp;</span> Year<span class="sc">&lt;</span><span class="dv">2023</span>)<span class="sc">|&gt;</span> <span class="fu">filter</span>(Month <span class="sc">%in%</span>Month_list[<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>]) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Month, crash_day_no_year) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_crash =</span> <span class="fu">mean</span>(total_crash)) <span class="sc">|&gt;</span>  <span class="fu">mutate</span>(<span class="at">day_only =</span> <span class="fu">factor</span>(<span class="fu">substr</span>(crash_day_no_year, <span class="dv">4</span>, <span class="dv">5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Month'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Create the plot</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(b, aes(x = crash_day_no_year, y = total_crash, color = Month)) +</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point() +</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   facet_grid(~Month)+</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   labs(y = "Total Crash") </span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the plot</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(b, <span class="fu">aes</span>(<span class="at">x =</span> day_only, <span class="at">y =</span> total_crash, <span class="at">color =</span> Month, <span class="at">group=</span>Month)) <span class="sc">+</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#facet_grid(Month~., scales = "free_x", space = "free_x") +</span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Total Crash"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(b) +</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point(aes(x=crash_day_no_year, y=total_crash)) +</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   scale_y_continuous(limits = c(0,80)) +</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   scale_x_date(date_labels = "%Y-%m-%d", date_breaks = "1 month")+</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_day <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="fu">as.factor</span>(Year))) <span class="sc">+</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Year, <span class="at">y=</span>total_crash))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_day <span class="sc">|&gt;</span>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>((<span class="fu">mean</span>(total_crash)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 2
+   Year `(mean(total_crash))`
+  &lt;dbl&gt;                 &lt;dbl&gt;
+1  2015                  31.4
+2  2016                  33.1
+3  2017                  33.2
+4  2018                  32.5
+5  2019                  32.0
+6  2020                  22.0
+7  2021                  25.6
+8  2022                  27.5
+9  2023                  27.9</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_day <span class="sc">|&gt;</span>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="fu">which.min</span>(total_crash))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 7
+# Groups:   Year [9]
+   Year Month    Crash_Date total_crash holiday     is_holiday crash_day_no_year
+  &lt;dbl&gt; &lt;fct&gt;    &lt;date&gt;           &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;            
+1  2015 July     2015-07-01           8 Canada Day  Yes        07-01            
+2  2016 January  2016-01-23           2 &lt;NA&gt;        &lt;NA&gt;       01-23            
+3  2017 May      2017-05-29           9 &lt;NA&gt;        &lt;NA&gt;       05-29            
+4  2018 February 2018-02-07          13 &lt;NA&gt;        &lt;NA&gt;       02-07            
+5  2019 January  2019-01-01          10 New Year's… Yes        01-01            
+6  2020 April    2020-04-06           5 &lt;NA&gt;        &lt;NA&gt;       04-06            
+7  2021 March    2021-03-28           5 &lt;NA&gt;        &lt;NA&gt;       03-28            
+8  2022 January  2022-01-05           8 &lt;NA&gt;        &lt;NA&gt;       01-05            
+9  2023 November 2023-11-15           2 &lt;NA&gt;        &lt;NA&gt;       11-15            </code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_day, <span class="fu">aes</span>(<span class="at">x =</span> Crash_Date, <span class="at">y =</span> total_crash)) <span class="sc">+</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group=</span><span class="dv">1</span>)) <span class="sc">+</span> <span class="co">#because we grouped earlier by Crash_Date we need now to specify that we treat all the data as one group.</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> is_holiday)) <span class="sc">+</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">'Number of car crash per weeks'</span>)<span class="sc">+</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Set breaks to 1 month interval</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"1 year"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="weather-condition" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="weather-condition"><span class="header-section-number">3.3.1</span> Weather Condition</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>dt_temporal <span class="ot">&lt;-</span> dt_temporal <span class="sc">%&gt;%</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>Weather <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"OTHER"</span>, <span class="st">"UNKNOWN"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Weather))</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>dt_temporal <span class="ot">&lt;-</span> dt_temporal <span class="sc">%&gt;%</span></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Weather =</span> <span class="fu">if_else</span>(Weather <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"SNOW"</span>, <span class="st">"SLEET"</span>,<span class="st">"BLOWING SNOW"</span>), <span class="st">"SNOW"</span>, Weather)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Weather =</span> <span class="fu">if_else</span>(Weather <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"SEVERE WINDS"</span>, <span class="st">"WINTRY MIX"</span>, <span class="st">"BLOWING SAND, SOIL, DIRT"</span>), <span class="st">"WIND"</span>, Weather))<span class="sc">%&gt;%</span></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Condition =</span> <span class="fu">if_else</span>(Weather <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"CLEAR"</span>,<span class="st">"CLOUDY"</span>),<span class="st">"Good"</span>,<span class="st">"Bad"</span>))</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>color_scale <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"RAINING"</span> <span class="ot">=</span> <span class="st">"slateblue"</span>, <span class="st">"SNOW"</span> <span class="ot">=</span> <span class="st">"whitesmoke"</span>, <span class="st">"CLOUDY"</span> <span class="ot">=</span> <span class="st">"gray"</span>, <span class="st">"FOGGY"</span> <span class="ot">=</span><span class="st">"gray27"</span>, <span class="st">"WIND"</span><span class="ot">=</span><span class="st">"seagreen4"</span>, <span class="st">"CLEAR"</span> <span class="ot">=</span><span class="st">"skyblue"</span>)</span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Weather <span class="ot">&lt;-</span> <span class="fu">reorder</span>(dt_temporal<span class="sc">$</span>Weather, <span class="at">X=</span> <span class="fu">as.numeric</span>(<span class="fu">factor</span>(dt_temporal<span class="sc">$</span>Weather,<span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'CLEAR'</span>,<span class="st">'CLOUDY'</span>,<span class="st">'FOGGY'</span>,<span class="st">'WIND'</span>,<span class="st">'SNOW'</span>,<span class="st">'RAINING'</span>))))</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal, <span class="fu">aes</span>(<span class="at">x =</span> Condition, <span class="at">fill =</span> Weather)) <span class="sc">+</span></span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> color_scale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(dt_temporal, aes(x= Weather))+</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_bar()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><u>Comment :</u> One can see an asymmetry between the bad and good conditions. It seems that bad conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.</p>
+</section>
+<section id="hours-of-the-day" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="hours-of-the-day"><span class="header-section-number">3.3.2</span> Hours of the day</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we only care about the hours not the minutes</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>dt_temporal <span class="ot">&lt;-</span> dt_temporal <span class="sc">%&gt;%</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Crash_Time =</span> <span class="fu">paste0</span>(<span class="fu">substr</span>(Crash_Time, <span class="at">start =</span> <span class="dv">1</span>, <span class="at">stop =</span><span class="dv">2</span>),<span class="st">'h'</span>)) </span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal, <span class="fu">aes</span>(<span class="at">x=</span>Crash_Time))<span class="sc">+</span></span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()<span class="sc">+</span></span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Hours in the day'</span>,<span class="at">y =</span> <span class="st">'Number of Crash'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><u>Comment :</u> One can see that crash accidents occur more during the commute time especially the way back home between 15h to 17h.</p>
+</section>
+<section id="type-of-lane" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="type-of-lane"><span class="header-section-number">3.3.3</span> Type of Lane</h3>
+</section>
+</section>
+<section id="roy" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="roy"><span class="header-section-number">3.4</span> Roy</h2>
+<section id="roy-1" class="level16">
+<p class="heading">Roy</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>data_crash <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 35
+  Report_Number Local_Case_Number Agency_Name   ACRS_Report_Type Crash_Date_Time
+  &lt;chr&gt;                     &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;          
+1 MCP2686006F           230031339 Montgomery C… Property Damage… 06/30/2023 10:…
+2 MCP3230004G           230031335 Montgomery C… Property Damage… 06/30/2023 08:…
+3 MCP12600013           230031067 Montgomery C… Injury Crash     06/29/2023 11:…
+4 DD55750030            230031365 Rockville Po… Property Damage… 07/01/2023 01:…
+5 MCP3010008B           230034141 Montgomery C… Property Damage… 07/01/2023 12:…
+6 MCP2667008J           230031246 Montgomery C… Property Damage… 06/30/2023 12:…
+# ℹ 30 more variables: Hit_Run &lt;chr&gt;, Route_Type &lt;chr&gt;, Mile_Point &lt;dbl&gt;,
+#   Mile_Point_Direction &lt;chr&gt;, Lane_Direction &lt;chr&gt;, Lane_Number &lt;dbl&gt;,
+#   Number_of_Lanes &lt;dbl&gt;, Direction &lt;chr&gt;, Distance &lt;dbl&gt;,
+#   Distance_Unit &lt;chr&gt;, Road_Grade &lt;chr&gt;, NonTraffic &lt;chr&gt;, Road_Name &lt;chr&gt;,
+#   Cross_Street_Type &lt;chr&gt;, Cross_Street_Name &lt;chr&gt;, At_Fault &lt;chr&gt;,
+#   Collision_Type &lt;chr&gt;, Weather &lt;chr&gt;, Surface_Condition &lt;chr&gt;, Light &lt;chr&gt;,
+#   Traffic_Control &lt;chr&gt;, Driver_Substance_Abuse &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_month) <span class="sc">+</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">mapping=</span><span class="fu">aes</span>(<span class="at">x=</span>Month, <span class="at">y=</span>total_accidents))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggridges' was built under R version 4.3.1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Distribution of total number of accidents by month</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_month) <span class="sc">+</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Month)) <span class="sc">+</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Month), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of total number of accidents by month"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Picking joint bandwidth of 12.3</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Distribution of total number of accidents by Day of week</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_month) <span class="sc">+</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Week_day)) <span class="sc">+</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Week_day), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of total number of accidents by weekday"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Picking joint bandwidth of 9.83</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-20-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'patchwork' was built under R version 4.3.2</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_1 <span class="ot">&lt;-</span> dt_temporal</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the Month column to display the abbreviation version</span></span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list of month abbreviations</span></span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>month_abbreviations <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Jan"</span>, <span class="st">"Feb"</span>, <span class="st">"Mar"</span>, <span class="st">"Apr"</span>, <span class="st">"May"</span>, <span class="st">"Jun"</span>, <span class="st">"Jul"</span>, <span class="st">"Aug"</span>, <span class="st">"Sep"</span>, <span class="st">"Oct"</span>, <span class="st">"Nov"</span>, <span class="st">"Dec"</span>)</span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>weekday_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Sun"</span>, <span class="st">"Mon"</span>, <span class="st">"Tue"</span>, <span class="st">"Wed"</span>, <span class="st">"Thu"</span>, <span class="st">"Fri"</span>, <span class="st">"Sat"</span>)</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the Week_day column to display the abbreviation version</span></span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>dt_temporal_1<span class="sc">$</span>Week_day <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Week_day <span class="sc">==</span> <span class="st">"Sunday"</span>, <span class="st">"Sun"</span>,</span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Week_day <span class="sc">==</span> <span class="st">"Monday"</span>, <span class="st">"Mon"</span>,</span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Week_day <span class="sc">==</span> <span class="st">"Tuesday"</span>, <span class="st">"Tue"</span>,</span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Week_day <span class="sc">==</span> <span class="st">"Wednesday"</span>, <span class="st">"Wed"</span>,</span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Week_day <span class="sc">==</span> <span class="st">"Thursday"</span>, <span class="st">"Thu"</span>,</span>
+<span id="cb78-13"><a href="#cb78-13" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Week_day <span class="sc">==</span> <span class="st">"Friday"</span>, <span class="st">"Fri"</span>,</span>
+<span id="cb78-14"><a href="#cb78-14" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Week_day <span class="sc">==</span> <span class="st">"Saturday"</span>, <span class="st">"Sat"</span>, dt_temporal_1<span class="sc">$</span>Week_day)))))))</span>
+<span id="cb78-15"><a href="#cb78-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-16"><a href="#cb78-16" aria-hidden="true" tabindex="-1"></a>dt_temporal_1<span class="sc">$</span>Week_day <span class="ot">&lt;-</span> <span class="fu">factor</span>(dt_temporal_1<span class="sc">$</span>Week_day , <span class="at">levels =</span> weekday_labels)</span>
+<span id="cb78-17"><a href="#cb78-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-18"><a href="#cb78-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the Month column to display the abbreviation version</span></span>
+<span id="cb78-19"><a href="#cb78-19" aria-hidden="true" tabindex="-1"></a>dt_temporal_1<span class="sc">$</span>Month <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"January"</span>, <span class="st">"Jan"</span>,</span>
+<span id="cb78-20"><a href="#cb78-20" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"February"</span>, <span class="st">"Feb"</span>,</span>
+<span id="cb78-21"><a href="#cb78-21" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"March"</span>, <span class="st">"Mar"</span>,</span>
+<span id="cb78-22"><a href="#cb78-22" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"April"</span>, <span class="st">"Apr"</span>,</span>
+<span id="cb78-23"><a href="#cb78-23" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"May"</span>, <span class="st">"May"</span>,</span>
+<span id="cb78-24"><a href="#cb78-24" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"June"</span>, <span class="st">"Jun"</span>,</span>
+<span id="cb78-25"><a href="#cb78-25" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"July"</span>, <span class="st">"Jul"</span>,</span>
+<span id="cb78-26"><a href="#cb78-26" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"August"</span>, <span class="st">"Aug"</span>,</span>
+<span id="cb78-27"><a href="#cb78-27" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"September"</span>, <span class="st">"Sep"</span>,</span>
+<span id="cb78-28"><a href="#cb78-28" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"October"</span>, <span class="st">"Oct"</span>,</span>
+<span id="cb78-29"><a href="#cb78-29" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"November"</span>, <span class="st">"Nov"</span>,</span>
+<span id="cb78-30"><a href="#cb78-30" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">ifelse</span>(dt_temporal_1<span class="sc">$</span>Month <span class="sc">==</span> <span class="st">"December"</span>, <span class="st">"Dec"</span>, dt_temporal_1<span class="sc">$</span>Month))))))))))))</span>
+<span id="cb78-31"><a href="#cb78-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-32"><a href="#cb78-32" aria-hidden="true" tabindex="-1"></a>dt_temporal_1<span class="sc">$</span>Month <span class="ot">&lt;-</span> <span class="fu">factor</span>(dt_temporal_1<span class="sc">$</span>Month, <span class="at">levels =</span> month_abbreviations)</span>
+<span id="cb78-33"><a href="#cb78-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-34"><a href="#cb78-34" aria-hidden="true" tabindex="-1"></a>dt_temporal_month <span class="ot">&lt;-</span> dt_temporal_1 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Month, first_day_of_month, Week_day) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_accidents =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Month', 'first_day_of_month'. You can
+override using the `.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_hour <span class="ot">&lt;-</span> dt_temporal_1 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Month, first_day_of_month, Crash_Hour) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_accidents =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Month', 'first_day_of_month'. You can
+override using the `.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Distribution of total number of accidents by month (the total number of accidents is with the total within in Year-Month combination)</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>plot_month <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dt_temporal_month <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Month =</span> <span class="fu">as.factor</span>(Month))) <span class="sc">+</span></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Month)) <span class="sc">+</span></span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Month), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">"By month"</span>)</span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Distribution of total number of accidents by Day of week (the total number of accidents is with the total within in Year-Month combination)</span></span>
+<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a>plot_weekday <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dt_temporal_month) <span class="sc">+</span></span>
+<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Week_day)) <span class="sc">+</span></span>
+<span id="cb82-11"><a href="#cb82-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Week_day), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb82-12"><a href="#cb82-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb82-13"><a href="#cb82-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">"By weekday"</span>)</span>
+<span id="cb82-14"><a href="#cb82-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-15"><a href="#cb82-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-16"><a href="#cb82-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Distribution of total number of accidents by Hour (the total number of accidents is with the total within in Year-Month combination)</span></span>
+<span id="cb82-17"><a href="#cb82-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-18"><a href="#cb82-18" aria-hidden="true" tabindex="-1"></a>plot_hours <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dt_temporal_hour <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Crash_Hour =</span> <span class="fu">as.factor</span>(Crash_Hour))) <span class="sc">+</span></span>
+<span id="cb82-19"><a href="#cb82-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Crash_Hour)) <span class="sc">+</span></span>
+<span id="cb82-20"><a href="#cb82-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> total_accidents, <span class="at">y =</span> Crash_Hour), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb82-21"><a href="#cb82-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb82-22"><a href="#cb82-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">"By weekday"</span>)</span>
+<span id="cb82-23"><a href="#cb82-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-24"><a href="#cb82-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-25"><a href="#cb82-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-26"><a href="#cb82-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine the plots side by side</span></span>
+<span id="cb82-27"><a href="#cb82-27" aria-hidden="true" tabindex="-1"></a><span class="co"># combined_plots &lt;- plot_month + plot_weekday + plot_hours</span></span>
+<span id="cb82-28"><a href="#cb82-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-29"><a href="#cb82-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine the plots side by side with one common title</span></span>
+<span id="cb82-30"><a href="#cb82-30" aria-hidden="true" tabindex="-1"></a>combined_plots <span class="ot">&lt;-</span> plot_month <span class="sc">+</span> plot_weekday <span class="sc">+</span> plot_hours <span class="sc">+</span></span>
+<span id="cb82-31"><a href="#cb82-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb82-32"><a href="#cb82-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"Distribution of total number of accidents"</span>)</span>
+<span id="cb82-33"><a href="#cb82-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-34"><a href="#cb82-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-35"><a href="#cb82-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the combined plots</span></span>
+<span id="cb82-36"><a href="#cb82-36" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(combined_plots)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Picking joint bandwidth of 11.2
+Picking joint bandwidth of 8.8
+Picking joint bandwidth of 3.02</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li><p>By combining histograms and density plots, we gain valuable insights into the distribution of total accidents aggregated by months per year, examining variations across different months, weekdays, and day-hours</p></li>
+<li><p><strong>Number of accidents per month</strong>: Analyzing the density plots reveals a similar distribution in the total number of accidents across different months. However, delving into boxplots exposes distinct variances; for instance, the interquartile range (IQR) for January is significantly wider than that of February.</p></li>
+<li><p><strong>Number of accidents per weekday</strong>: The density plots unveil noticeable differences in the distribution of total accidents between weekends and weekdays, providing insights into the varying patterns throughout the week.</p></li>
+<li><p><strong>Number of accidents per Hour in day</strong>: Exploring the density plots illustrates significant disparities in the distribution of total accidents across different times of the day. Notably, there is typically an increase in accidents during the middle of the day, aligning with the expected higher traffic volumes during those hours.</p></li>
+</ul>
+</section>
+<section id="time-plot-displaying-the-total-number-of-accidents-trend-over-the-years-faceted-by-weekdays" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="time-plot-displaying-the-total-number-of-accidents-trend-over-the-years-faceted-by-weekdays"><span class="header-section-number">3.4.1</span> Time-plot displaying the total number of accidents trend over the years faceted by weekdays</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + </span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line() + </span></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point() + </span></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   facet_grid(Week_day~.)</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter data for December</span></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>december_data <span class="ot">&lt;-</span> dt_temporal_Year_month <span class="sc">%&gt;%</span></span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">month</span>(first_day_of_month) <span class="sc">==</span> <span class="dv">12</span>)</span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a>highest_points <span class="ot">&lt;-</span> dt_temporal_Year_month <span class="sc">%&gt;%</span></span>
+<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year, Week_day) <span class="sc">%&gt;%</span></span>
+<span id="cb84-12"><a href="#cb84-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> total_accidents)</span>
+<span id="cb84-13"><a href="#cb84-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-14"><a href="#cb84-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal_Year_month, <span class="fu">aes</span>(<span class="at">x=</span>first_day_of_month, <span class="at">y=</span>total_accidents)) <span class="sc">+</span> </span>
+<span id="cb84-15"><a href="#cb84-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb84-16"><a href="#cb84-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span=</span><span class="fl">0.63</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span>  <span class="co"># Add a moving average line</span></span>
+<span id="cb84-17"><a href="#cb84-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> highest_points, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">1.4</span>) <span class="sc">+</span>  <span class="co"># Add points only for Jan</span></span>
+<span id="cb84-18"><a href="#cb84-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>Week_day) <span class="sc">+</span></span>
+<span id="cb84-19"><a href="#cb84-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"line plot of total accidents faceted by weekday"</span>,</span>
+<span id="cb84-20"><a href="#cb84-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"The black dots present for each year the month with </span><span class="sc">\n</span><span class="st">the highest number of accidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li><p>In the faceted line graph, a consistent trend is apparent in the number of accidents per weekday, suggesting a similar pattern across the week. However, the magnitude of accidents varies, with fewer incidents occurring on weekends, which aligns with expectations. Notably, the middle of the week appears to experience a higher frequency of accidents.</p></li>
+<li><p>Furthermore, an examination of the “black dots,” representing each year’s month with the highest number of accidents, provides additional insights. Comparing these dots across different weekdays reveals distinctions, and an intriguing observation emerges when connecting these dots. If we were to draw a line connecting each black dot, a trend similar to the loess blue line trend in the plot becomes evident, indicating a potential overarching pattern in the occurrence of maximum accidents over the years.</p></li>
+</ul>
+</section>
+<section id="hitrun" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="hitrun"><span class="header-section-number">3.4.2</span> Hit/run</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_Year_month_hit_run <span class="ot">&lt;-</span> dt_temporal <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Year, Month, first_day_of_month, Week_day, Hit_Run) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_accidents =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Year', 'Month', 'first_day_of_month',
+'Week_day'. You can override using the `.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_Year_month_hit_run <span class="ot">&lt;-</span> dt_temporal <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Year, Month, first_day_of_month, Week_day, Hit_Run) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">total_accidents =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Year', 'Month', 'first_day_of_month',
+'Week_day'. You can override using the `.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(dt_temporal_Year_month_hit_run, aes(x=first_day_of_month, y=total_accidents)) + </span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line() + </span></span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line</span></span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   facet_grid(~Hit_Run) +</span></span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   labs(title = "line plot of total accidents faceted by weekday",</span></span>
+<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a><span class="co">#        subtitle = "The black dots present for each year the month with \nthe highest number of accidents")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>group by –&gt; sum up the number of accident with No and with Yes road</p>
+<p>##Is it more likely to Hit and Run in a specific Month / Week day / Hour?</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out NA values for Hit_Run</span></span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> dt_temporal <span class="sc">%&gt;%</span></span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Hit_Run))</span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Abbreviate the Month and Weekday names</span></span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a>month_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Jan"</span>, <span class="st">"Feb"</span>, <span class="st">"Mar"</span>, <span class="st">"Apr"</span>, <span class="st">"May"</span>, <span class="st">"Jun"</span>, <span class="st">"Jul"</span>, <span class="st">"Aug"</span>, <span class="st">"Sep"</span>, <span class="st">"Oct"</span>, <span class="st">"Nov"</span>, <span class="st">"Dec"</span>)</span>
+<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a>weekday_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Sun"</span>, <span class="st">"Mon"</span>, <span class="st">"Tue"</span>, <span class="st">"Wed"</span>, <span class="st">"Thu"</span>, <span class="st">"Fri"</span>, <span class="st">"Sat"</span>)</span>
+<span id="cb92-10"><a href="#cb92-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-11"><a href="#cb92-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a bar plot for Month</span></span>
+<span id="cb92-12"><a href="#cb92-12" aria-hidden="true" tabindex="-1"></a>plot_month <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(filtered_data) <span class="sc">+</span></span>
+<span id="cb92-13"><a href="#cb92-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> Month, <span class="at">fill =</span> Hit_Run), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb92-14"><a href="#cb92-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"No"</span> <span class="ot">=</span> <span class="st">"tomato"</span>, <span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"darkgreen"</span>)) <span class="sc">+</span></span>
+<span id="cb92-15"><a href="#cb92-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of Hit-Run Accidents"</span>,</span>
+<span id="cb92-16"><a href="#cb92-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Per Month of Year"</span>,</span>
+<span id="cb92-17"><a href="#cb92-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Month"</span>,</span>
+<span id="cb92-18"><a href="#cb92-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Proportion"</span>) <span class="sc">+</span></span>
+<span id="cb92-19"><a href="#cb92-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> month_labels) <span class="sc">+</span>  <span class="co"># Abbreviate Month names</span></span>
+<span id="cb92-20"><a href="#cb92-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb92-21"><a href="#cb92-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)  <span class="co"># Remove the legend</span></span>
+<span id="cb92-22"><a href="#cb92-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-23"><a href="#cb92-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a bar plot for Weekday</span></span>
+<span id="cb92-24"><a href="#cb92-24" aria-hidden="true" tabindex="-1"></a>plot_weekday <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(filtered_data) <span class="sc">+</span></span>
+<span id="cb92-25"><a href="#cb92-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> Week_day, <span class="at">fill =</span> Hit_Run), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb92-26"><a href="#cb92-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"No"</span> <span class="ot">=</span> <span class="st">"tomato"</span>, <span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"darkgreen"</span>)) <span class="sc">+</span></span>
+<span id="cb92-27"><a href="#cb92-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of Hit-Run Accidents"</span>,</span>
+<span id="cb92-28"><a href="#cb92-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Per Weekday"</span>,</span>
+<span id="cb92-29"><a href="#cb92-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Weekday"</span>,</span>
+<span id="cb92-30"><a href="#cb92-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Proportion"</span>) <span class="sc">+</span></span>
+<span id="cb92-31"><a href="#cb92-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> weekday_labels) <span class="sc">+</span>  <span class="co"># Abbreviate Weekday names</span></span>
+<span id="cb92-32"><a href="#cb92-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb92-33"><a href="#cb92-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-34"><a href="#cb92-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange the two plots side by side</span></span>
+<span id="cb92-35"><a href="#cb92-35" aria-hidden="true" tabindex="-1"></a>combined_plot <span class="ot">&lt;-</span> plot_month <span class="sc">+</span> plot_weekday</span>
+<span id="cb92-36"><a href="#cb92-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-37"><a href="#cb92-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the combined plot</span></span>
+<span id="cb92-38"><a href="#cb92-38" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(combined_plot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Plot Hit-Run by hours</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="do">### divide the crash hour into groups</span></span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>dt_temporal<span class="sc">$</span>Crash_Hour_Group <span class="ot">&lt;-</span> <span class="fu">cut</span>(dt_temporal<span class="sc">$</span>Crash_Hour,</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">16</span>, <span class="dv">20</span>, <span class="dv">24</span>),</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0-4"</span>, <span class="st">"4-8"</span>, <span class="st">"8-12"</span>, <span class="st">"12-16"</span>, <span class="st">"16-20"</span>, <span class="st">"20-24"</span>),</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">include.lowest =</span> <span class="cn">TRUE</span></span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-10"><a href="#cb93-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_temporal <span class="sc">%&gt;%</span></span>
+<span id="cb93-11"><a href="#cb93-11" aria-hidden="true" tabindex="-1"></a>         <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Hit_Run))) <span class="sc">+</span></span>
+<span id="cb93-12"><a href="#cb93-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> Crash_Hour_Group, <span class="at">fill =</span> Hit_Run), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of Hit and Run Incidents by Crash Hour"</span>,</span>
+<span id="cb93-14"><a href="#cb93-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Crash Hour"</span>,</span>
+<span id="cb93-15"><a href="#cb93-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Proportion"</span>) <span class="sc">+</span></span>
+<span id="cb93-16"><a href="#cb93-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"No"</span> <span class="ot">=</span> <span class="st">"tomato"</span>, <span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"darkgreen"</span>)) <span class="sc">+</span>  <span class="co"># Customize colors if needed</span></span>
+<span id="cb93-17"><a href="#cb93-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-24-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li><p>There doesn’t appear to be a correlation between the month and Hit-Run incidents; in other words, there isn’t a particular month with a higher likelihood of a Hit-Run accident.</p></li>
+<li><p>However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays.</p></li>
+<li><p>Concerning the Hit-Run proportion per hour—there is an observed escalation in the proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent “linear trend” in Hit-Run incidents as the day unfolds.</p></li>
+</ul>
+</section>
+<section id="first_harmful_event" class="level3" data-number="3.4.3">
+<h3 data-number="3.4.3" class="anchored" data-anchor-id="first_harmful_event"><span class="header-section-number">3.4.3</span> First_Harmful_Event</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co">#count(dt_temporal, First_Harmful_Event) |&gt; arrange(desc(n))</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a><span class="do">### taking only the 7 top categories in  First_Harmful_Event</span></span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>df_for_harmful_event <span class="ot">&lt;-</span> dt_temporal <span class="sc">%&gt;%</span></span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(First_Harmful_Event)) <span class="sc">%&gt;%</span>  <span class="co"># Remove NA values</span></span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb94-7"><a href="#cb94-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">First_Harmful_Event =</span> <span class="fu">tolower</span>(First_Harmful_Event),</span>
+<span id="cb94-8"><a href="#cb94-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">First_Harmful_Event =</span> <span class="fu">factor</span>(First_Harmful_Event) <span class="sc">%&gt;%</span> <span class="fu">fct_lump</span>(<span class="at">n =</span> <span class="dv">7</span>, <span class="at">other_level =</span> <span class="st">"Other"</span>))</span>
+<span id="cb94-9"><a href="#cb94-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-10"><a href="#cb94-10" aria-hidden="true" tabindex="-1"></a><span class="do">###Mosaic plot 1:</span></span>
+<span id="cb94-11"><a href="#cb94-11" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(<span class="fu">factor</span>(df_for_harmful_event<span class="sc">$</span>First_Harmful_Event), df_for_harmful_event<span class="sc">$</span>Hit_Run), <span class="at">main=</span> <span class="st">"Mosaic plot for Hit Run vs First Harmful Event"</span>,</span>
+<span id="cb94-12"><a href="#cb94-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="fu">c</span>(<span class="st">'tomato'</span>, <span class="st">'darkgreen'</span>), </span>
+<span id="cb94-13"><a href="#cb94-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">las =</span> <span class="dv">2</span>  <span class="co"># Rotate labels by 90 degrees</span></span>
+<span id="cb94-14"><a href="#cb94-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(df_for_harmful_event, Hit_Run, First_Harmful_Event)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 18 × 3
+   Hit_Run First_Harmful_Event     n
+   &lt;chr&gt;   &lt;fct&gt;               &lt;int&gt;
+ 1 No      animal                815
+ 2 No      bicycle               724
+ 3 No      fixed object         9489
+ 4 No      off road              936
+ 5 No      other vehicle       50411
+ 6 No      parked vehicle       4541
+ 7 No      pedestrian           2789
+ 8 No      Other                1609
+ 9 Yes     animal                 14
+10 Yes     bicycle               116
+11 Yes     fixed object         1074
+12 Yes     off road               73
+13 Yes     other vehicle        9565
+14 Yes     parked vehicle       3470
+15 Yes     pedestrian            597
+16 Yes     Other                 174
+17 &lt;NA&gt;    bicycle                 1
+18 &lt;NA&gt;    pedestrian              1</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="co">#+</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ul>
+<li><p>We can see that the first harmful event has a great connection / correlation to the Hit-Run variable –&gt; there are great variations between the proportion of Hit-Run vs.&nbsp;Not Hit-Run accidents given the different <code>First_Harmful_Event</code> categories.</p></li>
+<li><p>Note that for “Parked-Vehicle” the proportion of Hit-Run is 0.45 which is more than twice as big as the overall Hit-Run proportion (0.18):</p></li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>dt_temporal <span class="sc">|&gt;</span> <span class="fu">count</span>(Hit_Run) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="st">"prop"</span> <span class="ot">=</span> n<span class="sc">/</span><span class="fu">nrow</span>(dt_temporal))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  Hit_Run     n      prop
+  &lt;chr&gt;   &lt;int&gt;     &lt;dbl&gt;
+1 No      71764 0.826    
+2 Yes     15162 0.174    
+3 &lt;NA&gt;        2 0.0000230</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> dt_temporal <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="fu">c</span>(<span class="st">"Parked"</span>), First_Harmful_Event, <span class="at">ignore.case =</span> T)) <span class="sc">|&gt;</span> <span class="fu">count</span>(Hit_Run, First_Harmful_Event) </span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>a<span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="st">"prop"</span> <span class="ot">=</span> n<span class="sc">/</span><span class="fu">sum</span>(a<span class="sc">$</span>n)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  Hit_Run First_Harmful_Event     n  prop
+  &lt;chr&gt;   &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt;
+1 No      PARKED VEHICLE       4541 0.567
+2 Yes     PARKED VEHICLE       3470 0.433</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="weather" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="weather"><span class="header-section-number">3.5</span> Weather</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>df_mosaic_by_weather <span class="ot">&lt;-</span> dt_temporal <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Weather, Hit_Run) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">Freq =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Weather'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="do">###Mosaic plot 1:</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(dt_temporal<span class="sc">$</span>Weather, dt_temporal<span class="sc">$</span>Hit_Run), <span class="at">main=</span> <span class="st">"Mosaic plot for Hit Run vs First Harmful Event"</span>,</span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="fu">c</span>(<span class="st">'tomato'</span>, <span class="st">'darkgreen'</span>), </span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">las =</span> <span class="dv">2</span>  <span class="co"># Rotate labels by 90 degrees</span></span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>vcd<span class="sc">::</span> <span class="fu">mosaic</span>(Hit_Run <span class="sc">~</span> Weather,</span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a> <span class="at">data =</span> df_mosaic_by_weather,</span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a> <span class="at">direction =</span> <span class="fu">c</span>(<span class="st">"v"</span>, <span class="st">"h"</span>), </span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a> <span class="at">highlighting_fill=</span><span class="fu">c</span>(<span class="st">'tomato'</span>,<span class="st">'darkgreen'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="things-we-found-from-graphs-we-created" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="things-we-found-from-graphs-we-created"><span class="header-section-number">3.6</span> Things we found from graphs we created”</h2>
+<ul>
+<li>We checked and there doesn’t seem to be a correlation between the <code>Weather</code> and the <code>Hit_Run</code></li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>dt_temporal_week</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 464 × 16
+# Groups:   Crash_week [464]
+   Crash_Date_Time     Weather   Hit_Run First_Harmful_Event At_Fault Crash_Date
+   &lt;dttm&gt;              &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;               &lt;chr&gt;    &lt;date&gt;    
+ 1 2015-01-01 19:52:00 CLEAR     Yes     PARKED VEHICLE      DRIVER   2015-01-01
+ 2 2015-01-04 07:19:00 FOGGY     Yes     OTHER VEHICLE       DRIVER   2015-01-04
+ 3 2015-01-11 14:57:00 CLEAR     No      OTHER VEHICLE       DRIVER   2015-01-11
+ 4 2015-01-18 19:24:00 RAINING   No      OFF ROAD            DRIVER   2015-01-18
+ 5 2015-01-25 03:15:00 &lt;NA&gt;      No      PARKED VEHICLE      DRIVER   2015-01-25
+ 6 2015-02-01 11:28:00 CLEAR     No      OTHER VEHICLE       DRIVER   2015-02-01
+ 7 2015-02-08 14:20:00 CLEAR     No      OTHER VEHICLE       DRIVER   2015-02-08
+ 8 2015-02-15 02:45:00 SEVERE W… Yes     OTHER VEHICLE       DRIVER   2015-02-15
+ 9 2015-02-22 19:43:00 CLEAR     No      OTHER VEHICLE       DRIVER   2015-02-22
+10 2015-03-01 12:15:00 WINTRY M… No      OTHER VEHICLE       DRIVER   2015-03-01
+# ℹ 454 more rows
+# ℹ 10 more variables: Crash_Time &lt;time&gt;, Week_day &lt;fct&gt;, Month &lt;fct&gt;,
+#   Year &lt;dbl&gt;, first_day_of_month &lt;date&gt;, Crash_Hour &lt;int&gt;, Crash_week &lt;date&gt;,
+#   Count_week &lt;int&gt;, Crash_month &lt;dbl&gt;, is_holiday &lt;chr&gt;</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>ts_data <span class="ot">&lt;-</span> <span class="fu">ts</span>(<span class="at">data =</span> dt_temporal_week<span class="sc">$</span>Crash_week, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">2015</span>,<span class="dv">1</span>,<span class="dv">3</span>), <span class="at">end =</span> <span class="fu">c</span>(<span class="dv">2023</span>,<span class="dv">11</span>,<span class="dv">13</span>), <span class="at">frequency =</span> <span class="dv">51</span>)</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="co">#dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]</span></span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ts_data&lt;- ts(df_temporal_week$Crash_week)</span></span>
+<span id="cb108-8"><a href="#cb108-8" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(decompose())</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Box plot x axis - day of week the box itself will use the number of accidents</p>
+</section>
+<section id="ethan-part" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="ethan-part"><span class="header-section-number">3.7</span> Ethan Part</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>dt_lane <span class="ot">&lt;-</span> data_crash[,<span class="fu">c</span>(<span class="st">"Hit_Run"</span>,<span class="st">"Route_Type"</span>,<span class="st">"Number_of_Lanes"</span>,<span class="st">"NonTraffic"</span>,<span class="st">"Road_Grade"</span>,<span class="st">"At_Fault"</span>,<span class="st">"Cross_Street_Type"</span>,<span class="st">"Collision_Type"</span>,<span class="st">"Traffic_Control"</span>,<span class="st">"Driver_Substance_Abuse"</span>,<span class="st">"Road_Alignment"</span>,<span class="st">"Junction"</span>,<span class="st">"Road_Condition"</span>,<span class="st">"Road_Division"</span>,<span class="st">"First_Harmful_Event"</span>,<span class="st">"Light"</span>,<span class="st">"Surface_Condition"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming 'data' is your data frame</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>unique_values <span class="ot">&lt;-</span> <span class="fu">lapply</span>(dt_lane, unique)</span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Print unique values for each column</span></span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (col_name <span class="cf">in</span> <span class="fu">names</span>(unique_values)) {</span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Column:"</span>, col_name, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb110-7"><a href="#cb110-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(unique_values[[col_name]])</span>
+<span id="cb110-8"><a href="#cb110-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb110-9"><a href="#cb110-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Column: Hit_Run 
+[1] "No"  "Yes" NA   
+
+Column: Route_Type 
+ [1] NA                     "County"               "Maryland (State)"    
+ [4] "Municipality"         "Other Public Roadway" "US (State)"          
+ [7] "Interstate (State)"   "Unknown"              "Government"          
+[10] "Ramp"                 "Service Road"        
+
+Column: Number_of_Lanes 
+ [1]  0  2  1  6  3  5  4  7  8 12 11 10 13 99  9 19
+
+Column: NonTraffic 
+[1] "Yes" "No" 
+
+Column: Road_Grade 
+[1] NA               "LEVEL"          "HILL UPHILL"    "GRADE DOWNHILL"
+[5] "HILL CREST"     "OTHER"          "UNKNOWN"        "DIP SAG"       
+[9] "ON BRIDGE"     
+
+Column: At_Fault 
+[1] "DRIVER"      "UNKNOWN"     "NONMOTORIST" "BOTH"       
+
+Column: Cross_Street_Type 
+ [1] NA                     "County"               "Ramp"                
+ [4] "Municipality"         "Maryland (State)"     "Other Public Roadway"
+ [7] "Interstate (State)"   "Unknown"              "Government"          
+[10] "US (State)"           "Service Road"        
+
+Column: Collision_Type 
+ [1] "SINGLE VEHICLE"               "STRAIGHT MOVEMENT ANGLE"     
+ [3] "OTHER"                        "SAME DIR REAR END"           
+ [5] "SAME DIRECTION SIDESWIPE"     "HEAD ON LEFT TURN"           
+ [7] "OPPOSITE DIRECTION SIDESWIPE" "SAME DIRECTION RIGHT TURN"   
+ [9] "ANGLE MEETS LEFT TURN"        "SAME DIR REND LEFT TURN"     
+[11] "HEAD ON"                      "SAME DIRECTION LEFT TURN"    
+[13] "ANGLE MEETS LEFT HEAD ON"     NA                            
+[15] "SAME DIR BOTH LEFT TURN"      "ANGLE MEETS RIGHT TURN"      
+[17] "UNKNOWN"                      "OPPOSITE DIR BOTH LEFT TURN" 
+[19] "SAME DIR REND RIGHT TURN"    
+
+Column: Traffic_Control 
+ [1] "NO CONTROLS"             "TRAFFIC SIGNAL"         
+ [3] "STOP SIGN"               NA                       
+ [5] "FLASHING TRAFFIC SIGNAL" "OTHER"                  
+ [7] "UNKNOWN"                 "PERSON"                 
+ [9] "WARNING SIGN"            "YIELD SIGN"             
+[11] "SCHOOL ZONE SIGN DEVICE" "RAILWAY CROSSING DEVICE"
+
+Column: Driver_Substance_Abuse 
+ [1] "NONE DETECTED"                                 
+ [2] NA                                              
+ [3] "UNKNOWN"                                       
+ [4] "ALCOHOL CONTRIBUTED, NONE DETECTED"            
+ [5] "NONE DETECTED, UNKNOWN"                        
+ [6] "N/A, NONE DETECTED"                            
+ [7] "ALCOHOL PRESENT, NONE DETECTED"                
+ [8] "ALCOHOL PRESENT"                               
+ [9] "COMBINED SUBSTANCE PRESENT"                    
+[10] "N/A, UNKNOWN"                                  
+[11] "ILLEGAL DRUG CONTRIBUTED"                      
+[12] "ALCOHOL PRESENT, N/A"                          
+[13] "ILLEGAL DRUG PRESENT"                          
+[14] "ALCOHOL CONTRIBUTED"                           
+[15] "N/A, NONE DETECTED, UNKNOWN"                   
+[16] "COMBINED SUBSTANCE PRESENT, NONE DETECTED"     
+[17] "ILLEGAL DRUG PRESENT, NONE DETECTED"           
+[18] "ALCOHOL CONTRIBUTED, N/A"                      
+[19] "MEDICATION CONTRIBUTED"                        
+[20] "MEDICATION PRESENT, NONE DETECTED"             
+[21] "ILLEGAL DRUG CONTRIBUTED, NONE DETECTED"       
+[22] "MEDICATION PRESENT"                            
+[23] "COMBINATION CONTRIBUTED"                       
+[24] "COMBINATION CONTRIBUTED, NONE DETECTED"        
+[25] "COMBINED SUBSTANCE PRESENT, N/A"               
+[26] "ILLEGAL DRUG PRESENT, N/A"                     
+[27] "MEDICATION CONTRIBUTED, NONE DETECTED"         
+[28] "MEDICATION CONTRIBUTED, NONE DETECTED, UNKNOWN"
+[29] "NONE DETECTED, OTHER"                          
+[30] "ALCOHOL PRESENT, N/A, NONE DETECTED"           
+[31] "COMBINATION CONTRIBUTED, N/A"                  
+[32] "OTHER"                                         
+[33] "ILLEGAL DRUG CONTRIBUTED, N/A"                 
+[34] "ALCOHOL PRESENT, UNKNOWN"                      
+[35] "MEDICATION PRESENT, N/A"                       
+[36] "ALCOHOL PRESENT, NONE DETECTED, UNKNOWN"       
+[37] "ALCOHOL CONTRIBUTED, UNKNOWN"                  
+[38] "ALCOHOL CONTRIBUTED, ALCOHOL PRESENT"          
+[39] "N/A, OTHER"                                    
+[40] "ALCOHOL PRESENT, N/A, UNKNOWN"                 
+[41] "MEDICATION CONTRIBUTED, N/A"                   
+[42] "ILLEGAL DRUG PRESENT, N/A, NONE DETECTED"      
+[43] "COMBINED SUBSTANCE PRESENT, UNKNOWN"           
+[44] "ALCOHOL CONTRIBUTED, N/A, NONE DETECTED"       
+[45] "MEDICATION PRESENT, NONE DETECTED, UNKNOWN"    
+[46] "COMBINED SUBSTANCE PRESENT, N/A, NONE DETECTED"
+[47] "ILLEGAL DRUG PRESENT, UNKNOWN"                 
+[48] "MEDICATION PRESENT, N/A, UNKNOWN"              
+[49] "ALCOHOL CONTRIBUTED, NONE DETECTED, UNKNOWN"   
+[50] "ALCOHOL PRESENT, ILLEGAL DRUG PRESENT"         
+
+Column: Road_Alignment 
+[1] NA            "STRAIGHT"    "CURVE RIGHT" "CURVE LEFT"  "OTHER"      
+[6] "UNKNOWN"    
+
+Column: Junction 
+ [1] NA                       "INTERSECTION"           "NON INTERSECTION"      
+ [4] "OTHER"                  "INTERSECTION RELATED"   "INTERCHANGE RELATED"   
+ [7] "CROSSOVER RELATED"      "COMMERCIAL DRIVEWAY"    "OTHER DRIVEWAY"        
+[10] "RESIDENTIAL DRIVEWAY"   "ALLEY"                  "UNKNOWN"               
+[13] "RAILWAY GRADE CROSSING"
+
+Column: Road_Condition 
+ [1] NA                         "NO DEFECTS"              
+ [3] "LOOSE SURFACE MATERIAL"   "UNKNOWN"                 
+ [5] "HOLES RUTS ETC"           "OBSTRUCTION NOT SIGNALED"
+ [7] "OBSTRUCTION NOT LIGHTED"  "FOREIGN MATERIAL"        
+ [9] "SHOULDER DEFECT"          "VIEW OBSTRUCTED"         
+[11] "OTHER"                   
+
+Column: Road_Division 
+[1] NA                                                
+[2] "TWO-WAY, DIVIDED, UNPROTECTED PAINTED MIN 4 FEET"
+[3] "TWO-WAY, NOT DIVIDED"                            
+[4] "TWO-WAY, DIVIDED, POSITIVE MEDIAN BARRIER"       
+[5] "OTHER"                                           
+[6] "ONE-WAY TRAFFICWAY"                              
+[7] "TWO-WAY, NOT DIVIDED WITH A CONTINUOUS LEFT TURN"
+[8] "UNKNOWN"                                         
+
+Column: First_Harmful_Event 
+ [1] "FIXED OBJECT"                   "OTHER VEHICLE"                 
+ [3] "PARKED VEHICLE"                 "OFF ROAD"                      
+ [5] "PEDESTRIAN"                     "DOWNHILL RUNAWAY"              
+ [7] NA                               "OTHER NON COLLISION"           
+ [9] "OTHER OBJECT"                   "FELL JUMPED FROM MOTOR VEHICLE"
+[11] "ANIMAL"                         "BICYCLE"                       
+[13] "UNKNOWN"                        "OTHER"                         
+[15] "OVERTURN"                       "JACKKNIFE"                     
+[17] "THROWN OR FALLING OBJECT"       "BACKING"                       
+[19] "OTHER CONVEYANCE"               "OTHER PEDALCYCLE"              
+[21] "U-TURN"                         "RAILWAY TRAIN"                 
+[23] "SPILLED CARGO"                  "IMMERSION"                     
+[25] "UNITS SEPARATED"                "EXPLOSION OR FIRE"             
+
+Column: Light 
+[1] "DARK NO LIGHTS"           "DAYLIGHT"                
+[3] "DARK LIGHTS ON"           "DARK -- UNKNOWN LIGHTING"
+[5] "DUSK"                     NA                        
+[7] "OTHER"                    "DAWN"                    
+[9] "UNKNOWN"                 
+
+Column: Surface_Condition 
+ [1] NA                       "DRY"                    "WET"                   
+ [4] "UNKNOWN"                "MUD, DIRT, GRAVEL"      "WATER(STANDING/MOVING)"
+ [7] "SNOW"                   "ICE"                    "OIL"                   
+[10] "OTHER"                  "SLUSH"                  "SAND"                  </code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(data_crash, Traffic_Control)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 2
+   Traffic_Control             n
+   &lt;chr&gt;                   &lt;int&gt;
+ 1 FLASHING TRAFFIC SIGNAL  1119
+ 2 NO CONTROLS             40760
+ 3 OTHER                    1125
+ 4 PERSON                    162
+ 5 RAILWAY CROSSING DEVICE    26
+ 6 SCHOOL ZONE SIGN DEVICE    14
+ 7 STOP SIGN                6525
+ 8 TRAFFIC SIGNAL          28444
+ 9 UNKNOWN                   231
+10 WARNING SIGN              114
+11 YIELD SIGN                899
+12 &lt;NA&gt;                    16165</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>dt_intersection <span class="ot">&lt;-</span> data_crash <span class="sc">%&gt;%</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">Traffic_Control =</span> <span class="fu">recode</span>(Traffic_Control,</span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"FLASHING TRAFFIC SIGNAL"</span> <span class="ot">=</span> <span class="st">"Traffic Light"</span>,</span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"TRAFFIC SIGNAL"</span> <span class="ot">=</span> <span class="st">"Traffic Light"</span>,</span>
+<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NO CONTROLS"</span> <span class="ot">=</span> <span class="st">'No Controls'</span>,</span>
+<span id="cb114-6"><a href="#cb114-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"RAILWAY CROSSING DEVICE    "</span> <span class="ot">=</span> <span class="st">'Warning Sign'</span>,</span>
+<span id="cb114-7"><a href="#cb114-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"WARNING SIGN"</span> <span class="ot">=</span> <span class="st">'Warning Sign'</span>,</span>
+<span id="cb114-8"><a href="#cb114-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SCHOOL ZONE SIGN DEVICE"</span> <span class="ot">=</span> <span class="st">'Warning Sign'</span>,</span>
+<span id="cb114-9"><a href="#cb114-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"YIELD SIGN"</span> <span class="ot">=</span> <span class="st">'Warning Sign'</span>,</span>
+<span id="cb114-10"><a href="#cb114-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"STOP SIGN"</span> <span class="ot">=</span> <span class="st">'Stop Sign'</span>,</span>
+<span id="cb114-11"><a href="#cb114-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">.default  =</span> <span class="st">'Other'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb114-12"><a href="#cb114-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Traffic_Control))</span>
+<span id="cb114-13"><a href="#cb114-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb114-14"><a href="#cb114-14" aria-hidden="true" tabindex="-1"></a><span class="co">#count(dt_intersection, Traffic_Control)</span></span>
+<span id="cb114-15"><a href="#cb114-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb114-16"><a href="#cb114-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_intersection, <span class="fu">aes</span>(<span class="at">x=</span>Traffic_Control))<span class="sc">+</span></span>
+<span id="cb114-17"><a href="#cb114-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>filtered_data_crash <span class="ot">&lt;-</span> data_crash[<span class="sc">!</span><span class="fu">is.na</span>(data_crash<span class="sc">$</span>Cross_Street_Type),]</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">apply</span>(filtered_data_crash, <span class="dv">2</span>, <span class="cf">function</span>(c) <span class="fu">sum</span>(<span class="fu">is.na</span>(c)))</span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a>tibble_nas <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">column_name =</span> <span class="fu">names</span>(b), <span class="at">number_of_NA =</span> b)</span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a>tibble_nas_filtered_data_crash <span class="ot">&lt;-</span> tibble_nas</span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">apply</span>(data_crash, <span class="dv">2</span>, <span class="cf">function</span>(c) <span class="fu">sum</span>(<span class="fu">is.na</span>(c)))</span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a>tibble_nas_data_crash <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">column_name =</span> <span class="fu">names</span>(b), <span class="at">number_of_NA =</span> b)</span>
+<span id="cb115-10"><a href="#cb115-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-11"><a href="#cb115-11" aria-hidden="true" tabindex="-1"></a><span class="co">#Compare the 2 lists, the one with all the column with less that 1000 NAs and the lists with the same conditions but after removing all the NAs row in the column "Cross-Street Type"</span></span>
+<span id="cb115-12"><a href="#cb115-12" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> tibble_nas_data_crash <span class="sc">|&gt;</span> <span class="fu">filter</span>(number_of_NA<span class="sc">&lt;</span><span class="dv">1000</span>)</span>
+<span id="cb115-13"><a href="#cb115-13" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> tibble_nas_filtered_data_crash <span class="sc">|&gt;</span> <span class="fu">filter</span>(number_of_NA<span class="sc">&lt;</span><span class="dv">1000</span>)</span>
+<span id="cb115-14"><a href="#cb115-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-15"><a href="#cb115-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the name of the column which are not in common in the 2 previous list</span></span>
+<span id="cb115-16"><a href="#cb115-16" aria-hidden="true" tabindex="-1"></a>difference_both_ways <span class="ot">&lt;-</span> <span class="fu">union</span>(<span class="fu">setdiff</span>(a<span class="sc">$</span>column_name, b<span class="sc">$</span>column_name), <span class="fu">setdiff</span>(b<span class="sc">$</span>column_name, a<span class="sc">$</span>column_name))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>dt_sameNa <span class="ot">&lt;-</span> data_crash <span class="sc">%&gt;%</span></span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(difference_both_ways) <span class="sc">%&gt;%</span></span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">rowSums</span>(<span class="fu">is.na</span>(.)) <span class="sc">&lt;</span> <span class="fu">ncol</span>(.))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+ℹ Please use `all_of()` or `any_of()` instead.
+  # Was:
+  data %&gt;% select(difference_both_ways)
+
+  # Now:
+  data %&gt;% select(all_of(difference_both_ways))
+
+See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>dt_lane <span class="ot">&lt;-</span> data_crash[,<span class="fu">c</span>(<span class="st">"Road_Division"</span>, <span class="st">"Junction"</span>, <span class="st">"Road_Alignment"</span> ,<span class="st">"Traffic_Control"</span>,<span class="st">"Road_Name"</span>,<span class="st">"Number_of_Lanes"</span>)]</span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>dt_responsible <span class="ot">&lt;-</span> data_crash[,<span class="fu">c</span>(<span class="st">"Hit_Run"</span>,<span class="st">"NonTraffic"</span>,<span class="st">"At_Fault"</span>,<span class="st">"Driver_Substance_Abuse"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Change the column Road_type to get rid of the Na and the values unknown</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>dt_lane <span class="ot">&lt;-</span> dt_lane <span class="sc">%&gt;%</span></span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Road_Division =</span> <span class="fu">recode</span>(Road_Division,</span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"TWO-WAY, NOT DIVIDED WITH A CONTINUOUS LEFT TURN"</span> <span class="ot">=</span> <span class="st">"2-way, not divided"</span>,</span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"TWO-WAY, NOT DIVIDED"</span> <span class="ot">=</span> <span class="st">"2-way, not divided"</span>,</span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"TWO-WAY, DIVIDED, POSITIVE MEDIAN BARRIER"</span> <span class="ot">=</span> <span class="st">'2-way, divided'</span>,</span>
+<span id="cb119-7"><a href="#cb119-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"TWO-WAY, DIVIDED, UNPROTECTED PAINTED MIN 4 FEET"</span> <span class="ot">=</span> <span class="st">'2-way, divided'</span>,</span>
+<span id="cb119-8"><a href="#cb119-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"ONE-WAY TRAFFICWAY"</span> <span class="ot">=</span> <span class="st">'1-way'</span>,</span>
+<span id="cb119-9"><a href="#cb119-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"OTHER"</span> <span class="ot">=</span> <span class="st">'Other'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb119-10"><a href="#cb119-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Road_Division <span class="sc">!=</span> <span class="st">'UNKNOWN'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb119-11"><a href="#cb119-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Road_Division <span class="sc">!=</span> <span class="st">'Other'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb119-12"><a href="#cb119-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb119-13"><a href="#cb119-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-14"><a href="#cb119-14" aria-hidden="true" tabindex="-1"></a><span class="co">#Change the column Number of Lanes to remove the lanes with more than ... lanes</span></span>
+<span id="cb119-15"><a href="#cb119-15" aria-hidden="true" tabindex="-1"></a>dt_lane <span class="ot">&lt;-</span> dt_lane <span class="sc">%&gt;%</span></span>
+<span id="cb119-16"><a href="#cb119-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Number_of_Lanes <span class="sc">&lt;</span> <span class="dv">7</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb119-17"><a href="#cb119-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Number_of_Lanes <span class="sc">!=</span> <span class="dv">0</span>)</span>
+<span id="cb119-18"><a href="#cb119-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb119-19"><a href="#cb119-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-20"><a href="#cb119-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-21"><a href="#cb119-21" aria-hidden="true" tabindex="-1"></a>dt_lane<span class="sc">$</span>Road_Division <span class="ot">&lt;-</span> <span class="fu">factor</span>(dt_lane<span class="sc">$</span>Road_Division, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"1-way"</span>, <span class="st">"2-way, not divided"</span>, <span class="st">"2-way, divided"</span>, <span class="st">'Other'</span>))</span>
+<span id="cb119-22"><a href="#cb119-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-23"><a href="#cb119-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_lane, <span class="fu">aes</span>(<span class="at">x=</span>Road_Division))<span class="sc">+</span></span>
+<span id="cb119-24"><a href="#cb119-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb119-25"><a href="#cb119-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Number_of_Lanes)<span class="sc">+</span></span>
+<span id="cb119-26"><a href="#cb119-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_lane, <span class="fu">aes</span>(<span class="at">y=</span>Road_Division))<span class="sc">+</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Number_of_Lanes<span class="sc">~</span>.)<span class="sc">+</span></span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme(axis.text.x = element_text(angle = 45, hjust = 1))+</span></span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span><span class="st">'Facet by number of Lanes'</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-35-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>Nbroads <span class="ot">=</span> <span class="fu">n_distinct</span>(data_crash<span class="sc">$</span>Road_Name)</span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(dt_lane, Number_of_Lanes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Number_of_Lanes     n
+            &lt;dbl&gt; &lt;int&gt;
+1               1 13058
+2               2 20821
+3               3 20418
+4               4  4669
+5               5  1015
+6               6   964</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>road_counts <span class="ot">&lt;-</span> dt_lane <span class="sc">%&gt;%</span></span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Road_Division) <span class="sc">%&gt;%</span></span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Unique_Roads =</span> <span class="fu">n_distinct</span>(Road_Name)) <span class="sc">%&gt;%</span></span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Proportion =</span> <span class="dv">100</span> <span class="sc">*</span> Unique_Roads <span class="sc">/</span> <span class="fu">sum</span>(Unique_Roads))</span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-7"><a href="#cb123-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(road_counts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  Road_Division      Unique_Roads Proportion
+  &lt;fct&gt;                     &lt;int&gt;      &lt;dbl&gt;
+1 1-way                       397       9.81
+2 2-way, not divided         2572      63.6 
+3 2-way, divided             1078      26.6 </code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>dt_responsible <span class="ot">&lt;-</span> dt_responsible <span class="sc">%&gt;%</span></span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Driver_Substance_Abuse =</span> <span class="fu">str_extract</span>(Driver_Substance_Abuse, <span class="st">"^[^,]+"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Driver_Substance_Abuse =</span> <span class="fu">recode</span>(Driver_Substance_Abuse,</span>
+<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ALCOHOL CONTRIBUTED"</span> <span class="ot">=</span><span class="st">"alcohol"</span>,</span>
+<span id="cb125-5"><a href="#cb125-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ALCOHOL PRESENT"</span> <span class="ot">=</span> <span class="st">"alcohol"</span>,</span>
+<span id="cb125-6"><a href="#cb125-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"COMBINATION CONTRIBUTED"</span> <span class="ot">=</span> <span class="st">"combined substance"</span>,</span>
+<span id="cb125-7"><a href="#cb125-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"COMBINED SUBSTANCE PRESENT"</span> <span class="ot">=</span> <span class="st">"combined substance"</span>,</span>
+<span id="cb125-8"><a href="#cb125-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ILLEGAL DRUG CONTRIBUTED"</span> <span class="ot">=</span> <span class="st">"illegal drug"</span>,</span>
+<span id="cb125-9"><a href="#cb125-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ILLEGAL DRUG PRESENT"</span> <span class="ot">=</span> <span class="st">"illegal drug"</span>,</span>
+<span id="cb125-10"><a href="#cb125-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MEDICATION CONTRIBUTED"</span> <span class="ot">=</span> <span class="st">"under medication"</span>,</span>
+<span id="cb125-11"><a href="#cb125-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MEDICATION PRESENT"</span> <span class="ot">=</span> <span class="st">"under medication"</span>,</span>
+<span id="cb125-12"><a href="#cb125-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"UNKNOWN"</span> <span class="ot">=</span> <span class="st">'unknown'</span>,</span>
+<span id="cb125-13"><a href="#cb125-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OTHER"</span> <span class="ot">=</span> <span class="st">'unknown'</span>,</span>
+<span id="cb125-14"><a href="#cb125-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"NONE DETECTED"</span> <span class="ot">=</span> <span class="st">'none detected'</span></span>
+<span id="cb125-15"><a href="#cb125-15" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb125-16"><a href="#cb125-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Driver_Substance_Abuse <span class="sc">!=</span> <span class="st">"N/A"</span>)</span>
+<span id="cb125-17"><a href="#cb125-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-18"><a href="#cb125-18" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(dt_responsible,Driver_Substance_Abuse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Driver_Substance_Abuse     n
+  &lt;chr&gt;                  &lt;int&gt;
+1 alcohol                 5393
+2 combined substance       137
+3 illegal drug             355
+4 none detected          64954
+5 under medication         178
+6 unknown                 5043</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="co">#redav::plot_missing(dt_responsible) # We see that more than 80% of the rows does not have Na so I will drop all the Na</span></span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a>dt_responsible <span class="ot">&lt;-</span> dt_responsible <span class="sc">%&gt;%</span></span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb127-5"><a href="#cb127-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Driver_Substance_Abuse <span class="sc">!=</span> <span class="st">'none detected'</span>) <span class="co"># %&gt;% # remove the none detected because they are too much</span></span>
+<span id="cb127-6"><a href="#cb127-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(Driver_Substance_Abuse != 'alcohol') %&gt;%</span></span>
+<span id="cb127-7"><a href="#cb127-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(Driver_Substance_Abuse != 'unknown')</span></span>
+<span id="cb127-8"><a href="#cb127-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-9"><a href="#cb127-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dt_responsible, <span class="fu">aes</span>(<span class="at">x=</span>Driver_Substance_Abuse))<span class="sc">+</span></span>
+<span id="cb127-10"><a href="#cb127-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'gridExtra' was built under R version 4.3.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'gridExtra'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    combine</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(dt_responsible, Driver_Substance_Abuse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  Driver_Substance_Abuse     n
+  &lt;chr&gt;                  &lt;int&gt;
+1 alcohol                 5393
+2 combined substance       137
+3 illegal drug             355
+4 under medication         178
+5 unknown                 5043</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>dt_responsible <span class="ot">&lt;-</span> dt_responsible <span class="sc">%&gt;%</span></span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Driver_Substance_Abuse_A =</span> <span class="fu">if_else</span>(Driver_Substance_Abuse <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'alcohol'</span>, <span class="st">'unknown'</span>), Driver_Substance_Abuse, <span class="cn">NA_character_</span>),</span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Driver_Substance_Abuse_B =</span> <span class="fu">if_else</span>(<span class="sc">!</span>Driver_Substance_Abuse <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'alcohol'</span>, <span class="st">'unknown'</span>), Driver_Substance_Abuse, <span class="cn">NA_character_</span>)</span>
+<span id="cb134-5"><a href="#cb134-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb134-6"><a href="#cb134-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-7"><a href="#cb134-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-8"><a href="#cb134-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-9"><a href="#cb134-9" aria-hidden="true" tabindex="-1"></a>mp1 <span class="ot">&lt;-</span> vcd<span class="sc">::</span> <span class="fu">mosaic</span>(Hit_Run <span class="sc">~</span>  Driver_Substance_Abuse_A <span class="sc">+</span> NonTraffic,</span>
+<span id="cb134-10"><a href="#cb134-10" aria-hidden="true" tabindex="-1"></a> <span class="at">data =</span> dt_responsible,</span>
+<span id="cb134-11"><a href="#cb134-11" aria-hidden="true" tabindex="-1"></a> <span class="at">direction =</span> <span class="fu">c</span>(<span class="st">"v"</span>, <span class="st">"v"</span>,<span class="st">"h"</span> ),</span>
+<span id="cb134-12"><a href="#cb134-12" aria-hidden="true" tabindex="-1"></a> <span class="at">axes_labels =</span> <span class="fu">c</span>(<span class="st">'Driver Substance Abuse'</span>, <span class="st">'Traffic'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>mp2 <span class="ot">&lt;-</span> vcd<span class="sc">::</span> <span class="fu">mosaic</span>(Hit_Run <span class="sc">~</span>  Driver_Substance_Abuse_B <span class="sc">+</span> NonTraffic,</span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a> <span class="at">data =</span> dt_responsible,</span>
+<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a> <span class="at">direction =</span> <span class="fu">c</span>(<span class="st">"v"</span>, <span class="st">"v"</span>,<span class="st">"h"</span> ),</span>
+<span id="cb135-4"><a href="#cb135-4" aria-hidden="true" tabindex="-1"></a> <span class="at">axes_labels =</span> <span class="fu">c</span>(<span class="st">'Driver Substance Abuse'</span>, <span class="st">'Traffic'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="results_files/figure-html/unnamed-chunk-38-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>There is more Hit and Run instance when there is no traffic (yes instance for the column NonTraffic) most likely due to the fact that it is easier to go away without traffic on the road.</p>
+<p><u>Comment :</u> One can see that crash accidents occur more during the commute time escpecially the way back home between 15h to 17h.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -417,7 +2079,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023/edit/main/results.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
+    </div>
     <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
   </div>
 </footer>

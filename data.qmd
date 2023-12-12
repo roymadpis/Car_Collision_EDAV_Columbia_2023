@@ -46,6 +46,10 @@ library("redav")
 
 ```{r}
 data <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv", col_types = cols('Local Case Number' = col_character())) # the 2nd column contains string and not number that's why we specify it.
+data <- rename(data, "Hit_Run" = `Hit/Run`) 
+data <- rename(data,"Crash_Date_Time" = `Crash Date/Time`)
+
+#rename("Crash_Date_Time" = `Crash_Date/Time`)
 
 ### Preprocess:
 new_col_names <- colnames(data)
