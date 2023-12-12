@@ -177,26 +177,11 @@ differences <- c(differences, "Cross_Street_Type")
 print(differences)
 
 redav::plot_missing(data_crash |>dplyr::select(differences,))
-
-
 ```
 
 One can see that there is no common pattern between all the NAs for these 10 columns.
 
 In conclusion, for all the columns in the array 'difference_both_ways' we can deal with the NAs in the same way in the future. However, for the other columns which still has a lot of NAs like Weather or Traffic Control, we need to be more careful when removing the NAs because we could end up with very few rows in the data set. We will take care of them on a case-by-case basis.
-
-
-
-```{r}
-holiday_data <- read_csv("data/holidays.csv")
-holiday_data$is_holiday <- "Yes"
-
-```
-
-```{r}
-
-```
-
 
 
 
