@@ -131,8 +131,6 @@ dt_temporal_red <- dt_temporal %>%
   mutate(Count_week = n()) %>%
   arrange(Crash_week)
 
-
-
 #Create a new table to remove the iteration where there are multiple time the same combination for the columns Crash_week and Count_week.
 dt_temporal_week <- dt_temporal_red %>%
   distinct(Crash_week, Count_week, .keep_all = TRUE)%>%
@@ -155,7 +153,7 @@ ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
 
 
 ```{r}
-holiday_data
+
 
 # Create a new column for the week of the year
 # Step 1: Create a data frame with all days in the year
@@ -166,6 +164,8 @@ merged_df <- merge(all_days, holiday_data, by = "date", all.x = TRUE)
 
 # Step 3: Create a new column "Is_Holiday" based on the merging results
 merged_df$is_holiday <- ifelse(!is.na(merged_df$is_holiday), "Yes", "No")
+merged_dy_for_temporal_day <- merged_df
+
 merged_df$first_day_of_week_new <- floor_date(merged_df$date, "week")
 merged_df$weekday1 <- weekdays(merged_df$first_day_of_week)
 
@@ -178,10 +178,6 @@ result_df <- merged_df %>%
 
 
 ```{r}
-holiday_data
-
-dt_temporal_week 
-
 dt_temporal_week <- left_join(dt_temporal_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
 
 dt_temporal_week <- mutate(dt_temporal_week, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
@@ -199,6 +195,150 @@ ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
 ```
 
 <u>Comment :</u> We can visualize thanks to the time series representation the Covid crisis which lead to a reduction of car accident in 2020 since less cars were on the roads. Since then, the average number of accidents is a bit lower than pre-covid.
+
+
+
+
+## Show the same plot by days
+
+
+```{r}
+
+dt_temporal_day <- dt_temporal |> group_by(Year, Month, Crash_Date) |> summarise(total_crash = n())
+
+dt_temporal_day <- left_join(dt_temporal_day, merged_dy_for_temporal_day, by = c("Crash_Date"= "date"))
+
+
+
+ggplot(dt_temporal_day |> filter(Year == 2019), aes(x = Crash_Date, y = total_crash)) +
+  geom_line(aes(group=1)) + #because we grouped earlier by Crash_Date we need now to specify that we treat all the data as one group.
+  geom_point(aes(color = is_holiday)) +
+  labs(title='Number of car crash per weeks')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+# Set breaks to 1 month interval
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
+  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+
+```
+
+
+```{r}
+dt_temporal_day |>  group_by(Year) %>%
+  slice(which.max(total_crash))
+
+a <- dt_temporal_day |> 
+  group_by(Year) |>
+  top_n(5, total_crash) #|> filter(Month %in% c("January"))
+ggplot(a) +
+  geom_point(aes(x=Crash_Date, y=total_crash)) +
+  scale_y_continuous(limits = c(0,80)) +
+  scale_x_date(date_labels = "%Y-%m-%d", date_breaks = "1 month")+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+
+
+a |> group_by(Month) |> summarise(count=n()) #count(Month)
+
+a |> 
+
+holiday_data
+
+
+
+
+```
+```{r}
+install.packages("RColorBrewer")
+
+```
+
+
+```{r}
+library(RColorBrewer)
+
+dt_temporal_day <- mutate(dt_temporal_day,crash_day_no_year = format(Crash_Date, "%m-%d"))
+
+Month_list <-  c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+
+
+b <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
+write_csv2(b, "mean_crash_per_day_over_years.csv")
+
+
+b <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> filter(Month %in%Month_list[1:7]) |> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
+
+
+# Create the plot
+ggplot(b, aes(x = crash_day_no_year, y = total_crash, color = Month)) +
+  geom_point() +
+  facet_grid(~Month)
+  labs(y = "Total Crash") 
+
+  
+  
+  
+# Create the plot
+ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
+  geom_point() +
+  geom_line(alpha = 0.6)+
+  #facet_grid(Month~., scales = "free_x", space = "free_x") +
+  labs(y = "Total Crash") 
+  
+  
+  
+  
+# Create the plot
+ggplot(b, aes(x = crash_day_no_year, y = total_crash, color = Month)) +
+  geom_point() +
+  facet_grid(~Month, scales = "free_x", space = "free_x") +
+  scale_x_discrete(breaks = sprintf("%02d-%02d", 1:31, rep(1:7, each = 4)))
+
+
+
+
+
+ggplot(b) +
+  geom_point(aes(x=crash_day_no_year, y=total_crash)) +
+  scale_y_continuous(limits = c(0,80)) +
+  scale_x_date(date_labels = "%Y-%m-%d", date_breaks = "1 month")+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+```
+
+
+
+```{r}
+ggplot(dt_temporal_day |> mutate(Year = as.factor(Year))) +
+  geom_boxplot(aes(x=Year, y=total_crash))
+```
+
+
+```{r}
+dt_temporal_day |>  group_by(Year) %>%
+  summarise((mean(total_crash)))
+```
+
+
+
+```{r}
+dt_temporal_day |>  group_by(Year) %>%
+  slice(which.min(total_crash))
+```
+
+
+
+```{r}
+
+ggplot(dt_temporal_day, aes(x = Crash_Date, y = total_crash)) +
+  geom_line(aes(group=1)) + #because we grouped earlier by Crash_Date we need now to specify that we treat all the data as one group.
+  geom_point(aes(color = is_holiday)) +
+  labs(title='Number of car crash per weeks')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+# Set breaks to 1 month interval
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
+  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")
+```
+
 
 
 
@@ -249,14 +389,6 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
 <u>Comment :</u> One can see that crash accidents occur more during the commute time especially the way back home between 15h to 17h.
 
 ### Type of Lane
-
-
-
-
-
-
-
-
 
 
 
