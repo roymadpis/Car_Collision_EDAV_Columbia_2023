@@ -1,7 +1,7 @@
 // add your JavaScript/D3 to this file
 
-  const w = 400;
-  const h = 300;
+  const w = 700;
+  const h = 500;
   const margin = {top: 25, right: 0, bottom: 25,
       left: 25};
   const innerWidth = w - margin.left - margin.right;
@@ -21,6 +21,11 @@
 
   const bardata = [300, 100, 150, 220, 70, 270];
 
+
+
+
+
+##########################################################################
   const xScale = d3.scaleBand()
       .domain(d3.range(bardata.length))
       .range([0, innerWidth])
@@ -117,9 +122,3 @@
       update(bardata);
       };
 
-
-    </script>
-
-  </body>
-
-</html>

@@ -1,7 +1,7 @@
 // add your JavaScript/D3 to this file
 
-  const w = 400;
-  const h = 300;
+  const w = 700;
+  const h = 500;
   const margin = {top: 25, right: 0, bottom: 25,
       left: 25};
   const innerWidth = w - margin.left - margin.right;
@@ -21,6 +21,57 @@
 
   const bardata = [300, 100, 150, 220, 70, 270];
 
+
+///// reading data
+  const rowConverter = function (d) {
+    return {
+      disp: +d.disp,
+      mpg: +d.mpg,
+      carname: d.carname,
+      cylcolor: d.cylcolor
+      }
+  };
+
+/*  d3.csv("https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/mean_crash_per_day_over_years.csv", rowConverter)
+    .then(function(data) {
+
+  // stuff that requires the loaded data
+
+    })
+    .catch(function(error) {
+
+  // error handling
+
+    });*/
+
+  d3.csv("https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/mean_crash_per_day_over_years.csv", function(d) {
+      return {
+          Month: d.Month,
+          CrashDayNoYear: d.crash_day_no_year,
+          TotalCrash: parseFloat(+d.total_crash),
+          DayOnly: d.day_only
+      };
+  }).then(function(data) {
+      // Now 'data' contains the properly formatted and parsed data
+      console.log(data);
+  }).catch(function(error) {
+      // Handle error if the data cannot be loaded
+      console.error(error);
+  });
+
+
+d => ({
+            HighwayMpg: parseInt(d.HighwayMpg),
+            Horsepower: parseInt(d.Horsepower),
+        })
+
+/*    d => ({
+            HighwayMpg: parseInt(d.HighwayMpg),
+            Horsepower: parseInt(d.Horsepower),
+        })*/
+
+
+//////////////////////////////////////////////////
   const xScale = d3.scaleBand()
       .domain(d3.range(bardata.length))
       .range([0, innerWidth])
@@ -117,9 +168,3 @@
       update(bardata);
       };
 
-
-    </script>
-
-  </body>
-
-</html>

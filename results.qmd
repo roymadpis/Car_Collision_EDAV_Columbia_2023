@@ -260,8 +260,10 @@ dt_temporal_day <- mutate(dt_temporal_day,crash_day_no_year = format(Crash_Date,
 Month_list <-  c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
 
 ##################################### data for d3 - mean crash per day over years
-b <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
-write_csv2(b, "data/mean_crash_per_day_over_years.csv")
+c <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
+write_csv2(c, "data/mean_crash_per_day_over_years.csv")
+
+
 ###########################################################
 ### let's see how this graph should look like in d3:
 b <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> filter(Month %in%Month_list[1:7]) |> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
@@ -294,8 +296,17 @@ ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
 
 ```
 
+    d => ({
+            Month: parseInt(d.Month),
+            crash_day_no_year: parseInt(d.crash_day_no_year),
+            total_crash: parse
+        })
+
+```{r}
+c
 
 
+```
 
 
 
