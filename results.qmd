@@ -81,6 +81,43 @@ dt_temporal
 
 ```
 
+
+
+### Preprocessing for the df_temporal
+```{r}
+### add some "date slicers" columns
+dt_temporal$Week_day <- weekdays(dt_temporal$Crash_Date)
+dt_temporal$Month <-  months(dt_temporal$Crash_Date)
+dt_temporal$Year <-  year(dt_temporal$Crash_Date)
+dt_temporal$first_day_of_month <- as.Date(format(dt_temporal$Crash_Date, "%Y-%m-01"))
+
+library(hms)
+dt_temporal$Crash_Time <- as_hms(dt_temporal$Crash_Time)
+dt_temporal$Crash_Hour <- hour(dt_temporal$Crash_Time) #Crash hour
+
+
+### Transform some colkumns to factors
+dt_temporal <- mutate(dt_temporal, Week_day = factor(Week_day,
+                                             levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")))
+
+dt_temporal$Month <- factor(dt_temporal$Month, 
+                          levels = c("January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"),)
+
+### arrange the data by date
+dt_temporal <- dt_temporal |> arrange(Crash_Date)
+
+dt_temporal_month <- dt_temporal |> group_by(Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
+
+
+dt_temporal_Year_month <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
+
+
+### create a ts object
+first_date_in_data <- min(dt_temporal$first_day_of_month)
+last_date_in_data <- max(dt_temporal$first_day_of_month)
+```
+
+
 ```{r}
 start_date = min(dt_temporal$Crash_Date)
 end_date = max(dt_temporal$Crash_Date)
@@ -232,39 +269,6 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
 data |> head()
 ```
 
-### Preprocessing for the df_temporal
-```{r}
-### add some "date slicers" columns
-dt_temporal$Week_day <- weekdays(dt_temporal$Crash_Date)
-dt_temporal$Month <-  months(dt_temporal$Crash_Date)
-dt_temporal$Year <-  year(dt_temporal$Crash_Date)
-dt_temporal$first_day_of_month <- as.Date(format(dt_temporal$Crash_Date, "%Y-%m-01"))
-
-library(hms)
-dt_temporal$Crash_Time <- as_hms(dt_temporal$Crash_Time)
-dt_temporal$Crash_Hour <- hour(dt_temporal$Crash_Time) #Crash hour
-
-
-### Transform some colkumns to factors
-dt_temporal <- mutate(dt_temporal, Week_day = factor(Week_day,
-                                             levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")))
-
-dt_temporal$Month <- factor(dt_temporal$Month, 
-                          levels = c("January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"),)
-
-### arrange the data by date
-dt_temporal <- dt_temporal |> arrange(Crash_Date)
-
-dt_temporal_month <- dt_temporal |> group_by(Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
-
-
-dt_temporal_Year_month <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
-
-
-### create a ts object
-first_date_in_data <- min(dt_temporal$first_day_of_month)
-last_date_in_data <- max(dt_temporal$first_day_of_month)
-```
 
 
 ```{r}
