@@ -45,16 +45,20 @@ library("redav")
 
 
 ```{r}
-data <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv", col_types = cols('Local Case Number' = col_character())) # the 2nd column contains string and not number that's why we specify it.
+data_crash <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv", col_types = cols('Local Case Number' = col_character())) # the 2nd column contains string and not number that's why we specify it.
+data_crash <- rename(data_crash, "Hit_Run" = `Hit/Run`) 
+data_crash <- rename(data_crash,"Crash_Date_Time" = `Crash Date/Time`)
+
+#rename("Crash_Date_Time" = `Crash_Date/Time`)
 
 ### Preprocess:
-new_col_names <- colnames(data)
+new_col_names <- colnames(data_crash)
 # Replace spaces and dashes with underscores
 new_col_names <- gsub(" ", "_", new_col_names)
 new_col_names <- gsub("-", "_", new_col_names)
-colnames(data) <- new_col_names
+colnames(data_crash) <- new_col_names
 
-data |> head()
+data_crash |> head()
 ```
 
 ```{r}
@@ -64,8 +68,8 @@ replace_na <- function(x) {
   return(x)
 }
 
-# Apply the function to each column of the data frame
-data <- as_tibble(lapply(data, replace_na))
+# Apply the function to each column of the data_crash frame
+data_crash <- as_tibble(lapply(data_crash, replace_na))
 ```
 
 
@@ -75,7 +79,7 @@ data <- as_tibble(lapply(data, replace_na))
 ```{r}
 ## PLot the number of NAs for each column
 
-b <- apply(data, 2, function(c) sum(is.na(c)))
+b <- apply(data_crash, 2, function(c) sum(is.na(c)))
 tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
 tibble_nas
 
@@ -106,7 +110,7 @@ columns_with_too_many_nas
 We will remove those columns :
 
 ```{r}
-data <- dplyr::select(data,-as.vector(columns_with_too_many_nas$column_name))
+data_crash <- dplyr::select(data_crash,-as.vector(columns_with_too_many_nas$column_name))
 ```
 
 
@@ -114,17 +118,17 @@ data <- dplyr::select(data,-as.vector(columns_with_too_many_nas$column_name))
 
 
 ```{r}
-filtered_data <- data[!is.na(data$Cross_Street_Type),]
+filtered_data_crash <- data_crash[!is.na(data_crash$Cross_Street_Type),]
 
 
-b <- apply(filtered_data, 2, function(c) sum(is.na(c)))
+b <- apply(filtered_data_crash, 2, function(c) sum(is.na(c)))
 tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
-tibble_nas_filtered_data <- tibble_nas
+tibble_nas_filtered_data_crash <- tibble_nas
 
 
 ggplot(tibble_nas |> filter(number_of_NA >0 ))+
   geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA)) +
-  labs(title = "Number of Nas in the data columns",
+  labs(title = "Number of Nas in the data_crash columns",
        subtitle = "Showing only columns with number of NAs > 0",
        y = 'Column name')
 ```
@@ -136,12 +140,12 @@ For now we won't deal with those NAs. Later in the project we would choose the s
 We want to get a list of columns that has the same "NA" pattern:
 
 ```{r}
-b <- apply(data, 2, function(c) sum(is.na(c)))
-tibble_nas_data <- tibble(column_name = names(b), number_of_NA = b)
+b <- apply(data_crash, 2, function(c) sum(is.na(c)))
+tibble_nas_data_crash <- tibble(column_name = names(b), number_of_NA = b)
 
 #Compare the 2 lists, the one with all the column with less that 1000 NAs and the lists with the same conditions but after removing all the NAs row in the column "Cross-Street Type"
-a <- tibble_nas_data |> filter(number_of_NA<1000)
-b <- tibble_nas_filtered_data |> filter(number_of_NA<1000)
+a <- tibble_nas_data_crash |> filter(number_of_NA<1000)
+b <- tibble_nas_filtered_data_crash |> filter(number_of_NA<1000)
 
 # Get the name of the column which are not in common in the 2 previous list
 difference_both_ways <- union(setdiff(a$column_name, b$column_name), setdiff(b$column_name, a$column_name))
@@ -151,7 +155,7 @@ print(difference_both_ways)
 We want to use the `plot_missing` function for `redav` package to see the NAs pattern regarding the columns that we suspect has NAs in the same rows:
 
 ```{r}
-redav::plot_missing(data |>dplyr::select(difference_both_ways,))
+redav::plot_missing(data_crash |>dplyr::select(difference_both_ways,))
 ```
 
 Using the `plot_missing` function, we can clearly see that those columns indeed has NAs in the same rows. We can conclude that their NAs are correlated.
@@ -159,7 +163,7 @@ Using the `plot_missing` function, we can clearly see that those columns indeed 
 Further, we will take one of those columns: `Cross_Street_Type` and use it as a representative of the 12 columns group and then see if there is any pattern between the NAs of the other columns:
 
 ```{r}
-b <- apply(data, 2, function(c) sum(is.na(c)))
+b <- apply(data_crash, 2, function(c) sum(is.na(c)))
 tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
 
 
@@ -172,7 +176,7 @@ differences <- union(setdiff(columns_with_na, difference_both_ways), setdiff(dif
 differences <- c(differences, "Cross_Street_Type")
 print(differences)
 
-redav::plot_missing(data |>dplyr::select(differences,))
+redav::plot_missing(data_crash |>dplyr::select(differences,))
 
 
 ```
@@ -194,4 +198,9 @@ holiday_data$is_holiday <- "Yes"
 ```
 
 
+
+
+```{r}
+write_csv2(data_crash, "data/data_crash.csv")
+```
 
