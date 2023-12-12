@@ -184,7 +184,7 @@ In conclusion, for all the columns in the array 'difference_both_ways' we can de
 
 
 ```{r}
-holiday_data <- data <- read_csv("data/holidays.csv")
+holiday_data <- read_csv("data/holidays.csv")
 holiday_data$is_holiday <- "Yes"
 
 ```
