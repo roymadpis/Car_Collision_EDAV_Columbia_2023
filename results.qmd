@@ -15,53 +15,7 @@ holiday_data$is_holiday <- "Yes"
 
 ```
 
-## Spatial Representation
-```{r}
-# Sample the data so that we do not have too much data ploted on the map
 
-
-# dt_sampled <-# sample_n(as.data.frame(data_crash), 4000) %>%
-#   
-#   # # filter(Hit_Run == 'Yes')
-#   # filter(Number_of_Lanes == 19) %>%
-#   #sample_n(4000)
-#   filter(data_crash$Road_Name == top10)
-dt_sampled <- data_crash %>%
-  filter(Road_Name %in% top10)%>%
-  sample_n(2000)
-
-#dt_sampled <- sample_n(as.data.frame(data_crash), 4000)
-  # rename(Hit_Run = 'Hit/Run') %>%
-  # # filter(Hit_Run == 'Yes')
-  # filter(Number_of_Lanes == 19) %>%
-
-
-
-
-# Display the random sample
-#print(dt_sampled)
-
-
-```
-
-```{r}
-# Spatial data
-
-# 
- leaflet(dt_sampled) %>%
-#   addTiles() %>% 
-#   addHeatmap(
-#   lat = ~Latitude,
-#   lng = ~Longitude,
-#   blur = 15,  # Adjust the blur parameter
-#   radius = 10)  # Adjust the radius parameter
-  addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
-
-
-```
-
-<u>Comment :</u> We can see from the map multiple ouliers, all the crash data should be in the Montgomery County so every data outside of this area can be considered as outliers. Maybe when the localisation was added to the police report some numbers were mistaken.
-*Should we remove all of them ?
 
 ## Time Series
 
@@ -1048,6 +1002,52 @@ There is more Hit and Run instance when there is no traffic (yes instance for th
 <u>Comment :</u> One can see that crash accidents occur more during the commute time escpecially the way back home between 15h to 17h.
 
 
+## Spatial Representation
+```{r}
+# Sample the data so that we do not have too much data ploted on the map
 
+
+# dt_sampled <-# sample_n(as.data.frame(data_crash), 4000) %>%
+#   
+#   # # filter(Hit_Run == 'Yes')
+#   # filter(Number_of_Lanes == 19) %>%
+#   #sample_n(4000)
+#   filter(data_crash$Road_Name == top10)
+dt_sampled <- data_crash %>%
+  filter(Road_Name %in% top10)%>%
+  sample_n(2000)
+
+#dt_sampled <- sample_n(as.data.frame(data_crash), 4000)
+  # rename(Hit_Run = 'Hit/Run') %>%
+  # # filter(Hit_Run == 'Yes')
+  # filter(Number_of_Lanes == 19) %>%
+
+
+
+
+# Display the random sample
+#print(dt_sampled)
+
+
+```
+
+```{r}
+# Spatial data
+
+# 
+ leaflet(dt_sampled) %>%
+#   addTiles() %>% 
+#   addHeatmap(
+#   lat = ~Latitude,
+#   lng = ~Longitude,
+#   blur = 15,  # Adjust the blur parameter
+#   radius = 10)  # Adjust the radius parameter
+  addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
+
+
+```
+
+<u>Comment :</u> We can see from the map multiple ouliers, all the crash data should be in the Montgomery County so every data outside of this area can be considered as outliers. Maybe when the localisation was added to the police report some numbers were mistaken.
+*Should we remove all of them ?
 
 
