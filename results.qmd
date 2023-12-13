@@ -22,13 +22,15 @@ data_crash
 ```{r}
 # Sample the data so that we do not have too much data ploted on the map
 
-#dt_sampled <- sample_n(as.data.frame(data_crash), 4000)
-  # rename(Hit_Run = 'Hit/Run') %>%
-  # # filter(Hit_Run == 'Yes')
-  # filter(Number_of_Lanes == 19) %>%
-  #sample_n(4000)
-  #filter(Road_Name == top10)
-
+# dt_sampled <-# sample_n(as.data.frame(data_crash), 4000) %>%
+#   
+#   # # filter(Hit_Run == 'Yes')
+#   # filter(Number_of_Lanes == 19) %>%
+#   #sample_n(4000)
+#   filter(data_crash$Road_Name == top10)
+dt_sampled <- data_crash %>%
+  filter(Road_Name %in% top10)%>%
+  sample_n(2000)
 
 # Display the random sample
 #print(dt_sampled)
@@ -40,7 +42,7 @@ data_crash
 # Spatial data
 
 # 
-# leaflet(dt_sampled) %>%
+ leaflet(dt_sampled) %>%
 #   addTiles() %>% 
 #   addHeatmap(
 #   lat = ~Latitude,
@@ -48,7 +50,7 @@ data_crash
 #   blur = 15,  # Adjust the blur parameter
 #   radius = 10)  # Adjust the radius parameter
 
-  #addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
+  addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
 
 ```
 
@@ -949,15 +951,15 @@ ggplot(data = dt_lane1,
 ```{r}
 dt_lane2 <- dt_lane %>%
   group_by(Road_Name) %>%
-  mutate(Frequency = n()) %>%
+  mutate(Frequency_road = n()) %>%
   ungroup() %>%
   #filter(Frequency >= n_threshold) %>%
   distinct(Road_Name, .keep_all = TRUE)
 
-top_10_roads <- dt_lane1 %>%
-  arrange(desc(Frequency)) %>%  # Arrange by Frequency in descending order
+top_10_roads <- dt_lane2 %>%
+  arrange(desc(Frequency_road)) %>%  # Arrange by Frequency in descending order
   slice_head(n = 10) %>%       # Select the top 10 rows
-  select(Road_Name) %>%
+  select(Road_Name,Frequency_road) %>%
   as.list()
 
 top10 <- top_10_roads$Road_Name
