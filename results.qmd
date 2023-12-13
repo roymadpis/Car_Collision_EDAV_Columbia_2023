@@ -159,28 +159,20 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
        subtitle = "The black line is an average of accidents per month",
        x = "Year", y="Total Accidents in a given week")
 
-
-
-
-
-
-
-
 ```
 
-Using the graph we can get some interesting insights:
+#### Using the graph we can get some interesting insights:
 
 + The **Veterans Day** and **Columbus Day** tend to have higher amount of car accidents compared to the other holidays and compared to the average car accidents.
 
 + Surprisingly, the **Independence day** has relatively lower car accidents compared to the average car accidents 
 
-+ Moreover, we can see a decrease in the number of car accidents between 2020 - 2021, this can be explained by the covid-19 outbreak that led to massive lockdowns and reduced significantly the number of drivers on the roads. Since then, the average number of accidents is a bit lower than pre-covid.
+
++ Additionally, there is a noticeable decline in the number of car accidents observed between 2020 and 2021. This decrease can be attributed to the impact of the COVID-19 outbreak, which resulted in extensive lockdowns and a substantial reduction in the presence of drivers on the roads. Subsequent to this period, the average number of accidents has remained slightly lower than the pre-COVID levels.
+It is worth noting that we generated box plots for each year, illustrating the total crashes per day. Due to space constraints, we won't present them here, but it is important to highlight our observations. For the years 2015 to 2019, the box plots exhibited remarkable similarity, indicating comparable sizes of the interquartile range (IQR), Q1, Q3, and median. However, the box plot for 2020 stood out as notably lower than the preceding years. Furthermore, the box plots for 2021 and beyond were lower than those before 2020 but higher than the values observed in 2020.
 
 
-
-
-## Show the same plot by days
-
+## Plot by days
 
 ```{r}
 
@@ -189,99 +181,17 @@ dt_temporal_day <- dt_temporal |> group_by(Year, Month, Crash_Date) |> summarise
 dt_temporal_day <- left_join(dt_temporal_day, merged_dy_for_temporal_day, by = c("Crash_Date"= "date"))
 
 
-
-ggplot(dt_temporal_day |> filter(Year == 2019), aes(x = Crash_Date, y = total_crash)) +
-  geom_line(aes(group=1)) + #because we grouped earlier by Crash_Date we need now to specify that we treat all the data as one group.
-  geom_point(aes(color = is_holiday)) +
-  labs(title='Number of car crash per weeks')+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-# Set breaks to 1 month interval
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
-  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
-
-```
+# 
+# ggplot(dt_temporal_day |> filter(Year == 2019), aes(x = Crash_Date, y = total_crash)) +
+#   geom_line(aes(group=1)) + #because we grouped earlier by Crash_Date we need now to specify that we treat all the data as one group.
+#   geom_point(aes(color = is_holiday)) +
+#   labs(title='Number of car crash per weeks')+
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+# # Set breaks to 1 month interval
+#   scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
+#   #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
 
 
-
-
-```{r}
-library(ggplot2)
-library(dplyr)
-library(plotly)
-
-# Assuming dt_temporal_day is your data frame
-
-# Create a ggplot object
-plot <- ggplot(dt_temporal_day, aes(x = Crash_Date, y = total_crash)) +
-  geom_line(aes(group = 1)) +
-  geom_point(aes(color = is_holiday)) +
-  labs(title = 'Number of car crashes per weeks') +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y")
-
-# Convert the ggplot object to a plotly object
-plotly_plot <- ggplotly(plot)
-
-# Add a year slicer
-plotly_plot <- plotly_plot %>%
-  layout(updatemenus = list(
-    list(
-      x = 0.1,
-      y = 0.8,
-      type = "buttons",
-      showactive = TRUE,
-      buttons = list(
-        list(label = "All",
-             method = "relayout",
-             args = list("xaxis.range", list(NULL, NULL))),
-        list(label = "2018",
-             method = "animate",
-             args = list(list(frames = list(list(data = dt_temporal_day %>% filter(Year == 2018)))))),
-        list(label = "2019",
-             method = "animate",
-             args = list(list(frames = list(list(data = dt_temporal_day %>% filter(Year == 2019)))))),
-        list(label = "2020",
-             method = "animate",
-             args = list(list(frames = list(list(data = dt_temporal_day %>% filter(Year == 2020)))))
-        )
-      )
-    )
-  ))
-
-# Print the interactive plot
-print(plotly_plot)
-
-
-```
-
-
-
-```{r}
-dt_temporal_day |>  group_by(Year) %>%
-  slice(which.max(total_crash))
-
-a <- dt_temporal_day |> 
-  group_by(Year) |>
-  top_n(5, total_crash) #|> filter(Month %in% c("January"))
-ggplot(a) +
-  geom_point(aes(x=Crash_Date, y=total_crash)) +
-  scale_y_continuous(limits = c(0,80)) +
-  scale_x_date(date_labels = "%Y-%m-%d", date_breaks = "1 month")+
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-
-
-
-a |> group_by(Month) |> summarise(count=n()) #count(Month)
-
-#holiday_data
-
-
-
-
-```
-
-
-```{r}
 
 dt_temporal_day <- mutate(dt_temporal_day,crash_day_no_year = format(Crash_Date, "%m-%d"))
 
@@ -323,53 +233,6 @@ ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
 #     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
-
-    d => ({
-            Month: parseInt(d.Month),
-            crash_day_no_year: parseInt(d.crash_day_no_year),
-            total_crash: parse
-        })
-
-```{r}
-c
-
-
-```
-
-
-
-```{r}
-ggplot(dt_temporal_day |> mutate(Year = as.factor(Year))) +
-  geom_boxplot(aes(x=Year, y=total_crash))
-```
-
-
-```{r}
-dt_temporal_day |>  group_by(Year) %>%
-  summarise((mean(total_crash)))
-```
-
-
-
-```{r}
-dt_temporal_day |>  group_by(Year) %>%
-  slice(which.min(total_crash))
-```
-
-
-
-```{r}
-
-ggplot(dt_temporal_day, aes(x = Crash_Date, y = total_crash)) +
-  geom_line(aes(group=1)) + #because we grouped earlier by Crash_Date we need now to specify that we treat all the data as one group.
-  geom_point(aes(color = is_holiday)) +
-  labs(title='Number of car crash per weeks')+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-# Set breaks to 1 month interval
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
-  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")
-```
-
 
 
 
