@@ -18,6 +18,8 @@ holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
 
 # Time Series Analysis
 
+We decided then to use the date of special holidays to observe possible correlation with the time series. To have the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}. We then filtered the relevant rows for our study and created the 'holiday_US.csv" file that we are going to use with R. NB: one can find the code for the filtering of the data in the files name : ...
+
 ## Preprocess the Date-Time column
 Here we take the date/time column and transform it into the right data type as well as create some distinct date/time columns that will help us investigate and explore the data (time series analysis)
 
@@ -159,7 +161,9 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
 
 + First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a trend of decrease (that can be attributed to the Covid-19 outbreak) and seasonality 
 
+
 + The **Veterans Day** and **Columbus Day** tend to have higher amount of car accidents compared to the other holidays and compared to the average car accidents.
+
 
 + Surprisingly, the **Independence day** has relatively lower car accidents compared to the average car accidents 
 
@@ -169,15 +173,15 @@ It is worth noting that we generated box plots for each year, illustrating the t
 ### Roy - ts daily write
 ```{r}
 
-dt_temporal_day
-ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
-
-#dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
-
-
+# dt_temporal_day
+# ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
 # 
-# ts_data<- ts(df_temporal_week$Crash_week)
-plot(decompose(ts_data))
+# #dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
+# 
+# 
+# # 
+# # ts_data<- ts(df_temporal_week$Crash_week)
+# plot(decompose(ts_data))
 ```
 
 
@@ -452,10 +456,30 @@ ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) +
 
 + Furthermore, an examination of the "black dots," representing each year's month with the highest number of accidents, provides additional insights. Comparing these dots across different weekdays reveals distinctions, and an intriguing observation emerges when connecting these dots. If we were to draw a line connecting each black dot, a trend similar to the loess blue line trend in the plot becomes evident, indicating a potential overarching pattern in the occurrence of maximum accidents over the years.
 
+```{r}
+
+
+dt_temporal_day
+ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
+
+#dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
+
+
+# 
+# ts_data<- ts(df_temporal_week$Crash_week)
+plot(decompose(ts_data))
+
+
+```
 
 
 
-### Hit/run
+Box plot 
+x axis - day of week
+the box itself will use the number of accidents
+
+
+# Hit/run
 
 ```{r}
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
@@ -581,68 +605,22 @@ a|> mutate("prop" = n/sum(a$n))
 
 ```
 
-
-
-
-
-
+## Study of the influence of the characteristics of the roads on the number of accident and Hit&Run
 
 ```{r}
-
-
-dt_temporal_day
-ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
-
-#dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
-
-
+# ## Explore the Categorical data we have
 # 
-# ts_data<- ts(df_temporal_week$Crash_week)
-plot(decompose(ts_data))
+# dt_lane <- data_crash[,c("Hit_Run","Route_Type","Number_of_Lanes","NonTraffic","Road_Grade","At_Fault","Cross_Street_Type","Collision_Type","Traffic_Control","Driver_Substance_Abuse","Road_Alignment","Junction","Road_Condition","Road_Division","First_Harmful_Event","Light","Surface_Condition")]
+# 
+# unique_values <- lapply(dt_lane, unique)
+# 
+# # Print unique value for each of the column
+# for (col_name in names(unique_values)) {
+#   cat("Column:", col_name, "\n")
+#   print(unique_values[[col_name]])
+#   cat("\n")
+# }
 
-
-```
-
-
-
-Box plot 
-x axis - day of week
-the box itself will use the number of accidents
-
-
-
-
-# Ethan Part
-
-```{r}
-## Explore the Categorical data we have
-
-dt_lane <- data_crash[,c("Hit_Run","Route_Type","Number_of_Lanes","NonTraffic","Road_Grade","At_Fault","Cross_Street_Type","Collision_Type","Traffic_Control","Driver_Substance_Abuse","Road_Alignment","Junction","Road_Condition","Road_Division","First_Harmful_Event","Light","Surface_Condition")]
-
-unique_values <- lapply(dt_lane, unique)
-
-# Print unique value for each of the column
-for (col_name in names(unique_values)) {
-  cat("Column:", col_name, "\n")
-  print(unique_values[[col_name]])
-  cat("\n")
-}
-
-```
-
-```{r}
-dt_intersection <- data_crash %>%
-   mutate(Traffic_Control = recode(Traffic_Control,
-        "FLASHING TRAFFIC SIGNAL" = "Traffic Light",
-        "TRAFFIC SIGNAL" = "Traffic Light",
-        "NO CONTROLS" = 'No Controls',
-        "RAILWAY CROSSING DEVICE	" = 'Warning Sign',
-        "WARNING SIGN" = 'Warning Sign',
-        "SCHOOL ZONE SIGN DEVICE" = 'Warning Sign',
-        "YIELD SIGN" = 'Warning Sign',
-        "STOP SIGN" = 'Stop Sign',
-        .default  = 'Other')) %>%
-  filter(!is.na(Traffic_Control))
 ```
 
 ```{r}
@@ -652,6 +630,8 @@ dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic
 dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse")]
 
 ```
+
+
 
 ```{r}
 #Rename the column in Road_type and get rid of the Na and the unknown values
@@ -690,7 +670,6 @@ ggplot(dt_lane, aes(y=Road_Division))+
 <u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway). 
 
 ### Junction
-
 
 ```{r}
 dt_lane <- dt_lane %>%
@@ -799,26 +778,7 @@ ggplot(data = dt_lane1,
                    #expand = c(0.15, 0.05, 0.05)) +
   theme_void()
 ```
-
-## Speaking about Roads, where are we ?
-
-```{r}
-dt_lane2 <- dt_lane %>%
-  group_by(Road_Name) %>%
-  mutate(Frequency_road = n()) %>%
-  ungroup() %>%
-  #filter(Frequency >= n_threshold) %>%
-  distinct(Road_Name, .keep_all = TRUE)
-
-top_10_roads <- dt_lane2 %>%
-  arrange(desc(Frequency_road)) %>%  # Arrange by Frequency in descending order
-  slice_head(n = 10) %>%       # Select the top 10 rows
-  select(Road_Name,Frequency_road) %>%
-  as.list()
-
-top10 <- top_10_roads$Road_Name
-top10
-```
+<u>Comments :</u> The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. Hit&Run incidents
 
 
 
@@ -827,72 +787,10 @@ top10
 
 
 
-## Who's at Fault ?
-
-
-```{r}
-dt_responsible <- dt_responsible %>%
-  mutate(Driver_Substance_Abuse = str_extract(Driver_Substance_Abuse, "^[^,]+")) %>%
-  mutate(Driver_Substance_Abuse = recode(Driver_Substance_Abuse,
-    "ALCOHOL CONTRIBUTED" ="alcohol",
-    "ALCOHOL PRESENT" = "alcohol",
-    "COMBINATION CONTRIBUTED" = "combined substance",
-    "COMBINED SUBSTANCE PRESENT" = "combined substance",
-    "ILLEGAL DRUG CONTRIBUTED" = "illegal drug",
-    "ILLEGAL DRUG PRESENT" = "illegal drug",
-    "MEDICATION CONTRIBUTED" = "under medication",
-    "MEDICATION PRESENT" = "under medication",
-    "UNKNOWN" = 'unknown',
-    "OTHER" = 'unknown',
-    "NONE DETECTED" = 'none detected'
-  )) %>%
-  filter(Driver_Substance_Abuse != "N/A")
-
-count(dt_responsible,Driver_Substance_Abuse)
-
-#redav::plot_missing(dt_responsible) # We see that more than 80% of the rows does not have Na so I will drop all the Na
-
-dt_responsible <- dt_responsible %>%
-  na.omit() %>%
-  filter(Driver_Substance_Abuse != 'none detected') # %>% # remove the none detected because they are too much
-  # filter(Driver_Substance_Abuse != 'alcohol') %>%
-  # filter(Driver_Substance_Abuse != 'unknown')
-
-responsible_freq <- dt_responsible %>%
-  count(Driver_Substance_Abuse, name = "Frequency_drug")
-dt_responsible <- left_join(responsible_freq, dt_responsible, by = "Driver_Substance_Abuse")
-  
-ggplot(dt_responsible, aes(x = reorder(Driver_Substance_Abuse, -Frequency_drug))) +
-  geom_bar() +
-  labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
-  theme_minimal()  # Adjust the theme if needed
-```
-
-```{r}
-library(gridExtra)
-count(dt_responsible, Driver_Substance_Abuse)
-dt_responsible <- dt_responsible %>%
-  mutate(
-    Driver_Substance_Abuse_A = if_else(Driver_Substance_Abuse %in% c('alcohol', 'unknown'), Driver_Substance_Abuse, NA_character_),
-    Driver_Substance_Abuse_B = if_else(!Driver_Substance_Abuse %in% c('alcohol', 'unknown'), Driver_Substance_Abuse, NA_character_)
-  )
 
 
 
-mp1 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_A + NonTraffic,
- data = dt_responsible,
- direction = c("v", "v","h" ),
- axes_labels = c('Driver Substance Abuse', 'Traffic'))
 
-mp2 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_B + NonTraffic,
- data = dt_responsible,
- direction = c("v", "v","h" ),
- axes_labels = c('Driver Substance Abuse', 'Traffic'))
-
-
-
-```
-There is more Hit and Run instance when there is no traffic (yes instance for the column NonTraffic) most likely due to the fact that it is easier to go away without traffic on the road.
 
 
 
@@ -900,7 +798,7 @@ There is more Hit and Run instance when there is no traffic (yes instance for th
 <u>Comment :</u> One can see that crash accidents occur more during the commute time escpecially the way back home between 15h to 17h.
 
 
-## Spatial Representation
+# Spatial Representation
 ```{r}
 # Sample the data so that we do not have too much data ploted on the map
 
@@ -958,6 +856,29 @@ Overall findings from plots we didn't include in this project:
 
 There is an asymmetry between the "bad" and "good" conditions. It seems that bad conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.
 
+## Speaking about Roads, where are we ?
+
+```{r}
+dt_lane2 <- dt_lane %>%
+  group_by(Road_Name) %>%
+  mutate(Frequency_road = n()) %>%
+  ungroup() %>%
+  #filter(Frequency >= n_threshold) %>%
+  distinct(Road_Name, .keep_all = TRUE)
+
+top_10_roads <- dt_lane2 %>%
+  arrange(desc(Frequency_road)) %>%  # Arrange by Frequency in descending order
+  slice_head(n = 10) %>%       # Select the top 10 rows
+  select(Road_Name,Frequency_road) %>%
+  as.list()
+
+top10 <- top_10_roads$Road_Name
+top10
+```
+
+
+## Things we found from graphs we created"
++ We checked and there doesn't seem to be a correlation between the `Weather` and the `Hit_Run`
 
 
 ### Weather Condition
@@ -1013,8 +934,7 @@ vcd:: mosaic(Hit_Run ~ Weather,
 
 
 
-## Things we found from graphs we created"
-+ We checked and there doesn't seem to be a correlation between the `Weather` and the `Hit_Run`
+
 
 
 
