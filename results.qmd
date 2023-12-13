@@ -710,35 +710,40 @@ ggplot(dt_lane_freq, aes(x = reorder(Junction, -Frequency_junc))) +
 
 
 ```{r}
-# # Function to filter rows within a certain radius
-# filter_within_radius <- function(data, radius_meters = 100) {
-#   n <- nrow(data)
-#   keep_rows <- rep(FALSE, n)
-#   
-#   # Initialize with the first row
-#   keep_rows[1] <- TRUE
-#   
-#   for (i in 2:n) {
-#     distances <- geosphere::distVincentySphere(
-#       data[i, c("Longitude", "Latitude")],
-#       data[keep_rows, c("Longitude", "Latitude")]
-#     )
-#     
-#     too_close <- distances < radius_meters
-#     keep_rows[i] <- !any(too_close)
-#   }
-#   
-#   return(data[keep_rows, , drop = FALSE])
-# }
-# 
-# 
-# # Apply the function to your data
-# dt_lane_freq_filtered <- filter_within_radius(dt_lane_freq, radius_meters = 100)
+dt_lane_freq_intersection <- dt_lane_freq %>%
+  filter(Junction == 'Intersection')
+
+# Function to filter rows within a certain radius
+filter_within_radius <- function(data, radius_meters = 100) {
+  n <- nrow(data)
+  keep_rows <- rep(FALSE, n)
+
+  # Initialize with the first row
+  keep_rows[1] <- TRUE
+
+  for (i in 2:n) {
+    distances <- geosphere::distVincentySphere(
+      data[i, c("Longitude", "Latitude")],
+      data[keep_rows, c("Longitude", "Latitude")]
+    )
+
+    too_close <- distances < radius_meters
+    keep_rows[i] <- !any(too_close)
+  }
+
+  return(data[keep_rows, , drop = FALSE])
+}
+
+
+# Apply the function to your data
+dt_lane_freq_filtered <- filter_within_radius(dt_lane_freq_intersection, radius_meters = 100)
+
+
 
 # library(sf)
 # 
 # # Convert your data to sf object
-# sf_data <- st_as_sf(dt_lane_freq, coords = c("Longitude", "Latitude"))
+# sf_data <- st_as_sf(dt_lane_freq_intersection, coords = c("Longitude", "Latitude"))
 # 
 # # Create a spatial index
 # spatial_index <- st_as_sfc(sf_data)
@@ -804,34 +809,50 @@ ggplot(data = dt_lane1,
 <u>Comments :</u> The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be f
 
 
+
 # Spatial Representation
-```{r}
-# Sample the data so that we do not have too much data ploted on the map
+
+To 
+
+```{r, message= FALSE, warning= FALSE}
+library(sf)
+library(dplyr)
+
+## We are removing the data points which are not in the county
+
+# 1st step : get the coordinate of the Montgomery county using a public data
+montgomery_geojson_url <- 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/MD/Montgomery.geo.json'
+montgomery_county <- st_read(montgomery_geojson_url)
 
 
-# dt_sampled <-# sample_n(as.data.frame(data_crash), 4000) %>%
-#   
-#   # # filter(Hit_Run == 'Yes')
-#   # filter(Number_of_Lanes == 19) %>%
-#   #sample_n(4000)
-#   filter(data_crash$Road_Name == top10)
-dt_sampled <- data_crash %>%
-  filter(Road_Name %in% top10)%>%
-  sample_n(2000)
+# 2nd step : Filter the data to keep only the Hit/Run incidents
+hit_run_pos <- data_crash %>%
+  filter(Hit_Run == 'Yes')
+  
+# Create a new dataset with only the coordinate of points inisde the county
+coordinate_Montgomery <- hit_run_pos %>%
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) %>%
+  st_intersection(montgomery_county) %>%
+  st_coordinates() %>%
+  as.data.frame()
 
-#dt_sampled <- sample_n(as.data.frame(data_crash), 4000)
-  # rename(Hit_Run = 'Hit/Run') %>%
-  # # filter(Hit_Run == 'Yes')
-  # filter(Number_of_Lanes == 19) %>%
-
-
-
-
-# Display the random sample
-#print(dt_sampled)
+leaflet(coordinate_Montgomery) %>%
+  addTiles() %>% 
+  addHeatmap(
+  lat = ~Y,
+  lng = ~X,
+  blur = 15,  # Adjust the blur parameter
+  radius = 10) # Adjust the radius parameter
+  #addControl(title = "Density of Hit/Run accidents", position = "topright")
 
 
 ```
+
++ One key element that can be taken from that interactive map is that parking are place with high density of Hit/Run incidents. This correlate with a previous plot when we saw that in 'First_Harmful_Event' column, "Parked-Vehicle" is the category with the highest proportion of Hit/Run. 
+
+  Moreover, it is visible that intersections are location with higher density of these accidents. Overall, this heat map help us visualize the previous pattern we have discovered earlier, it is clear that there is almost no Hit/Run incidents on highway like 15A. 
+
+
 
 ```{r}
 # Spatial data
