@@ -27,7 +27,7 @@ holiday_data |> count(normalizeHolidayName)
 ## Preprocess the Date-Time column
 Here we take the date/time column and transform it into the right data type as well as create some distinct date/time columns that will help us investigate and explore the data (time series analysis)
 
-```{r}
+```{r, message=FALSE}
 
 dt_temporal <- dplyr::select(data_crash,c("Crash_Date_Time","Weather", "Hit_Run",
                        "First_Harmful_Event", "At_Fault"))
@@ -97,20 +97,19 @@ dt_temporal_week <- dt_temporal_red %>%
 ### The first and last week in the data aren't complete - they include less than 7 days, so we wish to remove them from the  plot
 dt_temporal_week_without_first_last_week <- filter(dt_temporal_week, Crash_week!=dt_temporal_week$Crash_week[1] & Crash_week!=dt_temporal_week$Crash_week[nrow(dt_temporal_week)])
 
-ggplot(dt_temporal_week_without_first_last_week, aes(x = Crash_week, y = Count_week)) +
-  geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
-  geom_point() +
-  labs(title='Number of car crash per week',
-       x = "Year", y = "Total Crashes")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-# Set breaks to 1 month interval
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y",)
-  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+# ggplot(dt_temporal_week_without_first_last_week, aes(x = Crash_week, y = Count_week)) +
+#   geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
+#   geom_point() +
+#   labs(title='Number of car crash per week',
+#        x = "Year", y = "Total Crashes")+
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+# # Set breaks to 1 month interval
+#   scale_x_date(date_breaks = "1 year", date_labels = "%Y",)
+#   #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
 ```
 
 
 ```{r}
-
 
 # Create a new column for the week of the year
 # Step 1: Create a data frame with all days in the year
@@ -129,18 +128,12 @@ merged_df$weekday1 <- weekdays(merged_df$first_day_of_week)
 result_df <- merged_df %>%
   group_by(first_day_of_week_new) %>%
   summarise(is_holiday = if ("Yes" %in% is_holiday) "Yes" else "No",
-            holiday= first(holiday))
-
-
-result_df$holiday <- factor()
-
-
-count(result_df, holiday)
+            holiday= first(Holiday))
 
 ```
 
 
-```{r}
+```{r, message=FALSE}
 dt_temporal_week <- left_join(dt_temporal_week_without_first_last_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
 
 dt_temporal_week <- mutate(dt_temporal_week, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
@@ -148,30 +141,40 @@ dt_temporal_week <- mutate(dt_temporal_week, is_holiday = ifelse(is.na(is_holida
 dt_temporal_week_only_holiday <- dt_temporal_week |> filter(is_holiday == "Yes")
 
 
-ggplot(dt_temporal_week, ) +
-  geom_line(aes(group=1, x = Crash_week, y = Count_week)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
-  geom_point(data = dt_temporal_week_only_holiday,aes(color = holiday,x = Crash_week, y = Count_week)) +
-  labs(title='Number of car crash per weeks')+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-# Set breaks to 1 month interval
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
-  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+####################################
+dt_temporal_week_average_by_month <- dt_temporal_week |> group_by(Year, Month) |>
+  summarise(Count_week = mean(Count_week),
+            Crash_week = min(Crash_week),
+            holiday = "mean_month")
+
+data_for_plot <- rbind(dt_temporal_week_only_holiday|> select(Year, Month, Crash_week, Count_week, holiday),
+      dt_temporal_week_average_by_month)
+
+
+ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
+  geom_line(aes(group=holiday, x = Crash_week, y = Count_week, color = holiday))+
+      geom_point(aes(color = holiday,x = Crash_week, y = Count_week)) +
+  geom_line(data = data_for_plot|> filter(holiday=="mean_month"),aes(x = Crash_week, y = Count_week)) +
+  labs(title = "Weekly Car accidents per holiday",
+       subtitle = "The black line is an average of accidents per month",
+       x = "Year", y="Total Accidents in a given week")
 
 
 
 
-ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
-  geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
-  geom_point(aes(color = is_holiday)) +
-  labs(title='Number of car crash per weeks')+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-# Set breaks to 1 month interval
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
-  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+
+
+
 
 ```
 
-<u>Comment :</u> We can visualize thanks to the time series representation the Covid crisis which lead to a reduction of car accident in 2020 since less cars were on the roads. Since then, the average number of accidents is a bit lower than pre-covid.
+Using the graph we can get some interesting insights:
+
++ The **Veterans Day** and **Columbus Day** tend to have higher amount of car accidents compared to the other holidays and compared to the average car accidents.
+
++ Surprisingly, the **Independence day** has relatively lower car accidents compared to the average car accidents 
+
++ Moreover, we can see a decrease in the number of car accidents between 2020 - 2021, this can be explained by the covid-19 outbreak that led to massive lockdowns and reduced significantly the number of drivers on the roads. Since then, the average number of accidents is a bit lower than pre-covid.
 
 
 
