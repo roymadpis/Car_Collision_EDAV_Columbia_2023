@@ -9,18 +9,16 @@ library(ggplot2)
 library(ggmap)
 library(lubridate)
 
-
 data_crash <- readr::read_csv2("data/data_crash.csv")
 holiday_data <- readr::read_csv("data/holidays.csv")
 holiday_data$is_holiday <- "Yes"
 
-data_crash
 ```
-
 
 ## Spatial Representation
 ```{r}
 # Sample the data so that we do not have too much data ploted on the map
+
 
 # dt_sampled <-# sample_n(as.data.frame(data_crash), 4000) %>%
 #   
@@ -31,6 +29,14 @@ data_crash
 dt_sampled <- data_crash %>%
   filter(Road_Name %in% top10)%>%
   sample_n(2000)
+
+#dt_sampled <- sample_n(as.data.frame(data_crash), 4000)
+  # rename(Hit_Run = 'Hit/Run') %>%
+  # # filter(Hit_Run == 'Yes')
+  # filter(Number_of_Lanes == 19) %>%
+
+
+
 
 # Display the random sample
 #print(dt_sampled)
@@ -49,8 +55,8 @@ dt_sampled <- data_crash %>%
 #   lng = ~Longitude,
 #   blur = 15,  # Adjust the blur parameter
 #   radius = 10)  # Adjust the radius parameter
-
   addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
+
 
 ```
 
@@ -61,11 +67,10 @@ dt_sampled <- data_crash %>%
 
 ```{r}
 
-
+#dt_temporal <- data_crash[,]
 
 dt_temporal <- dplyr::select(data_crash,c("Crash_Date_Time","Weather", "Hit_Run",
                        "First_Harmful_Event", "At_Fault"))
-
 
 # dt_temporal <- left_join(dt_temporal, holiday_data, by = c("Crash_Date" = "date"))
 # 
@@ -267,7 +272,7 @@ Month_list <-  c("January", "February", "March", "April", "May", "June", "July",
 
 ##################################### data for d3 - mean crash per day over years
 c <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
-write_csv2(c, "data/mean_crash_per_day_over_years.csv")
+write_csv(c, "data/mean_crash_per_day_over_years.csv")
 
 
 ###########################################################
@@ -796,9 +801,6 @@ dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substa
 
 ```
 
-##Looking at the roads/ intersection (junction, traffic light and division of the road)
-### Road Division
-
 ```{r}
 #Rename the column in Road_type and get rid of the Na and the unknown values
 dt_lane <- dt_lane %>%
@@ -832,7 +834,6 @@ ggplot(dt_lane, aes(y=Road_Division))+
   facet_grid(Number_of_Lanes~.)+
   #theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   labs(title ='Facet by number of Lanes' )
-
 ```
 <u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway). 
 
@@ -906,6 +907,7 @@ road_counts <- dt_lane %>%
 
 print(road_counts)
 ```
+
 ### Alluvial plot to see pattern
 
 ```{r}
@@ -975,6 +977,7 @@ top10
 
 ## Who's at Fault ?
 
+
 ```{r}
 dt_responsible <- dt_responsible %>%
   mutate(Driver_Substance_Abuse = str_extract(Driver_Substance_Abuse, "^[^,]+")) %>%
@@ -1012,51 +1015,6 @@ ggplot(dt_responsible, aes(x = reorder(Driver_Substance_Abuse, -Frequency_drug))
   labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
   theme_minimal()  # Adjust the theme if needed
 ```
-```{r}
-count(dt_responsible, At_Fault)
-dt_responsible <- dt_responsible %>%
-  mutate(At_Fault = recode(At_Fault,
-        "BOTH" = "Both",
-        "DRIVER" = "Driver",
-        "NONMOTORIST" = 'Non Motorist',
-        "UNKNOWN"='Unknown')) 
-
-dt_responsible1 <- dt_responsible[,c('At_Fault', 'Driver_Substance_Abuse')]
-
-n_threshold = 10 
-dt_responsible1 <- dt_responsible1 %>%
-  group_by(At_Fault, Driver_Substance_Abuse) %>%
-  mutate(Frequency = n()) %>%
-  ungroup() %>%
-  filter(Frequency >= n_threshold) %>%
-  distinct(At_Fault, Driver_Substance_Abuse, .keep_all = TRUE)
-
-dt_responsible1
-  
-```
-
-```{r}
-# junction_order <- c("Crossover", "Intersection", "Driveway","Non Intersection", "Interchange")
-# 
-# # Reorder the Junction variable in the dataset
-# dt_lane1 <- dt_lane1 %>%
-#   mutate(Junction = factor(Junction, levels = junction_order))
-
-# Plot the alluvial diagram
-
-##dt_responsible1$Frequency <- 1
-ggplot(data = dt_responsible1,
-       aes(axis1 = At_Fault, axis2 = Driver_Substance_Abuse, y = Frequency)) +
-  geom_alluvium(aes(fill = At_Fault)) +
-  geom_stratum() +
-  geom_text(stat = "stratum",
-            aes(label = after_stat(stratum))) +
-  #scale_x_discrete(limits = c("Road Division", "Traffic Signal", "Junction type"),
-                   #expand = c(0.15, 0.05, 0.05)) +
-  theme_void()
-```
-
-There is nothing to exploit from this graph, there are too much information for driver and none for the other so we don't have more information.
 
 ```{r}
 library(gridExtra)

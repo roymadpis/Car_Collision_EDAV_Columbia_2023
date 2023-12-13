@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Point Plot Chart</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    * {
+      font-family: sans-serif;
+    }
+
+    .button {
+      margin: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .tooltip {
+      position: absolute;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    // Load the data from the provided GitHub link
+    const dataUrl = "https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/mean_crash_per_day_over_years.csv";
+
+    d3.csv(dataUrl)
+      .then(data => {
+        // Convert strings to numbers
+        data.forEach(d => {
+          d.total_crash = +d.total_crash;
+          d.day_only = +d.day_only;
+        });
+
+        // Set up the dimensions for the chart
+        const margin = { top: 20, right: 30, bottom: 60, left: 60 };
+        const width = 800 - margin.left - margin.right;
+        const height = 400 - margin.top - margin.bottom;
+
+        // Create an SVG element
+        const svg = d3.select("body")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Set up scales
+        const xScale = d3.scaleLinear().domain([1, 31]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, d3.max(data, d => d.total_crash)]).range([height, 0]);
+
+        // Set up color scale based on months
+        const colorScale = d3.scaleOrdinal(d3.schemeSet3);
+
+        // Group data by month
+        const groupedData = d3.group(data, d => d.Month);
+
+        // Draw x-axis
+        svg.append("g")
+          .attr("transform", `translate(0,${height})`)
+          .call(d3.axisBottom(xScale))
+          .append("text")
+          .attr("x", width / 2)
+          .attr("y", 40)
+          .attr("text-anchor", "middle")
+          .text("Day");
+
+        // Draw y-axis
+        svg.append("g")
+          .call(d3.axisLeft(yScale))
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", -margin.left)
+          .attr("x", -height / 2)
+          .attr("dy", "1em")
+          .attr("text-anchor", "middle")
+          .text("Mea Crashes");
+
+        // Draw lines
+        const lines = svg.selectAll("path")
+          .data(groupedData)
+          .enter()
+          .append("path")
+          .attr("class", d => `line ${d[0].replace(/\s+/g, '')}`)
+          .attr("d", d => {
+            return d3.line()
+              .x(d => xScale(d.day_only))
+              .y(d => yScale(d.total_crash))
+              (d[1]);
+          })
+          .attr("stroke", (d, i) => colorScale(d[0]))
+          .attr("stroke-width", 2)
+          .attr("fill", "none")
+          .attr("display", "initial");
+
+        // Draw points
+        const points = svg.selectAll("circle")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("class", d => `point ${d.Month.replace(/\s+/g, '')}`)
+          .attr("cx", d => xScale(d.day_only))
+          .attr("cy", d => yScale(d.total_crash))
+          .attr("r", 5) // Adjust the radius as needed
+          .attr("fill", d => colorScale(d.Month))
+          .attr("display", "initial")
+          .on("mouseover", showTooltip)
+          .on("mouseout", hideTooltip);
+
+        // Add buttons
+        const buttons = d3.select("body")
+          .append("div")
+          .selectAll("button")
+          .data([...groupedData.keys()])
+          .enter()
+          .append("button")
+          .attr("class", "button")
+          .text(d => d)
+          .on("click", toggleVisibility);
+
+        // Add legend
+        const legend = d3.select("body")
+          .append("div")
+          .attr("class", "legend");
+
+        legend.selectAll(".legend-item")
+          .data([...groupedData.keys()])
+          .enter()
+          .append("div")
+          .attr("class", "legend-item")
+          .each(function (d) {
+            d3.select(this)
+              .append("div")
+              .attr("class", "legend-color")
+              .style("background-color", colorScale(d));
+
+            d3.select(this)
+              .append("div")
+              .text(d)
+              .on("click", () => toggleVisibility(d));
+          });
+
+        // Add tooltip
+        const tooltip = d3.select("body")
+          .append("div")
+          .attr("class", "tooltip");
+
+        // Toggle visibility function
+        function toggleVisibility(selectedMonth) {
+          // Remove all points and lines associated with the selected month
+          d3.selectAll(`.line.${selectedMonth.replace(/\s+/g, '')}`).remove();
+          d3.selectAll(`.point.${selectedMonth.replace(/\s+/g, '')}`).remove();
+
+          // Toggle the "active" class on buttons and legend items
+          d3.selectAll(`.legend-item div:nth-child(2)`).filter(function (d, i) {
+            return this.textContent === selectedMonth;
+          }).node().classList.toggle("active");
+
+          // Update lines and points visibility based on the button's activity
+          d3.selectAll(`.line.${selectedMonth.replace(/\s+/g, '')}`)
+            .classed("hidden", !isActive);
+
+          d3.selectAll(`.point.${selectedMonth.replace(/\s+/g, '')}`)
+            .classed("hidden", !isActive);
+        }
+
+        // Show tooltip function
+        function showTooltip(event, d) {
+          const [x, y] = d3.pointer(event);
+
+          tooltip
+            .html(`Month: ${d.Month}<br>Day: ${d.day_only}<br>Average Crashes: ${Math.round(d.total_crash)}`)
+            .style("left", x + "px")
+            .style("top", y + "px")
+            .style("opacity", 1);
+        }
+
+        // Hide tooltip function
+        function hideTooltip() {
+          tooltip.style("opacity", 0);
+        }
+      })
+      .catch(error => console.error("Error loading data:", error));
+  </script>
+</body>
+
+</html>
