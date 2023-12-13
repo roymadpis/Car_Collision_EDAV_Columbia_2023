@@ -18,6 +18,8 @@ holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
 
 # Time Series Analysis
 
+We decided then to use the date of special holidays to observe possible correlation with the time series. To have the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}. We then filtered the relevant rows for our study and created the 'holiday_US.csv" file that we are going to use with R. NB: one can find the code for the filtering of the data in the files name : ...
+
 ## Preprocess the Date-Time column
 Here we take the date/time column and transform it into the right data type as well as create some distinct date/time columns that will help us investigate and explore the data (time series analysis)
 
@@ -159,7 +161,9 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
 
 + First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a trend of decrease (that can be attributed to the Covid-19 outbreak) and seasonality 
 
+
 + The **Veterans Day** and **Columbus Day** tend to have higher amount of car accidents compared to the other holidays and compared to the average car accidents.
+
 
 + Surprisingly, the **Independence day** has relatively lower car accidents compared to the average car accidents 
 
@@ -631,27 +635,14 @@ for (col_name in names(unique_values)) {
 ```
 
 ```{r}
-dt_intersection <- data_crash %>%
-   mutate(Traffic_Control = recode(Traffic_Control,
-        "FLASHING TRAFFIC SIGNAL" = "Traffic Light",
-        "TRAFFIC SIGNAL" = "Traffic Light",
-        "NO CONTROLS" = 'No Controls',
-        "RAILWAY CROSSING DEVICE	" = 'Warning Sign',
-        "WARNING SIGN" = 'Warning Sign',
-        "SCHOOL ZONE SIGN DEVICE" = 'Warning Sign',
-        "YIELD SIGN" = 'Warning Sign',
-        "STOP SIGN" = 'Stop Sign',
-        .default  = 'Other')) %>%
-  filter(!is.na(Traffic_Control))
-```
-
-```{r}
 ## Create 2 new datasets to explore different Categorical values
 dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Number_of_Lanes","Hit_Run")]
 
 dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse")]
 
 ```
+
+## Study of the influence of the characteristics of the roads on the number of accident and Hit&Run
 
 ```{r}
 #Rename the column in Road_type and get rid of the Na and the unknown values
@@ -799,6 +790,9 @@ ggplot(data = dt_lane1,
                    #expand = c(0.15, 0.05, 0.05)) +
   theme_void()
 ```
+<u>Comments :</u> The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. Hit&Run incidents
+
+
 
 ## Speaking about Roads, where are we ?
 
