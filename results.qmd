@@ -15,12 +15,6 @@ holiday_data$is_holiday <- "Yes"
 holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
 ```
 
-```{r}
-holiday_data |> count(normalizeHolidayName)
-```
-
-
-
 
 # Time Series Analysis
 
@@ -152,7 +146,7 @@ data_for_plot <- rbind(dt_temporal_week_only_holiday|> select(Year, Month, Crash
 
 
 ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
-  geom_line(aes(group=holiday, x = Crash_week, y = Count_week, color = holiday))+
+  geom_line(aes(group=holiday, x = Crash_week, y = Count_week, color = holiday), size = 0.4)+
       geom_point(aes(color = holiday,x = Crash_week, y = Count_week)) +
   geom_line(data = data_for_plot|> filter(holiday=="mean_month"),aes(x = Crash_week, y = Count_week)) +
   labs(title = "Weekly Car accidents per holiday",
@@ -163,13 +157,28 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
 
 #### Using the graph we can get some interesting insights:
 
++ First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a trend of decrease (that can be attributed to the Covid-19 outbreak) and seasonality 
+
 + The **Veterans Day** and **Columbus Day** tend to have higher amount of car accidents compared to the other holidays and compared to the average car accidents.
 
 + Surprisingly, the **Independence day** has relatively lower car accidents compared to the average car accidents 
 
-
 + Additionally, there is a noticeable decline in the number of car accidents observed between 2020 and 2021. This decrease can be attributed to the impact of the COVID-19 outbreak, which resulted in extensive lockdowns and a substantial reduction in the presence of drivers on the roads. Subsequent to this period, the average number of accidents has remained slightly lower than the pre-COVID levels.
 It is worth noting that we generated box plots for each year, illustrating the total crashes per day. Due to space constraints, we won't present them here, but it is important to highlight our observations. For the years 2015 to 2019, the box plots exhibited remarkable similarity, indicating comparable sizes of the interquartile range (IQR), Q1, Q3, and median. However, the box plot for 2020 stood out as notably lower than the preceding years. Furthermore, the box plots for 2021 and beyond were lower than those before 2020 but higher than the values observed in 2020.
+
+### Roy - ts daily write
+```{r}
+
+dt_temporal_day
+ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
+
+#dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
+
+
+# 
+# ts_data<- ts(df_temporal_week$Crash_week)
+plot(decompose(ts_data))
+```
 
 
 ## Plot by days
@@ -236,35 +245,7 @@ ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
 
 
 
-### Weather Condition
 
-```{r}
-
-dt_temporal <- dt_temporal %>%
-  filter(!Weather %in% c("OTHER", "UNKNOWN")) %>%
-  filter(!is.na(Weather))
-
-dt_temporal <- dt_temporal %>%
-  mutate(Weather = if_else(Weather %in% c("SNOW", "SLEET","BLOWING SNOW"), "SNOW", Weather)) %>%
-  mutate(Weather = if_else(Weather %in% c("SEVERE WINDS", "WINTRY MIX", "BLOWING SAND, SOIL, DIRT"), "WIND", Weather))%>%
-  mutate(Condition = if_else(Weather %in% c("CLEAR","CLOUDY"),"Good","Bad"))
-
-color_scale <- c("RAINING" = "slateblue", "SNOW" = "whitesmoke", "CLOUDY" = "gray", "FOGGY" ="gray27", "WIND"="seagreen4", "CLEAR" ="skyblue")
-
-dt_temporal$Weather <- reorder(dt_temporal$Weather, X= as.numeric(factor(dt_temporal$Weather,levels = c('CLEAR','CLOUDY','FOGGY','WIND','SNOW','RAINING'))))
-
-ggplot(dt_temporal, aes(x = Condition, fill = Weather)) +
-  geom_bar() +
-  scale_fill_manual(values = color_scale)
-
- 
-
-
-#ggplot(dt_temporal, aes(x= Weather))+
-#geom_bar()
-```
-
-<u>Comment :</u> One can see an asymmetry between the bad and good conditions. It seems that bad conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.
 
 
 ### Hours of the day
@@ -282,8 +263,6 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
 ```
 <u>Comment :</u> One can see that crash accidents occur more during the commute time especially the way back home between 15h to 17h.
 
-### Type of Lane
-
 
 
 
@@ -291,12 +270,8 @@ ggplot(dt_temporal, aes(x=Crash_Time))+
 ## Roy
 ################ Roy
 
-```{r}
-data_crash |> head()
-```
 
-
-
+# REMOVE
 ```{r}
 ggplot(dt_temporal_month) +
   geom_boxplot(mapping=aes(x=Month, y=total_accidents))
@@ -323,6 +298,7 @@ ggplot(dt_temporal_month) +
 
 ```
 
+# KEEP
 ```{r}
 
 library(ggridges)
@@ -387,8 +363,13 @@ plot_hours <- ggplot(dt_temporal_hour |> mutate(Crash_Hour = as.factor(Crash_Hou
   geom_boxplot(mapping = aes(x = total_accidents, y = Crash_Hour)) +
   geom_density_ridges(mapping = aes(x = total_accidents, y = Crash_Hour), alpha = 0.5) +
   theme_minimal() +
-  labs(subtitle = "By weekday")
+  labs(subtitle = "By Hour")
 
+ggplot(dt_temporal_hour |> mutate(Crash_Hour = as.factor(Crash_Hour))) +
+  geom_boxplot(mapping = aes(x = total_accidents, y = Crash_Hour)) +
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Crash_Hour), alpha = 0.5) +
+  theme_minimal() +
+  labs(subtitle = "By Hour")
 
 
 # Combine the plots side by side
@@ -403,6 +384,21 @@ combined_plots <- plot_month + plot_weekday + plot_hours +
 # Print the combined plots
 print(combined_plots)
 
+
+
+# geom_violin()
+# plot_hours <- ggplot(dt_temporal_hour |> mutate(Crash_Hour = as.factor(Crash_Hour))) +
+#   geom_boxplot(mapping = aes(x = total_accidents, y = Crash_Hour)) +
+#   geom_violin(mapping = aes(x = total_accidents, y = Crash_Hour), alpha = 0.5) +
+#   theme_minimal() +
+#   labs(subtitle = "By Hour")
+
+#  ggplot(dt_temporal_month |> mutate(Month = as.factor(Month))) +
+#   geom_boxplot(mapping = aes(x = total_accidents, y = Month)) +
+#   geom_violin(mapping = aes(x = total_accidents, y = Month), alpha = 0.5) +
+#   theme_minimal() +
+#   labs(subtitle = "By month")
+
 ```
 
 + By combining histograms and density plots, we gain valuable insights into the distribution of total accidents aggregated by months per year, examining variations across different months, weekdays, and day-hours
@@ -414,8 +410,6 @@ Analyzing the density plots reveals a similar distribution in the total number o
 
 + **Number of accidents per weekday**:
 The density plots unveil noticeable differences in the distribution of total accidents between weekends and weekdays, providing insights into the varying patterns throughout the week.
-
-
 
 
 + **Number of accidents per Hour in day**:
@@ -588,45 +582,23 @@ a|> mutate("prop" = n/sum(a$n))
 ```
 
 
-## Weather
 
-```{r}
-
-df_mosaic_by_weather <- dt_temporal |> group_by(Weather, Hit_Run) |> summarise(Freq = n())
-
-
-###Mosaic plot 1:
-mosaicplot(table(dt_temporal$Weather, dt_temporal$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
-           color = c('tomato', 'darkgreen'), 
-           las = 2  # Rotate labels by 90 degrees
-)
-
-
-vcd:: mosaic(Hit_Run ~ Weather,
- data = df_mosaic_by_weather,
- direction = c("v", "h"), 
- highlighting_fill=c('tomato','darkgreen'))
-```
-
-
-## Things we found from graphs we created"
-+ We checked and there doesn't seem to be a correlation between the `Weather` and the `Hit_Run`
 
 
 
 
 ```{r}
-dt_temporal_week
 
 
-ts_data <- ts(data = dt_temporal_week$Crash_week, start = c(2015,1,3), end = c(2023,11,13), frequency = 51)
+dt_temporal_day
+ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
 
 #dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
 
 
 # 
 # ts_data<- ts(df_temporal_week$Crash_week)
-# plot(decompose())
+plot(decompose(ts_data))
 
 
 ```
@@ -743,7 +715,7 @@ lane_freq <- dt_lane %>%
 dt_lane <- left_join(lane_freq, dt_lane, by = "Junction")
 
 ggplot(dt_lane, aes(x = reorder(Junction, -Frequency_junc))) +
-  geom_bar() +
+  geom_bar(aes(fill = Traffic_Control)) +
   labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
   theme_minimal()  # Adjust the theme if needed
 ```
@@ -962,7 +934,7 @@ dt_sampled <- data_crash %>%
 
 # 
  leaflet(dt_sampled) %>%
-#   addTiles() %>% 
+   addTiles() %>% 
 #   addHeatmap(
 #   lat = ~Latitude,
 #   lng = ~Longitude,
@@ -975,5 +947,78 @@ dt_sampled <- data_crash %>%
 
 <u>Comment :</u> We can see from the map multiple ouliers, all the crash data should be in the Montgomery County so every data outside of this area can be considered as outliers. Maybe when the localisation was added to the police report some numbers were mistaken.
 *Should we remove all of them ?
+
+
+
+
+Overall findings from plots we didn't include in this project:
+
+
++ <u>Comment :</u> We tried to 
+
+There is an asymmetry between the "bad" and "good" conditions. It seems that bad conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.
+
+
+
+### Weather Condition
+
+```{r}
+
+dt_temporal <- dt_temporal %>%
+  filter(!Weather %in% c("OTHER", "UNKNOWN")) %>%
+  filter(!is.na(Weather))
+
+dt_temporal <- dt_temporal %>%
+  mutate(Weather = if_else(Weather %in% c("SNOW", "SLEET","BLOWING SNOW"), "SNOW", Weather)) %>%
+  mutate(Weather = if_else(Weather %in% c("SEVERE WINDS", "WINTRY MIX", "BLOWING SAND, SOIL, DIRT"), "WIND", Weather))%>%
+  mutate(Condition = if_else(Weather %in% c("CLEAR","CLOUDY"),"Good","Bad"))
+
+color_scale <- c("RAINING" = "slateblue", "SNOW" = "whitesmoke", "CLOUDY" = "gray", "FOGGY" ="gray27", "WIND"="seagreen4", "CLEAR" ="skyblue")
+
+dt_temporal$Weather <- reorder(dt_temporal$Weather, X= as.numeric(factor(dt_temporal$Weather,levels = c('CLEAR','CLOUDY','FOGGY','WIND','SNOW','RAINING'))))
+
+ggplot(dt_temporal, aes(x = Condition, fill = Weather)) +
+  geom_bar() +
+  scale_fill_manual(values = color_scale)
+
+ 
+
+
+#ggplot(dt_temporal, aes(x= Weather))+
+#geom_bar()
+```
+
+
+
+## Weather
+
+```{r}
+
+df_mosaic_by_weather <- dt_temporal |> group_by(Weather, Hit_Run) |> summarise(Freq = n())
+
+
+###Mosaic plot 1:
+mosaicplot(table(dt_temporal$Weather, dt_temporal$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
+           color = c('tomato', 'darkgreen'), 
+           las = 2  # Rotate labels by 90 degrees
+)
+
+
+vcd:: mosaic(Hit_Run ~ Weather,
+ data = df_mosaic_by_weather,
+ direction = c("v", "h"), 
+ highlighting_fill=c('tomato','darkgreen'))
+```
+
+
+
+
+## Things we found from graphs we created"
++ We checked and there doesn't seem to be a correlation between the `Weather` and the `Hit_Run`
+
+
+
+
+
 
 

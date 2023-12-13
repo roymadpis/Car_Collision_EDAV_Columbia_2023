@@ -1,4 +1,5 @@
 # Data
+## Technical Description
 
 The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD (link = https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kfLinks to an external site). 
 
@@ -14,15 +15,32 @@ According to the dataset description, the data is updated weekly. The source dat
 The data has position features as well as a time feature and combinations of categorical and numerical data describing the accident.
 
   
-## Description
+## Research Plan
 
 In class, we were introduced to multiple plots and we are going to utilize them to drive insightful factors associating to higher number of collisions.
-Some of the interesting columns we wish to explore are "Crash Date/Time" to see if we can spot some trend or seasonality in the collision data based on the days of the week, hours in the day, etc. Similarly we want to use the geographical data to spot specific trends. 
-Moreover, we will also study the quality of the roads or the configuration of the roads (whether it is curved or not, whether it is a two-way road or a single). Further the weather conditions will reveal some important trend.
+First, we wish to explore are "Crash Date/Time" as a time-series to see if we can spot some trend or seasonality in the collision data. We wish to explore if there are more/less accidents in specific months/days of week/hours of day. Moreover, We wish to explore whether holiday days / weeks with holidays, tend to have more or less accidents.
+
+Second, hit and run accidents is a problem which  
+
+a phenomena that 
+Similarly we want to use the geographical data (spatial data) to spot specific trends or interesting insights that are related to locations issues. 
+Moreover, we will study the quality of the roads or the configuration of the roads (whether it is curved or not, whether it is a two-way road or a single). Further the weather conditions will reveal some important trend.
 Some other paths to explore might be the "At Fault" column that describe whether the driver is at fault in the accident or a non-motorist. And the type of accidents thanks to "First Harmful Event". 
 Hence, our data offers various paths to explore, each potentially yielding distinct insights into car accidents.
 
 Overall, our goal is to identify combinations of features that could elevate the risk of collisions. This information can then provide policymakers with valuable insights to implement meaningful changes or restrictions on the roads.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Missing value analysis
