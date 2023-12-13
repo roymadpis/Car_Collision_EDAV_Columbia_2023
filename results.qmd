@@ -1,6 +1,6 @@
 # Results
 
-```{r}
+```{r, warning = FALSE, message=FALSE}
 library(tidyverse)
 library(leaflet)
 library(leaflet.extras)
@@ -10,89 +10,72 @@ library(ggmap)
 library(lubridate)
 
 data_crash <- readr::read_csv2("data/data_crash.csv")
-holiday_data <- readr::read_csv("data/holidays.csv")
+holiday_data <- readr::read_csv("data/holiday_US.csv")
 holiday_data$is_holiday <- "Yes"
+holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
+```
 
+```{r}
+holiday_data |> count(normalizeHolidayName)
 ```
 
 
 
-## Time Series
+
+# Time Series Analysis
+
+## Preprocess the Date-Time column
+Here we take the date/time column and transform it into the right data type as well as create some distinct date/time columns that will help us investigate and explore the data (time series analysis)
 
 ```{r}
-
-#dt_temporal <- data_crash[,]
 
 dt_temporal <- dplyr::select(data_crash,c("Crash_Date_Time","Weather", "Hit_Run",
                        "First_Harmful_Event", "At_Fault"))
 
-# dt_temporal <- left_join(dt_temporal, holiday_data, by = c("Crash_Date" = "date"))
-# 
-# dt_temporal <- mutate(dt_temporal, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
-
-
-
-head(dt_temporal)
-```
-
-
-```{r}
 #Separate time and Date
-
 dt_temporal$"Crash_Date_Time" <- as.POSIXct(dt_temporal$"Crash_Date_Time", format = "%m/%d/%Y %I:%M:%S %p", tz = "America/New_York")
 
 dt_temporal$Crash_Date <- as.Date(dt_temporal$"Crash_Date_Time", tz = "America/New_York")
 
-#I have a problem with the hours it doesn't show up well
+library(hms)
 dt_temporal$Crash_Time <- format(dt_temporal$"Crash_Date_Time", "%H:%M:%S")
-dt_temporal
-#ggplot(dt_temporal, aes(x = as.factor(Crash_week))) +
-       #stat_count() +
-       #labs(title='Number of car crash per weeks')
+dt_temporal$Crash_Time <- as_hms(dt_temporal$Crash_Time)
+dt_temporal$Crash_Hour <- hour(dt_temporal$Crash_Time) #Crash hour
 
-```
-
-
-
-### Preprocessing for the df_temporal
-```{r}
 ### add some "date slicers" columns
 dt_temporal$Week_day <- weekdays(dt_temporal$Crash_Date)
 dt_temporal$Month <-  months(dt_temporal$Crash_Date)
 dt_temporal$Year <-  year(dt_temporal$Crash_Date)
 dt_temporal$first_day_of_month <- as.Date(format(dt_temporal$Crash_Date, "%Y-%m-01"))
 
-library(hms)
-dt_temporal$Crash_Time <- as_hms(dt_temporal$Crash_Time)
-dt_temporal$Crash_Hour <- hour(dt_temporal$Crash_Time) #Crash hour
 
-
-### Transform some colkumns to factors
+### Transform some columns to factors --> for visualization purpose
 dt_temporal <- mutate(dt_temporal, Week_day = factor(Week_day,
-                                             levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")))
+                                                     levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")))
 
-dt_temporal$Month <- factor(dt_temporal$Month, 
-                          levels = c("January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"),)
+dt_temporal <- mutate(dt_temporal, Month = factor(Month,
+                                                     levels = c("January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December")))
+
+# dt_temporal$Month <- factor(dt_temporal$Month, 
+#                           levels = c("January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"),)
 
 ### arrange the data by date
 dt_temporal <- dt_temporal |> arrange(Crash_Date)
 
 dt_temporal_month <- dt_temporal |> group_by(Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
 
-
 dt_temporal_Year_month <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day) |> summarise(total_accidents = n())
 
-
-### create a ts object
-first_date_in_data <- min(dt_temporal$first_day_of_month)
-last_date_in_data <- max(dt_temporal$first_day_of_month)
-```
-
-
-```{r}
+# Getting the first and last date in the data
 start_date = min(dt_temporal$Crash_Date)
 end_date = max(dt_temporal$Crash_Date)
+```
 
+### Create Weekly data
+We wish to analyze the weekly trends of total number of car accidents in Montgomery county. In order to do so, we group the data by weeks and sum the number of accidents.
+Finally we display a time-series graph describing the 
+
+```{r}
 date_sequence <- seq(as.Date("2014-12-28"), end_date, by = "week")
 dt_temporal$Crash_week <- cut(dt_temporal$Crash_Date, breaks = c(date_sequence, Inf), labels = as.factor(date_sequence), include.lowest = TRUE)
 
@@ -111,14 +94,17 @@ dt_temporal_week <- dt_temporal_red %>%
 #   mutate(is_holiday = ifelse(Week_with_holiday %in% weeks_with_holiday$Week_with_holiday, "Yes", is_holiday)) %>%
 #   select(-Week_with_holiday)
 
+### The first and last week in the data aren't complete - they include less than 7 days, so we wish to remove them from the  plot
+dt_temporal_week_without_first_last_week <- filter(dt_temporal_week, Crash_week!=dt_temporal_week$Crash_week[1] & Crash_week!=dt_temporal_week$Crash_week[nrow(dt_temporal_week)])
 
-ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
+ggplot(dt_temporal_week_without_first_last_week, aes(x = Crash_week, y = Count_week)) +
   geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
   geom_point() +
-  labs(title='Number of car crash per weeks')+
+  labs(title='Number of car crash per week',
+       x = "Year", y = "Total Crashes")+
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
 # Set breaks to 1 month interval
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y",)
   #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
 ```
 
@@ -142,16 +128,36 @@ merged_df$weekday1 <- weekdays(merged_df$first_day_of_week)
 
 result_df <- merged_df %>%
   group_by(first_day_of_week_new) %>%
-  summarise(is_holiday = if ("Yes" %in% is_holiday) "Yes" else "No")
+  summarise(is_holiday = if ("Yes" %in% is_holiday) "Yes" else "No",
+            holiday= first(holiday))
 
+
+result_df$holiday <- factor()
+
+
+count(result_df, holiday)
 
 ```
 
 
 ```{r}
-dt_temporal_week <- left_join(dt_temporal_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
+dt_temporal_week <- left_join(dt_temporal_week_without_first_last_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
 
 dt_temporal_week <- mutate(dt_temporal_week, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
+
+dt_temporal_week_only_holiday <- dt_temporal_week |> filter(is_holiday == "Yes")
+
+
+ggplot(dt_temporal_week, ) +
+  geom_line(aes(group=1, x = Crash_week, y = Count_week)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
+  geom_point(data = dt_temporal_week_only_holiday,aes(color = holiday,x = Crash_week, y = Count_week)) +
+  labs(title='Number of car crash per weeks')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+# Set breaks to 1 month interval
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
+  #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+
+
 
 
 ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
@@ -191,6 +197,60 @@ ggplot(dt_temporal_day |> filter(Year == 2019), aes(x = Crash_Date, y = total_cr
   #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
 
 ```
+
+
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(plotly)
+
+# Assuming dt_temporal_day is your data frame
+
+# Create a ggplot object
+plot <- ggplot(dt_temporal_day, aes(x = Crash_Date, y = total_crash)) +
+  geom_line(aes(group = 1)) +
+  geom_point(aes(color = is_holiday)) +
+  labs(title = 'Number of car crashes per weeks') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y")
+
+# Convert the ggplot object to a plotly object
+plotly_plot <- ggplotly(plot)
+
+# Add a year slicer
+plotly_plot <- plotly_plot %>%
+  layout(updatemenus = list(
+    list(
+      x = 0.1,
+      y = 0.8,
+      type = "buttons",
+      showactive = TRUE,
+      buttons = list(
+        list(label = "All",
+             method = "relayout",
+             args = list("xaxis.range", list(NULL, NULL))),
+        list(label = "2018",
+             method = "animate",
+             args = list(list(frames = list(list(data = dt_temporal_day %>% filter(Year == 2018)))))),
+        list(label = "2019",
+             method = "animate",
+             args = list(list(frames = list(list(data = dt_temporal_day %>% filter(Year == 2019)))))),
+        list(label = "2020",
+             method = "animate",
+             args = list(list(frames = list(list(data = dt_temporal_day %>% filter(Year == 2020)))))
+        )
+      )
+    )
+  ))
+
+# Print the interactive plot
+print(plotly_plot)
+
+
+```
+
 
 
 ```{r}
