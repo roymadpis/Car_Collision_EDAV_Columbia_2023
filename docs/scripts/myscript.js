@@ -25,7 +25,80 @@
 
 
 
-##########################################################################
+
+
+
+
+///// reading data
+/*  const rowConverter = function (d) {
+    return {
+      disp: +d.disp,
+      mpg: +d.mpg,
+      carname: d.carname,
+      cylcolor: d.cylcolor
+      }
+  };*/
+
+/*  d3.csv("https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/mean_crash_per_day_over_years.csv", rowConverter)
+    .then(function(data) {
+
+  // stuff that requires the loaded data
+
+    })
+    .catch(function(error) {
+
+  // error handling
+
+    });*/
+
+
+   /*       Month: d.Month
+   CrashDayNoYear: d.crash_day_no_year,
+          TotalCrash: parseFloat(+d.total_crash),
+          DayOnly: d.day_only
+
+          https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/mean_crash_per_day_over_years.csv
+          */
+
+d3.csv("https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/mean_crash_per_day_over_years.csv")
+    .then(function (data) {
+        // Check the loaded data
+        console.log(data);
+
+        // Assuming your data has a structure like [{ day_only: ..., Total_Crash: ..., Month: ... }, ...]
+        const dataset = data;
+
+        // Check if 'dataset' is an array
+        if (Array.isArray(dataset)) {
+            // Continue with your visualization code here
+
+            // Set up dimensions and margins
+            const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+            const width = 600 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            // ... rest of your code
+        } else {
+            console.error("Dataset is not an array. Check the data structure.");
+        }
+    })
+    .catch(function (error) {
+        // Handle error if the data cannot be loaded
+        console.error(error);
+    });
+
+});
+
+
+
+
+/*    d => ({
+            HighwayMpg: parseInt(d.HighwayMpg),
+            Horsepower: parseInt(d.Horsepower),
+        })*/
+
+
+//////////////////////////////////////////////////
   const xScale = d3.scaleBand()
       .domain(d3.range(bardata.length))
       .range([0, innerWidth])
