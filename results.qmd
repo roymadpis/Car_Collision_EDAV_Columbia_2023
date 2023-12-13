@@ -2,15 +2,23 @@
 
 ```{r, warning = FALSE, message=FALSE}
 library(tidyverse)
-library(leaflet)
-library(leaflet.extras)
 library(dplyr)
 library(ggplot2)
-library(ggmap)
 library(lubridate)
+
+library(hms)
+
 library(ggridges)
 library(patchwork)
-library(hms)
+library(ggalluvial)
+
+#for the spatial data part
+library(leaflet)
+library(leaflet.extras)
+library(ggmap)
+library(sf) 
+
+
 
 data_crash <- readr::read_csv2("data/data_crash.csv")
 holiday_data <- readr::read_csv("data/holiday_US.csv")
@@ -563,33 +571,33 @@ ggplot(dt_lane_freq, aes(x = reorder(Junction, -Frequency_junc))) +
 
 
 ```{r}
-dt_lane_freq_intersection <- dt_lane_freq %>%
-  filter(Junction == 'Intersection')
-
-# Function to filter rows within a certain radius
-filter_within_radius <- function(data, radius_meters = 100) {
-  n <- nrow(data)
-  keep_rows <- rep(FALSE, n)
-
-  # Initialize with the first row
-  keep_rows[1] <- TRUE
-
-  for (i in 2:n) {
-    distances <- geosphere::distVincentySphere(
-      data[i, c("Longitude", "Latitude")],
-      data[keep_rows, c("Longitude", "Latitude")]
-    )
-
-    too_close <- distances < radius_meters
-    keep_rows[i] <- !any(too_close)
-  }
-
-  return(data[keep_rows, , drop = FALSE])
-}
-
-
-# Apply the function to your data
-dt_lane_freq_filtered <- filter_within_radius(dt_lane_freq_intersection, radius_meters = 100)
+# dt_lane_freq_intersection <- dt_lane_freq %>%
+#   filter(Junction == 'Intersection')
+# 
+# # Function to filter rows within a certain radius
+# filter_within_radius <- function(data, radius_meters = 100) {
+#   n <- nrow(data)
+#   keep_rows <- rep(FALSE, n)
+# 
+#   # Initialize with the first row
+#   keep_rows[1] <- TRUE
+# 
+#   for (i in 2:n) {
+#     distances <- geosphere::distVincentySphere(
+#       data[i, c("Longitude", "Latitude")],
+#       data[keep_rows, c("Longitude", "Latitude")]
+#     )
+# 
+#     too_close <- distances < radius_meters
+#     keep_rows[i] <- !any(too_close)
+#   }
+# 
+#   return(data[keep_rows, , drop = FALSE])
+# }
+# 
+# 
+# # Apply the function to your data
+# dt_lane_freq_filtered <- filter_within_radius(dt_lane_freq_intersection, radius_meters = 100)
 
 ```
 
@@ -614,7 +622,6 @@ dt_lane1 <- dt_lane1 %>%
 ```
 
 ```{r}
-library(ggalluvial)
 
 junction_order <- c("Crossover", "Intersection", "Driveway","Non Intersection", "Interchange")
 
@@ -636,7 +643,9 @@ ggplot(data = dt_lane1,
   labs(title = 'Alluvial plot combining characteristics about the crash location and the Hit/Run situation', fill= 'Hit/Run')+
   theme_void()
 ```
+
 <u>Comments :</u> The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be f
+# Ethan - what did you want to write here?
 
 
 
@@ -645,9 +654,6 @@ ggplot(data = dt_lane1,
 To 
 
 ```{r, message= FALSE, warning= FALSE}
-library(sf)
-library(dplyr)
-
 ## We are removing the data points which are not in the county
 
 # 1st step : get the coordinate of the Montgomery county using a public data
@@ -678,42 +684,51 @@ leaflet(coordinate_Montgomery) %>%
 
 ```
 
-+ One key element that can be taken from that interactive map is that parking are place with high density of Hit/Run incidents. This correlate with a previous plot when we saw that in 'First_Harmful_Event' column, "Parked-Vehicle" is the category with the highest proportion of Hit/Run. 
++ One key element that can be taken from that interactive map is that parking are place with high density of Hit/Run incidents. This correlate with one of our previous mosaic plot that displayed the 'First_Harmful_Event' column. We saw there that the "Parked-Vehicle" is the category with the highest proportion of Hit/Run.
 
-  Moreover, it is visible that intersections are location with higher density of these accidents. Overall, this heat map help us visualize the previous pattern we have discovered earlier, it is clear that there is almost no Hit/Run incidents on highway like 15A. 
-
-
-
-```{r}
-# Spatial data
-
-# 
- leaflet(dt_sampled) %>%
-   addTiles() %>% 
-#   addHeatmap(
-#   lat = ~Latitude,
-#   lng = ~Longitude,
-#   blur = 15,  # Adjust the blur parameter
-#   radius = 10)  # Adjust the radius parameter
-  addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
+  Moreover, it is visible that intersections are location with higher density of hit and run accidents. Overall, this heat map help us visualize the patterns we have discovered earlier, it is clear that there is almost no Hit/Run incidents on highway like 15A. 
 
 
-```
+---------------------------------------------------------------------------
 
-<u>Comment :</u> We can see from the map multiple ouliers, all the crash data should be in the Montgomery County so every data outside of this area can be considered as outliers. Maybe when the localisation was added to the police report some numbers were mistaken.
-*Should we remove all of them ?
+# Overall findings from plots we didn't include in this project:
 
-
-
-
-## Overall findings from plots we didn't include in this project:
 Other than the plots we presented in this section, we created dozens more visualizations that were less informative thus excluded from the final report. However, we would like to highlight some of the findings and insights we derived from them.
 
+```{r}
+dt_temporal <- dt_temporal %>%
+  filter(!Weather %in% c("OTHER", "UNKNOWN")) %>%
+  filter(!is.na(Weather))
 
-+ **Weather data**: we analyzed the given weather column and found there are more accidents on days with "good" weather condition. The problem is there is an internal asymmetry between the numer "bad" and "good" weather conditions. Bad consitions.
+dt_temporal <- dt_temporal %>%
+  mutate(Weather = if_else(Weather %in% c("SNOW", "SLEET","BLOWING SNOW"), "SNOW", Weather)) %>%
+  mutate(Weather = if_else(Weather %in% c("SEVERE WINDS", "WINTRY MIX", "BLOWING SAND, SOIL, DIRT"), "WIND", Weather))%>%
+  mutate(Condition = if_else(Weather %in% c("CLEAR","CLOUDY"),"Good","Bad"))
+
+# color_scale <- c("RAINING" = "slateblue", "SNOW" = "whitesmoke", "CLOUDY" = "gray", "FOGGY" ="gray27", "WIND"="seagreen4", "CLEAR" ="skyblue")
+# 
+# dt_temporal$Weather <- reorder(dt_temporal$Weather, X= as.numeric(factor(dt_temporal$Weather,levels = c('CLEAR','CLOUDY','FOGGY','WIND','SNOW','RAINING'))))
+# 
+# ggplot(dt_temporal, aes(x = Condition, fill = Weather)) +
+#   geom_bar() +
+#   scale_fill_manual(values = color_scale)
+```
 
 
-conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.
++ **Weather data**: 
+We define an accident that occurred with "good" weather conditions as an accident that the value in the column `Weather` was "CLEAR" or "CLOUDY". The other condition types are classified as "Bad".
+We analyzed the number of accidents in "Good" versus "Bad" weather conditions and found there are more accidents on days with "good" weather condition. 
+The issue with that analysis is we don't have the overall proportion of "good" vs. "bad" days. Our assumption is there are more "good" than "bad" days, and therefore, the fact there are more accidents on "good" days, doesn't really mean anything.
+
++ We checked and there doesn't seem to be a correlation between the `Weather` and the `Hit_Run`
+
+```{r}
+# df_mosaic_by_weather <- dt_temporal |> group_by(Weather, Hit_Run) |> summarise(Freq = n())
+# 
+# ###Mosaic plot 1:
+# mosaicplot(table(dt_temporal$Weather, dt_temporal$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event", color = c('tomato', 'darkgreen'), las = 2)  # Rotate labels by 90 degrees
+```
+
 
 ## Speaking about Roads, where are we ?
 
@@ -735,96 +750,29 @@ top10 <- top_10_roads$Road_Name
 top10
 ```
 
++ Time-plot displaying the total number of accidents trend over the years faceted by weekdays:
 
-## Things we found from graphs we created"
-+ We checked and there doesn't seem to be a correlation between the `Weather` and the `Hit_Run`
+  - In the faceted line graph, a consistent trend is apparent in the number of accidents per weekday, suggesting a similar pattern across the week. However, the magnitude of accidents varies, with fewer incidents occurring on weekends, which aligns with expectations. Notably, the middle of the week appears to experience a higher frequency of accidents.
+
+  - Furthermore, an examination of the "black dots," representing each year's month with the highest number of accidents, provides additional insights. Comparing these dots across different weekdays reveals distinctions, and an intriguing observation emerges when connecting these dots. If we were to draw a line connecting each black dot, a trend similar to the loess blue line trend in the plot becomes evident, indicating a potential overarching pattern in the occurrence of maximum accidents over the years.
 
 
-### Weather Condition
 
 ```{r}
-
-dt_temporal <- dt_temporal %>%
-  filter(!Weather %in% c("OTHER", "UNKNOWN")) %>%
-  filter(!is.na(Weather))
-
-dt_temporal <- dt_temporal %>%
-  mutate(Weather = if_else(Weather %in% c("SNOW", "SLEET","BLOWING SNOW"), "SNOW", Weather)) %>%
-  mutate(Weather = if_else(Weather %in% c("SEVERE WINDS", "WINTRY MIX", "BLOWING SAND, SOIL, DIRT"), "WIND", Weather))%>%
-  mutate(Condition = if_else(Weather %in% c("CLEAR","CLOUDY"),"Good","Bad"))
-
-color_scale <- c("RAINING" = "slateblue", "SNOW" = "whitesmoke", "CLOUDY" = "gray", "FOGGY" ="gray27", "WIND"="seagreen4", "CLEAR" ="skyblue")
-
-dt_temporal$Weather <- reorder(dt_temporal$Weather, X= as.numeric(factor(dt_temporal$Weather,levels = c('CLEAR','CLOUDY','FOGGY','WIND','SNOW','RAINING'))))
-
-ggplot(dt_temporal, aes(x = Condition, fill = Weather)) +
-  geom_bar() +
-  scale_fill_manual(values = color_scale)
-
- 
-
-
-#ggplot(dt_temporal, aes(x= Weather))+
-#geom_bar()
-```
-
-
-
-## Weather
-
-```{r}
-
-df_mosaic_by_weather <- dt_temporal |> group_by(Weather, Hit_Run) |> summarise(Freq = n())
-
-
-###Mosaic plot 1:
-mosaicplot(table(dt_temporal$Weather, dt_temporal$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
-           color = c('tomato', 'darkgreen'), 
-           las = 2  # Rotate labels by 90 degrees
-)
-
-
-vcd:: mosaic(Hit_Run ~ Weather,
- data = df_mosaic_by_weather,
- direction = c("v", "h"), 
- highlighting_fill=c('tomato','darkgreen'))
-```
-
-
-
-
-
-
-### Time-plot displaying the total number of accidents trend over the years faceted by weekdays
-
-```{r}
-
+## Filter the highest point in each Year
+# highest_points <- dt_temporal_Year_month %>%
+#   group_by(Year, Week_day) %>%
+#   slice_max(order_by = total_accidents)
+# 
 # ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
 #   geom_line() + 
-#   geom_point() + 
-#   facet_grid(Week_day~.)
-
-# Filter data for December
-december_data <- dt_temporal_Year_month %>%
-  filter(month(first_day_of_month) == 12)
-
-highest_points <- dt_temporal_Year_month %>%
-  group_by(Year, Week_day) %>%
-  slice_max(order_by = total_accidents)
-
-ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
-  geom_line() + 
-  stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
-  geom_point(data = highest_points, col = "black", size = 1.4) +  # Add points only for Jan
-  facet_grid(~Week_day) +
-  labs(title = "line plot of total accidents faceted by weekday",
-       subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
+#   stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
+#   geom_point(data = highest_points, col = "black", size = 1.4) +  # Add points only for Jan
+#   facet_grid(~Week_day) +
+#   labs(title = "line plot of total accidents faceted by weekday",
+#        subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
 
 ```
-
-+ In the faceted line graph, a consistent trend is apparent in the number of accidents per weekday, suggesting a similar pattern across the week. However, the magnitude of accidents varies, with fewer incidents occurring on weekends, which aligns with expectations. Notably, the middle of the week appears to experience a higher frequency of accidents.
-
-+ Furthermore, an examination of the "black dots," representing each year's month with the highest number of accidents, provides additional insights. Comparing these dots across different weekdays reveals distinctions, and an intriguing observation emerges when connecting these dots. If we were to draw a line connecting each black dot, a trend similar to the loess blue line trend in the plot becomes evident, indicating a potential overarching pattern in the occurrence of maximum accidents over the years.
 
 
 
