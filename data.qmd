@@ -2,7 +2,7 @@
 
 ## Technical Description
 
-The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD (link = https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kf Links to an external site). 
+The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD [link](https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kf){.class-to-style-as-link}
 
 The data is supplied by all the police departments of this county. Moreover, the description of the data set mentions that :
 *"Please note that these collision reports are based on preliminary information supplied to the Police Department by the reporting parties. Therefore, the collision data available on this web page may reflect:

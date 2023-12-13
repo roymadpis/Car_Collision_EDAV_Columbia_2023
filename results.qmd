@@ -8,6 +8,8 @@ library(dplyr)
 library(ggplot2)
 library(ggmap)
 library(lubridate)
+library(ggridges)
+library(patchwork)
 
 data_crash <- readr::read_csv2("data/data_crash.csv")
 holiday_data <- readr::read_csv("data/holiday_US.csv")
@@ -16,7 +18,7 @@ holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
 ```
 
 
-# Time Series Analysis
+# Part 1 - Time Series Analysis
 
 We decided then to use the date of special holidays to observe possible correlation with the time series. To have the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}. We then filtered the relevant rows for our study and created the 'holiday_US.csv" file that we are going to use with R. NB: one can find the code for the filtering of the data in the files name : ...
 
@@ -67,7 +69,7 @@ start_date = min(dt_temporal$Crash_Date)
 end_date = max(dt_temporal$Crash_Date)
 ```
 
-### Create Weekly data
+### Create Weekly car-accident data
 We wish to analyze the weekly trends of total number of car accidents in Montgomery county. In order to do so, we group the data by weeks and sum the number of accidents.
 Finally we display a time-series graph describing the 
 
@@ -155,57 +157,41 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
        subtitle = "The black line is an average of accidents per month",
        x = "Year", y="Total Accidents in a given week")
 
+
 ```
 
 #### Using the graph we can get some interesting insights:
 
 + First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a trend of decrease (that can be attributed to the Covid-19 outbreak) and seasonality 
 
-
 + The **Veterans Day** and **Columbus Day** tend to have higher amount of car accidents compared to the other holidays and compared to the average car accidents.
-
 
 + Surprisingly, the **Independence day** has relatively lower car accidents compared to the average car accidents 
 
 + Additionally, there is a noticeable decline in the number of car accidents observed between 2020 and 2021. This decrease can be attributed to the impact of the COVID-19 outbreak, which resulted in extensive lockdowns and a substantial reduction in the presence of drivers on the roads. Subsequent to this period, the average number of accidents has remained slightly lower than the pre-COVID levels.
 It is worth noting that we generated box plots for each year, illustrating the total crashes per day. Due to space constraints, we won't present them here, but it is important to highlight our observations. For the years 2015 to 2019, the box plots exhibited remarkable similarity, indicating comparable sizes of the interquartile range (IQR), Q1, Q3, and median. However, the box plot for 2020 stood out as notably lower than the preceding years. Furthermore, the box plots for 2021 and beyond were lower than those before 2020 but higher than the values observed in 2020.
 
-### Roy - ts daily write
-```{r}
 
-# dt_temporal_day
-# ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
-# 
-# #dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
-# 
-# 
-# # 
-# # ts_data<- ts(df_temporal_week$Crash_week)
-# plot(decompose(ts_data))
-```
+### Create daily car-accident data
 
+We first wish to Plot decomposition graph - to display the different components of the daily number of accidents time-series
 
-## Plot by days
-
-```{r}
-
+```{r, message=FALSE}
 dt_temporal_day <- dt_temporal |> group_by(Year, Month, Crash_Date) |> summarise(total_crash = n())
 
 dt_temporal_day <- left_join(dt_temporal_day, merged_dy_for_temporal_day, by = c("Crash_Date"= "date"))
 
+### ts daily data
+ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
+plot(decompose(ts_data))
+```
 
-# 
-# ggplot(dt_temporal_day |> filter(Year == 2019), aes(x = Crash_Date, y = total_crash)) +
-#   geom_line(aes(group=1)) + #because we grouped earlier by Crash_Date we need now to specify that we treat all the data as one group.
-#   geom_point(aes(color = is_holiday)) +
-#   labs(title='Number of car crash per weeks')+
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-# # Set breaks to 1 month interval
-#   scale_x_date(date_breaks = "1 year", date_labels = "%Y") 
-#   #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+The decomposition graph for the daily number of accidents time series, reveals there is a clear seasonality in the accidents data, that is - there are some cyclical patterns.
 
 
+#### Average number of car accidents per day of month over the years
 
+```{r, message=FALSE}
 dt_temporal_day <- mutate(dt_temporal_day,crash_day_no_year = format(Crash_Date, "%m-%d"))
 
 Month_list <-  c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
@@ -217,96 +203,45 @@ write_csv(c, "data/mean_crash_per_day_over_years.csv")
 
 ###########################################################
 ### let's see how this graph should look like in d3:
-b <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> filter(Month %in%Month_list[1:7]) |> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
-
-
-# # Create the plot
-# ggplot(b, aes(x = crash_day_no_year, y = total_crash, color = Month)) +
-#   geom_point() +
-#   facet_grid(~Month)+
-#   labs(y = "Total Crash") 
-
+b <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> filter(Month %in%Month_list[1:12]) |> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
   
 # Create the plot
 ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
   geom_point() +
-  geom_line(alpha = 0.6)+
+  geom_line(size = 0.35)+
   #facet_grid(Month~., scales = "free_x", space = "free_x") +
-  labs(y = "Total Crash") 
-  
-  
+  labs(title = "Average number of car accidents per Month over the years",
+       subtitle = "Not including 2020 and 2023",
+       x = "Day of Month", y = "Average number of car accidents") 
 
-
-
-# 
-# ggplot(b) +
-#   geom_point(aes(x=crash_day_no_year, y=total_crash)) +
-#   scale_y_continuous(limits = c(0,80)) +
-#   scale_x_date(date_labels = "%Y-%m-%d", date_breaks = "1 month")+
-#     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
 ```
 
-
-
-
+Average number of accidents per day of month over the years reveals a unique "trend" for each month. There are month a higher average of accidents on specific days then others. For example, the 4th of July has typically lower values than 4th of other months. The 1st of Dec has, on average more accidents than the the 1st of the other months, it is quite surprising the the 1st of January, the "new-year" day has the lowest average car accidents compared to the other months, (Maybe there is higher police enforcement leading to this outcome?) In the same notion, the 2nd and 3rd of Novemeber May tend to have, on average, more accidents than the 2nd and 3rd of other month.
+We also plot this graph in D3.
 
 
 ### Hours of the day
-
 
 ```{r}
 # we only care about the hours not the minutes
 dt_temporal <- dt_temporal %>%
   mutate(Crash_Time = paste0(substr(Crash_Time, start = 1, stop =2),'h')) 
 
-
-ggplot(dt_temporal, aes(x=Crash_Time))+
-  geom_bar()+
-  labs(x = 'Hours in the day',y = 'Number of Crash')
+ggplot(dt_temporal, aes(x = Crash_Time)) +
+  geom_bar(fill = "cornflowerblue", color = "black") +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, size = 3) +  # Adjust size as needed
+  labs(title = "Total number of accidents per day-hour",
+       x = 'Hours in the day', y = 'Number of Crashes')
 ```
-<u>Comment :</u> One can see that crash accidents occur more during the commute time especially the way back home between 15h to 17h.
+<u>Comment :</u> We can see that crash accidents occur more during the work commute time and especially in the way back home between 15h to 17h.
 
 
 
 
+#### Distribution of the number of accidents by different time-slicers: Month, weekday, hour
 
-## Roy
-################ Roy
-
-
-# REMOVE
-```{r}
-ggplot(dt_temporal_month) +
-  geom_boxplot(mapping=aes(x=Month, y=total_accidents))
-
-
-
-library(ggridges)
-
-### Distribution of total number of accidents by month
-ggplot(dt_temporal_month) +
-  geom_boxplot(mapping = aes(x = total_accidents, y = Month)) +
-  geom_density_ridges(mapping = aes(x = total_accidents, y = Month), alpha = 0.5) +
-  theme_minimal() +
-  labs(title = "Distribution of total number of accidents by month")
-
-
-#Distribution of total number of accidents by Day of week
-ggplot(dt_temporal_month) +
-  geom_boxplot(mapping = aes(x = total_accidents, y = Week_day)) +
-  geom_density_ridges(mapping = aes(x = total_accidents, y = Week_day), alpha = 0.5) +
-  theme_minimal() +
-  labs(title = "Distribution of total number of accidents by weekday")
-
-
-```
-
-# KEEP
-```{r}
-
-library(ggridges)
-library(patchwork)
+```{r, message=FALSE}
 
 dt_temporal_1 <- dt_temporal
 # Convert the Month column to display the abbreviation version
@@ -349,14 +284,16 @@ dt_temporal_hour <- dt_temporal_1 |> group_by(Month, first_day_of_month, Crash_H
 # Distribution of total number of accidents by month (the total number of accidents is with the total within in Year-Month combination)
 plot_month <- ggplot(dt_temporal_month |> mutate(Month = as.factor(Month))) +
   geom_boxplot(mapping = aes(x = total_accidents, y = Month)) +
-  geom_density_ridges(mapping = aes(x = total_accidents, y = Month), alpha = 0.5) +
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Month),
+                      alpha = 0.4, fill = "cornflowerblue") +
   theme_minimal() +
   labs(subtitle = "By month")
 
 # Distribution of total number of accidents by Day of week (the total number of accidents is with the total within in Year-Month combination)
 plot_weekday <- ggplot(dt_temporal_month) +
   geom_boxplot(mapping = aes(x = total_accidents, y = Week_day)) +
-  geom_density_ridges(mapping = aes(x = total_accidents, y = Week_day), alpha = 0.5) +
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Week_day),
+                      alpha = 0.4, fill = "cornflowerblue") +
   theme_minimal() +
   labs(subtitle = "By weekday")
 
@@ -365,44 +302,20 @@ plot_weekday <- ggplot(dt_temporal_month) +
 
 plot_hours <- ggplot(dt_temporal_hour |> mutate(Crash_Hour = as.factor(Crash_Hour))) +
   geom_boxplot(mapping = aes(x = total_accidents, y = Crash_Hour)) +
-  geom_density_ridges(mapping = aes(x = total_accidents, y = Crash_Hour), alpha = 0.5) +
-  theme_minimal() +
-  labs(subtitle = "By Hour")
-
-ggplot(dt_temporal_hour |> mutate(Crash_Hour = as.factor(Crash_Hour))) +
-  geom_boxplot(mapping = aes(x = total_accidents, y = Crash_Hour)) +
-  geom_density_ridges(mapping = aes(x = total_accidents, y = Crash_Hour), alpha = 0.5) +
-  theme_minimal() +
-  labs(subtitle = "By Hour")
-
-
-# Combine the plots side by side
+  geom_density_ridges(mapping = aes(x = total_accidents, y = Crash_Hour),
+                      alpha = 0.4, fill = "cornflowerblue") +
+  theme_minimal()
 # combined_plots <- plot_month + plot_weekday + plot_hours
 
 # Combine the plots side by side with one common title
-combined_plots <- plot_month + plot_weekday + plot_hours +
-  plot_layout(ncol = 2, heights = c(2, 2)) +
+combined_plots <- plot_month + plot_weekday +
+  plot_layout(ncol = 2, heights = c(1, 2)) +
   plot_annotation(title = "Distribution of total number of accidents")
-
 
 # Print the combined plots
 print(combined_plots)
 
-
-
-# geom_violin()
-# plot_hours <- ggplot(dt_temporal_hour |> mutate(Crash_Hour = as.factor(Crash_Hour))) +
-#   geom_boxplot(mapping = aes(x = total_accidents, y = Crash_Hour)) +
-#   geom_violin(mapping = aes(x = total_accidents, y = Crash_Hour), alpha = 0.5) +
-#   theme_minimal() +
-#   labs(subtitle = "By Hour")
-
-#  ggplot(dt_temporal_month |> mutate(Month = as.factor(Month))) +
-#   geom_boxplot(mapping = aes(x = total_accidents, y = Month)) +
-#   geom_violin(mapping = aes(x = total_accidents, y = Month), alpha = 0.5) +
-#   theme_minimal() +
-#   labs(subtitle = "By month")
-
+plot_hours + labs(title = "Distribution of total number of accidents by day-hour")
 ```
 
 + By combining histograms and density plots, we gain valuable insights into the distribution of total accidents aggregated by months per year, examining variations across different months, weekdays, and day-hours
@@ -422,87 +335,19 @@ Exploring the density plots illustrates significant disparities in the distribut
 
 
 
+# Part 2 - Hit/run Analyis
 
-
-
-### Time-plot displaying the total number of accidents trend over the years faceted by weekdays
-
-```{r}
-
-# ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
-#   geom_line() + 
-#   geom_point() + 
-#   facet_grid(Week_day~.)
-
-# Filter data for December
-december_data <- dt_temporal_Year_month %>%
-  filter(month(first_day_of_month) == 12)
-
-highest_points <- dt_temporal_Year_month %>%
-  group_by(Year, Week_day) %>%
-  slice_max(order_by = total_accidents)
-
-ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
-  geom_line() + 
-  stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
-  geom_point(data = highest_points, col = "black", size = 1.4) +  # Add points only for Jan
-  facet_grid(~Week_day) +
-  labs(title = "line plot of total accidents faceted by weekday",
-       subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
-
-```
-
-+ In the faceted line graph, a consistent trend is apparent in the number of accidents per weekday, suggesting a similar pattern across the week. However, the magnitude of accidents varies, with fewer incidents occurring on weekends, which aligns with expectations. Notably, the middle of the week appears to experience a higher frequency of accidents.
-
-+ Furthermore, an examination of the "black dots," representing each year's month with the highest number of accidents, provides additional insights. Comparing these dots across different weekdays reveals distinctions, and an intriguing observation emerges when connecting these dots. If we were to draw a line connecting each black dot, a trend similar to the loess blue line trend in the plot becomes evident, indicating a potential overarching pattern in the occurrence of maximum accidents over the years.
-
-```{r}
-
-
-dt_temporal_day
-ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
-
-#dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
-
-
-# 
-# ts_data<- ts(df_temporal_week$Crash_week)
-plot(decompose(ts_data))
-
-
-```
-
-
-
-Box plot 
-x axis - day of week
-the box itself will use the number of accidents
-
-
-# Hit/run
-
-```{r}
+```{r, message=FALSE}
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
 
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
 
-# ggplot(dt_temporal_Year_month_hit_run, aes(x=first_day_of_month, y=total_accidents)) + 
-#   geom_line() + 
-#   stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
-#   facet_grid(~Hit_Run) +
-#   labs(title = "line plot of total accidents faceted by weekday",
-#        subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
 ```
 
 
-
-group by --> sum up the number of accident with No and with Yes 
-road
-
-##Is it more likely to Hit and Run in a specific Month / Week day / Hour?
+### Is it more likely to Hit and Run in a specific Month / Week day / Hour?
 
 ```{r}
-library(patchwork)
 
 # Filter out NA values for Hit_Run
 filtered_data <- dt_temporal %>%
@@ -514,8 +359,8 @@ weekday_labels <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
 # Create a bar plot for Month
 plot_month <- ggplot(filtered_data) +
-  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill") +
-  scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
+  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill", color = "black") +
+  scale_fill_manual(values = c("No" = "#CC3330", "Yes" = "darkgreen")) +
   labs(title = "Proportion of Hit-Run Accidents",
        subtitle = "Per Month of Year",
        x = "Month",
@@ -849,12 +694,14 @@ dt_sampled <- data_crash %>%
 
 
 
-Overall findings from plots we didn't include in this project:
+## Overall findings from plots we didn't include in this project:
+Other than the plots we presented in this section, we created dozens more visualizations that were less informative thus excluded from the final report. However, we would like to highlight some of the findings and insights we derived from them.
 
 
-+ <u>Comment :</u> We tried to 
++ **Weather data**: we analyzed the given weather column and found there are more accidents on days with "good" weather condition. The problem is there is an internal asymmetry between the numer "bad" and "good" weather conditions. Bad consitions.
 
-There is an asymmetry between the "bad" and "good" conditions. It seems that bad conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.
+
+conditions does not necessarily imply a higher number of accidents. However to be sure about that we need to have the proportion of the number of days where the road conditions were good or not.
 
 ## Speaking about Roads, where are we ?
 
@@ -936,9 +783,36 @@ vcd:: mosaic(Hit_Run ~ Weather,
 
 
 
+### Time-plot displaying the total number of accidents trend over the years faceted by weekdays
 
+```{r}
 
+# ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
+#   geom_line() + 
+#   geom_point() + 
+#   facet_grid(Week_day~.)
 
+# Filter data for December
+december_data <- dt_temporal_Year_month %>%
+  filter(month(first_day_of_month) == 12)
+
+highest_points <- dt_temporal_Year_month %>%
+  group_by(Year, Week_day) %>%
+  slice_max(order_by = total_accidents)
+
+ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
+  geom_line() + 
+  stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
+  geom_point(data = highest_points, col = "black", size = 1.4) +  # Add points only for Jan
+  facet_grid(~Week_day) +
+  labs(title = "line plot of total accidents faceted by weekday",
+       subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
+
+```
+
++ In the faceted line graph, a consistent trend is apparent in the number of accidents per weekday, suggesting a similar pattern across the week. However, the magnitude of accidents varies, with fewer incidents occurring on weekends, which aligns with expectations. Notably, the middle of the week appears to experience a higher frequency of accidents.
+
++ Furthermore, an examination of the "black dots," representing each year's month with the highest number of accidents, provides additional insights. Comparing these dots across different weekdays reveals distinctions, and an intriguing observation emerges when connecting these dots. If we were to draw a line connecting each black dot, a trend similar to the loess blue line trend in the plot becomes evident, indicating a potential overarching pattern in the occurrence of maximum accidents over the years.
 
 
 

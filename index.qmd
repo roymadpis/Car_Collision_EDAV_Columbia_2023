@@ -8,7 +8,7 @@ number_of_casualties <- read_csv("data/Number_of_casualties_usa.csv")
 
 ggplot(number_of_casualties %>%
          filter(Year >= 2005)) +
-  geom_col(aes(x = Year, y = Deaths), fill = "tomato", color = "black") +
+  geom_col(aes(x = Year, y = Deaths), fill = "#CC0000", color = "black") +
   geom_text(aes(x = Year, y = Deaths, label = Deaths), 
             vjust = -0.5, color = "black", size = 3) +  # Adjust vjust and size as needed
   scale_x_continuous(breaks = seq(2005, 2021, 1)) +
