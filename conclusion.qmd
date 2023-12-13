@@ -1,1 +1,7 @@
 # Conclusion
+
+Discuss: main takeaways of your exploration, limitations, future directions, lessons learned.
+
+
+In this project we analyzed car collision data in the Montgomery County. We crafted some valuable insights which were presented in elaboration in the `results` chapter.
+Whithin the scope of the time series analysis on the date/time of the collision, We discovered there is 
