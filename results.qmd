@@ -174,6 +174,8 @@ ggplot(dt_temporal_week, aes(x = Crash_week, y = Count_week)) +
 <u>Comment :</u> We can visualize thanks to the time series representation the Covid crisis which lead to a reduction of car accident in 2020 since less cars were on the roads. Since then, the average number of accidents is a bit lower than pre-covid.
 
 
+We decided then to use the date of special holidays to observe possible correlation with the time series. To have the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}. We then filtered the relevant rows for our study and created the 'holiday_US.csv" file that we are going to use with R. NB: one can find the code for the filtering of the data in the files name : ...
+
 
 
 ## Show the same plot by days
@@ -793,27 +795,14 @@ for (col_name in names(unique_values)) {
 ```
 
 ```{r}
-dt_intersection <- data_crash %>%
-   mutate(Traffic_Control = recode(Traffic_Control,
-        "FLASHING TRAFFIC SIGNAL" = "Traffic Light",
-        "TRAFFIC SIGNAL" = "Traffic Light",
-        "NO CONTROLS" = 'No Controls',
-        "RAILWAY CROSSING DEVICE	" = 'Warning Sign',
-        "WARNING SIGN" = 'Warning Sign',
-        "SCHOOL ZONE SIGN DEVICE" = 'Warning Sign',
-        "YIELD SIGN" = 'Warning Sign',
-        "STOP SIGN" = 'Stop Sign',
-        .default  = 'Other')) %>%
-  filter(!is.na(Traffic_Control))
-```
-
-```{r}
 ## Create 2 new datasets to explore different Categorical values
 dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Number_of_Lanes","Hit_Run")]
 
 dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse")]
 
 ```
+
+## Study of the influence of the characteristics of the roads on the number of accident and Hit&Run
 
 ```{r}
 #Rename the column in Road_type and get rid of the Na and the unknown values
@@ -961,6 +950,9 @@ ggplot(data = dt_lane1,
                    #expand = c(0.15, 0.05, 0.05)) +
   theme_void()
 ```
+<u>Comments :</u> The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. Hit&Run incidents
+
+
 
 ## Speaking about Roads, where are we ?
 
