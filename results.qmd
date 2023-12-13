@@ -13,17 +13,28 @@ data_crash <- readr::read_csv2("data/data_crash.csv")
 holiday_data <- readr::read_csv("data/holidays.csv")
 holiday_data$is_holiday <- "Yes"
 
-
 ```
 
 ## Spatial Representation
 ```{r}
 # Sample the data so that we do not have too much data ploted on the map
 
+
+# dt_sampled <-# sample_n(as.data.frame(data_crash), 4000) %>%
+#   
+#   # # filter(Hit_Run == 'Yes')
+#   # filter(Number_of_Lanes == 19) %>%
+#   #sample_n(4000)
+#   filter(data_crash$Road_Name == top10)
+dt_sampled <- data_crash %>%
+  filter(Road_Name %in% top10)%>%
+  sample_n(2000)
+
 #dt_sampled <- sample_n(as.data.frame(data_crash), 4000)
   # rename(Hit_Run = 'Hit/Run') %>%
   # # filter(Hit_Run == 'Yes')
   # filter(Number_of_Lanes == 19) %>%
+
 
 
 
@@ -37,15 +48,15 @@ holiday_data$is_holiday <- "Yes"
 # Spatial data
 
 # 
-# leaflet(dt_sampled) %>%
+ leaflet(dt_sampled) %>%
 #   addTiles() %>% 
 #   addHeatmap(
 #   lat = ~Latitude,
 #   lng = ~Longitude,
 #   blur = 15,  # Adjust the blur parameter
 #   radius = 10)  # Adjust the radius parameter
-  
-  #addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
+  addMarkers(lng = ~Longitude, lat = ~Latitude, popup = "Marker")
+
 
 ```
 
@@ -749,26 +760,22 @@ the box itself will use the number of accidents
 
 
 
-## Ethan Part
-```{r}
-dt_lane <- data_crash[,c("Hit_Run","Route_Type","Number_of_Lanes","NonTraffic","Road_Grade","At_Fault","Cross_Street_Type","Collision_Type","Traffic_Control","Driver_Substance_Abuse","Road_Alignment","Junction","Road_Condition","Road_Division","First_Harmful_Event","Light","Surface_Condition")]
-```
+# Ethan Part
 
 ```{r}
-# Assuming 'data' is your data frame
+## Explore the Categorical data we have
+
+dt_lane <- data_crash[,c("Hit_Run","Route_Type","Number_of_Lanes","NonTraffic","Road_Grade","At_Fault","Cross_Street_Type","Collision_Type","Traffic_Control","Driver_Substance_Abuse","Road_Alignment","Junction","Road_Condition","Road_Division","First_Harmful_Event","Light","Surface_Condition")]
+
 unique_values <- lapply(dt_lane, unique)
 
-# Print unique values for each column
+# Print unique value for each of the column
 for (col_name in names(unique_values)) {
   cat("Column:", col_name, "\n")
   print(unique_values[[col_name]])
   cat("\n")
 }
 
-```
-
-```{r}
-count(data_crash, Traffic_Control)
 ```
 
 ```{r}
@@ -784,46 +791,18 @@ dt_intersection <- data_crash %>%
         "STOP SIGN" = 'Stop Sign',
         .default  = 'Other')) %>%
   filter(!is.na(Traffic_Control))
-
-#count(dt_intersection, Traffic_Control)
-  
-ggplot(dt_intersection, aes(x=Traffic_Control))+
-  geom_bar()
 ```
 
 ```{r}
-filtered_data_crash <- data_crash[!is.na(data_crash$Cross_Street_Type),]
-
-
-b <- apply(filtered_data_crash, 2, function(c) sum(is.na(c)))
-tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
-tibble_nas_filtered_data_crash <- tibble_nas
-
-b <- apply(data_crash, 2, function(c) sum(is.na(c)))
-tibble_nas_data_crash <- tibble(column_name = names(b), number_of_NA = b)
-
-#Compare the 2 lists, the one with all the column with less that 1000 NAs and the lists with the same conditions but after removing all the NAs row in the column "Cross-Street Type"
-a <- tibble_nas_data_crash |> filter(number_of_NA<1000)
-b <- tibble_nas_filtered_data_crash |> filter(number_of_NA<1000)
-
-# Get the name of the column which are not in common in the 2 previous list
-difference_both_ways <- union(setdiff(a$column_name, b$column_name), setdiff(b$column_name, a$column_name))
-```
-
-```{r}
-dt_sameNa <- data_crash %>%
-  select(difference_both_ways) %>%
-  filter(rowSums(is.na(.)) < ncol(.))
-
-dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Number_of_Lanes")]
-
+## Create 2 new datasets to explore different Categorical values
+dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Number_of_Lanes","Hit_Run")]
 
 dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse")]
 
 ```
 
 ```{r}
-#Change the column Road_type to get rid of the Na and the values unknown
+#Rename the column in Road_type and get rid of the Na and the unknown values
 dt_lane <- dt_lane %>%
   mutate(Road_Division = recode(Road_Division,
         "TWO-WAY, NOT DIVIDED WITH A CONTINUOUS LEFT TURN" = "2-way, not divided",
@@ -836,19 +815,19 @@ dt_lane <- dt_lane %>%
   filter(Road_Division != 'Other') %>%
   na.omit()
 
-#Change the column Number of Lanes to remove the lanes with more than ... lanes
+#Change the column Number of Lanes to remove the lanes with more than 6 lanes
 dt_lane <- dt_lane %>%
   filter(Number_of_Lanes < 7) %>%
   filter(Number_of_Lanes != 0)
   
-
-
+# Change the order of factor 
 dt_lane$Road_Division <- factor(dt_lane$Road_Division, levels = c("1-way", "2-way, not divided", "2-way, divided", 'Other'))
 
-ggplot(dt_lane, aes(x=Road_Division))+
-  geom_bar() +
-  facet_wrap(~Number_of_Lanes)+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+## This plot is less good and will most likely be deleted
+# ggplot(dt_lane, aes(x=Road_Division))+
+#   geom_bar() +
+#   facet_wrap(~Number_of_Lanes)+
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggplot(dt_lane, aes(y=Road_Division))+
   geom_bar() +
@@ -858,10 +837,67 @@ ggplot(dt_lane, aes(y=Road_Division))+
 ```
 <u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway). 
 
+### Junction
+
+
+```{r}
+dt_lane <- dt_lane %>%
+  mutate(Junction = recode(Junction,
+        "INTERSECTION" = "Intersection",
+        "INTERSECTION RELATED" = "Intersection",
+        "NON INTERSECTION" = 'Non Intersection',
+        "OTHER DRIVEWAY" = 'Driveway',
+        "COMMERCIAL DRIVEWAY" = 'Driveway',
+        "ALLEY" = 'Driveway',
+        "CROSSOVER RELATED" = "Crossover",
+        "INTERCHANGE RELATED" = "Interchange",
+        "RESIDENTIAL DRIVEWAY" = 'Driveway',
+        "RAILWAY GRADE CROSSING"= 'Other',
+        "OTHER" = 'Other')) %>%
+  filter(Junction != 'UNKNOWN') %>%
+  filter(Junction != 'Other') %>%
+  na.omit() 
+
+lane_freq <- dt_lane %>%
+  count(Junction, name = "Frequency_junc")
+dt_lane <- left_join(lane_freq, dt_lane, by = "Junction")
+
+ggplot(dt_lane, aes(x = reorder(Junction, -Frequency_junc))) +
+  geom_bar() +
+  labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
+  theme_minimal()  # Adjust the theme if needed
+```
+### Traffic Control
+
+```{r}
+dt_lane <- dt_lane %>%
+   mutate(Traffic_Control = recode(Traffic_Control,
+        "FLASHING TRAFFIC SIGNAL" = "Traffic Light",
+        "TRAFFIC SIGNAL" = "Traffic Light",
+        "NO CONTROLS" = 'No Controls',
+        "RAILWAY CROSSING DEVICE	" = 'Warning Sign',
+        "WARNING SIGN" = 'Warning Sign',
+        "SCHOOL ZONE SIGN DEVICE" = 'Warning Sign',
+        "YIELD SIGN" = 'Warning Sign',
+        "STOP SIGN" = 'Stop Sign',
+        .default  = 'Other')) %>%
+  filter(!is.na(Traffic_Control))
+
+lane_freq <- dt_lane %>%
+  count(Traffic_Control, name = "Frequency_control")
+dt_lane <- left_join(lane_freq, dt_lane, by = "Traffic_Control")
+  
+ggplot(dt_lane, aes(x = reorder(Traffic_Control, -Frequency_control))) +
+  geom_bar() +
+  labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
+  theme_minimal()  # Adjust the theme if needed
+```
+### Proportion of the unique roads by type (where there have been an accident)
 
 ```{r}
 Nbroads = n_distinct(data_crash$Road_Name)
-count(dt_lane, Number_of_Lanes)
+#print(Nbroads)
+#count(dt_lane, Number_of_Lanes)
 
 road_counts <- dt_lane %>%
   group_by(Road_Division) %>%
@@ -871,6 +907,75 @@ road_counts <- dt_lane %>%
 
 print(road_counts)
 ```
+
+### Alluvial plot to see pattern
+
+```{r}
+
+dt_lane1 <- dt_lane[,c('Road_Division', 'Junction', 'Traffic_Control','Road_Name','Hit_Run')]
+
+n_threshold = 100 
+dt_lane1 <- dt_lane1 %>%
+  group_by(Road_Division, Junction, Traffic_Control) %>%
+  mutate(Frequency = n()) %>%
+  ungroup() %>%
+  filter(Frequency >= n_threshold) %>%
+  distinct(Road_Division, Junction, Traffic_Control, .keep_all = TRUE)
+
+# Map_pt <- dt_lane1$Road_Name
+# Map_pt
+```
+
+```{r}
+library(ggalluvial)
+
+junction_order <- c("Crossover", "Intersection", "Driveway","Non Intersection", "Interchange")
+
+# Reorder the Junction variable in the dataset
+dt_lane1 <- dt_lane1 %>%
+  mutate(Junction = factor(Junction, levels = junction_order))
+
+# Plot the alluvial diagram
+
+ggplot(data = dt_lane1,
+       aes(axis1 = Road_Division, axis2 = Traffic_Control, axis3 = Junction, axis4= Hit_Run, y = Frequency)) +
+  geom_alluvium(aes(fill = Hit_Run)) +
+  geom_stratum() +
+  geom_text(stat = "stratum",
+            aes(label = after_stat(stratum))) +
+  #scale_x_discrete(limits = c("Road Division", "Traffic Signal", "Junction type"),
+                   #expand = c(0.15, 0.05, 0.05)) +
+  theme_void()
+```
+
+## Speaking about Roads, where are we ?
+
+```{r}
+dt_lane2 <- dt_lane %>%
+  group_by(Road_Name) %>%
+  mutate(Frequency_road = n()) %>%
+  ungroup() %>%
+  #filter(Frequency >= n_threshold) %>%
+  distinct(Road_Name, .keep_all = TRUE)
+
+top_10_roads <- dt_lane2 %>%
+  arrange(desc(Frequency_road)) %>%  # Arrange by Frequency in descending order
+  slice_head(n = 10) %>%       # Select the top 10 rows
+  select(Road_Name,Frequency_road) %>%
+  as.list()
+
+top10 <- top_10_roads$Road_Name
+top10
+```
+
+
+
+
+
+
+
+
+## Who's at Fault ?
 
 
 ```{r}
@@ -901,8 +1006,14 @@ dt_responsible <- dt_responsible %>%
   # filter(Driver_Substance_Abuse != 'alcohol') %>%
   # filter(Driver_Substance_Abuse != 'unknown')
 
-ggplot(dt_responsible, aes(x=Driver_Substance_Abuse))+
-  geom_bar()
+responsible_freq <- dt_responsible %>%
+  count(Driver_Substance_Abuse, name = "Frequency_drug")
+dt_responsible <- left_join(responsible_freq, dt_responsible, by = "Driver_Substance_Abuse")
+  
+ggplot(dt_responsible, aes(x = reorder(Driver_Substance_Abuse, -Frequency_drug))) +
+  geom_bar() +
+  labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
+  theme_minimal()  # Adjust the theme if needed
 ```
 
 ```{r}
