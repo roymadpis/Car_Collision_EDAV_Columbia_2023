@@ -10,6 +10,7 @@ library(ggmap)
 library(lubridate)
 library(ggridges)
 library(patchwork)
+library(hms)
 
 data_crash <- readr::read_csv2("data/data_crash.csv")
 holiday_data <- readr::read_csv("data/holiday_US.csv")
@@ -35,7 +36,6 @@ dt_temporal$"Crash_Date_Time" <- as.POSIXct(dt_temporal$"Crash_Date_Time", forma
 
 dt_temporal$Crash_Date <- as.Date(dt_temporal$"Crash_Date_Time", tz = "America/New_York")
 
-library(hms)
 dt_temporal$Crash_Time <- format(dt_temporal$"Crash_Date_Time", "%H:%M:%S")
 dt_temporal$Crash_Time <- as_hms(dt_temporal$Crash_Time)
 dt_temporal$Crash_Hour <- hour(dt_temporal$Crash_Time) #Crash hour
@@ -111,7 +111,6 @@ dt_temporal_week_without_first_last_week <- filter(dt_temporal_week, Crash_week!
 
 
 ```{r}
-
 # Create a new column for the week of the year
 # Step 1: Create a data frame with all days in the year
 all_days <- data.frame(date = seq(min(dt_temporal$Crash_Date), max(dt_temporal$Crash_Date), by = "days"))
@@ -159,8 +158,7 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
   labs(title = "Weekly Car accidents per holiday",
        subtitle = "The black line is an average of accidents per month",
        x = "Year", y="Total Accidents in a given week")
-
-
+  
 ```
 
 
@@ -239,8 +237,6 @@ ggplot(dt_temporal, aes(x = Crash_Time)) +
        x = 'Hours in the day', y = 'Number of Crashes')
 ```
 <u>Comment :</u> We can see that crash accidents occur more during the work commute time and especially in the way back home between 15h to 17h.
-
-
 
 
 #### Distribution of the number of accidents by different time-slicers: Month, weekday, hour
@@ -337,11 +333,8 @@ The density plots unveil noticeable differences in the distribution of total acc
 Exploring the density plots illustrates significant disparities in the distribution of total accidents across different times of the day. Notably, there is typically an increase in accidents during the middle of the day, aligning with the expected higher traffic volumes during those hours.
 
 
-
-
 # Part 2 - Hit/run Analyis
 
-<<<<<<< HEAD
 ```{r, message=FALSE}
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
 
@@ -350,76 +343,9 @@ dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day
 ```
 
 
-### Is it more likely to Hit and Run in a specific Month / Week day / Hour?
-=======
-
-
-### Time-plot displaying the total number of accidents trend over the years faceted by weekdays
-
-```{r}
-
-# ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
-#   geom_line() + 
-#   geom_point() + 
-#   facet_grid(Week_day~.)
-
-# Filter data for December
-december_data <- dt_temporal_Year_month %>%
-  filter(month(first_day_of_month) == 12)
-
-highest_points <- dt_temporal_Year_month %>%
-  group_by(Year, Week_day) %>%
-  slice_max(order_by = total_accidents)
-
-ggplot(dt_temporal_Year_month, aes(x=first_day_of_month, y=total_accidents)) + 
-  geom_line() + 
-  stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
-  geom_point(data = highest_points, col = "black", size = 1.4) +  # Add points only for Jan
-  facet_grid(~Week_day) +
-  labs(title = "line plot of total accidents faceted by weekday",
-       subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
-
-```
-
-+ In the faceted line graph, a consistent trend is apparent in the number of accidents per weekday, suggesting a similar pattern across the week. However, the magnitude of accidents varies, with fewer incidents occurring on weekends, which aligns with expectations. Notably, the middle of the week appears to experience a higher frequency of accidents.
-
-+ Furthermore, an examination of the "black dots," representing each year's month with the highest number of accidents, provides additional insights. Comparing these dots across different weekdays reveals distinctions, and an intriguing observation emerges when connecting these dots. If we were to draw a line connecting each black dot, a trend similar to the loess blue line trend in the plot becomes evident, indicating a potential overarching pattern in the occurrence of maximum accidents over the years.
-
-```{r}
-
-
-dt_temporal_day
-ts_data <- ts(data = dt_temporal_day$total_crash, start = c(2015,1,3), end = c(2023,11,13), frequency = 365)
-
-#dt_temporal_week$Crash_Date[nrow(dt_temporal_week)]
-
-
-# 
-# ts_data<- ts(df_temporal_week$Crash_week)
-plot(decompose(ts_data))
-
-
-```
-
-
-
-
-
-
-
-
-# Hit/run
-
-```{r}
-dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
-
-dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
-```
 ##Is it more likely to Hit and Run in a specific Month / Week day / Hour?
->>>>>>> 902e0261d325027f70ed055ccd43516d304ff581
 
 ```{r}
-
 # Filter out NA values for Hit_Run
 filtered_data <- dt_temporal %>%
   filter(!is.na(Hit_Run))
@@ -432,14 +358,13 @@ weekday_labels <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 filtered_data$Crash_Hour_Group <- cut(filtered_data$Crash_Hour,
   breaks = c(0, 4, 8, 12, 16, 20, 24),
   labels = c("0-4", "4-8", "8-12", "12-16", "16-20", "20-24"),
-  include.lowest = TRUE
-)
+  include.lowest = TRUE)
 
 
 # Create a bar plot for Month
 plot_month <- ggplot(filtered_data) +
 
-  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill") +
+  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill", color = "black") +
   scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
   labs(title = "Proportion of Hit-Run Accidents",
        subtitle = "Per Month of Year",
@@ -451,7 +376,7 @@ plot_month <- ggplot(filtered_data) +
 
 # Create a bar plot for Weekday
 plot_weekday <- ggplot(filtered_data) +
-  geom_bar(aes(x = Week_day, fill = Hit_Run), position = "fill") +
+  geom_bar(aes(x = Week_day, fill = Hit_Run), position = "fill", color = "black") +
   scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
   labs(subtitle = "Per Weekday",
        x = "Weekday",
@@ -462,11 +387,10 @@ plot_weekday <- ggplot(filtered_data) +
 
 # Create a bar plot for Hours
 plot_hours <- ggplot(filtered_data) +
-  geom_bar(aes(x = Crash_Hour_Group, fill = Hit_Run), position = "fill") +
+  geom_bar(aes(x = Crash_Hour_Group, fill = Hit_Run), position = "fill", color = "black") +
   labs(subtitle = 'Per Hour',
-       x = "Crash Hour",
-       y = NULL) +
-  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +  # Customize colors if needed
+       x = "Crash Hour", y = NULL) +
+  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
   theme_minimal() +
   theme(legend.key.size = unit(0.5, "cm"))
 
@@ -477,14 +401,15 @@ combined_plot <- plot_month + plot_weekday + plot_hours
 print(combined_plot)
 
 ```
+
 + There doesn't appear to be a correlation between the month and Hit-Run incidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
+
 + However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays.
 
-+ Concerning the Hit-Run proportion per hour, there is an observed escalation in the proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
++ Concerning the Hit-Run proportion per hour, we can observe there is a higher proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
 
 
-
-### First_Harmful_Event
+### analyzing First_Harmful_Event with respect to Hit_Run
 
 ```{r}
 #count(dt_temporal, First_Harmful_Event) |> arrange(desc(n))
@@ -505,7 +430,8 @@ mosaicplot(table(factor(df_for_harmful_event$First_Harmful_Event), df_for_harmfu
 #count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
 
 ```
-+ We can see that the first harmful event has a great connection / correlation to the Hit-Run variable --> there are great variations between the proportion of Hit-Run vs. Not Hit-Run accidents given the different `First_Harmful_Event` categories.
+
++ We can see that the first harmful event has a great connection / correlation to the Hit-Run variable --> there are great variations between the proportion of Hit-Run vs. Non Hit-Run accidents given the different `First_Harmful_Event` categories.
 
 + Note that for "Parked-Vehicle" the proportion of Hit-Run is 0.45 which is more than twice as big as the overall Hit-Run proportion (0.18):
 
@@ -632,7 +558,8 @@ ggplot(dt_lane_freq, aes(x = reorder(Junction, -Frequency_junc))) +
   scale_fill_viridis_d() +
   theme_minimal()  # Adjust the theme if needed
 ```
-+ It is important to note that most of the car accident happens at an intersection. Further, half of the crashes at these intersection have traffic lights. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this indicates that traffic light are not efficient for reducing car accident. 
+
++ We can observe that **most of the car accidents happen at an intersection**. Further, half of the crashes at these intersection have **traffic lights**. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this indicates that traffic light are not efficient for reducing car accident. 
 
 
 ```{r}
@@ -663,29 +590,6 @@ filter_within_radius <- function(data, radius_meters = 100) {
 
 # Apply the function to your data
 dt_lane_freq_filtered <- filter_within_radius(dt_lane_freq_intersection, radius_meters = 100)
-
-
-
-# library(sf)
-# 
-# # Convert your data to sf object
-# sf_data <- st_as_sf(dt_lane_freq_intersection, coords = c("Longitude", "Latitude"))
-# 
-# # Create a spatial index
-# spatial_index <- st_as_sfc(sf_data)
-# 
-# # Apply the buffer to create a circular region around each point
-# buffered_data <- st_buffer(sf_data, dist = 5000)  # Use a larger distance for a 5 km radius
-# 
-# # Check for overlaps with sf::st_intersects
-# overlap <- st_intersects(buffered_data, spatial_index)
-# 
-# # Keep rows with no overlaps
-# filtered_data <- sf_data[!overlap, ]
-# 
-# # Convert back to data frame if needed
-# dt_lane_freq_filtered <- as.data.frame(filtered_data)
-
 
 ```
 
