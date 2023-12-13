@@ -38,6 +38,9 @@ dt_temporal$Crash_Time <- format(dt_temporal$"Crash_Date_Time", "%H:%M:%S")
 dt_temporal$Crash_Time <- as_hms(dt_temporal$Crash_Time)
 dt_temporal$Crash_Hour <- hour(dt_temporal$Crash_Time) #Crash hour
 
+# Set the local time to english to get the days in English (same for the month)
+Sys.setlocale("LC_TIME", "English")
+
 ### add some "date slicers" columns
 dt_temporal$Week_day <- weekdays(dt_temporal$Crash_Date)
 dt_temporal$Month <-  months(dt_temporal$Crash_Date)
@@ -157,7 +160,8 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
 
 ```
 
-#### Using the graph we can get some interesting insights:
+
+### Using the graph we can get some interesting insights:
 
 + First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a trend of decrease (that can be attributed to the Covid-19 outbreak) and seasonality 
 
@@ -474,9 +478,9 @@ plot(decompose(ts_data))
 
 
 
-Box plot 
-x axis - day of week
-the box itself will use the number of accidents
+
+
+
 
 
 # Hit/run
@@ -485,20 +489,7 @@ the box itself will use the number of accidents
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
 
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
-
-# ggplot(dt_temporal_Year_month_hit_run, aes(x=first_day_of_month, y=total_accidents)) + 
-#   geom_line() + 
-#   stat_smooth(method = "loess", span=0.63, col = "blue", size = 1, se = FALSE) +  # Add a moving average line
-#   facet_grid(~Hit_Run) +
-#   labs(title = "line plot of total accidents faceted by weekday",
-#        subtitle = "The black dots present for each year the month with \nthe highest number of accidents")
 ```
-
-
-
-group by --> sum up the number of accident with No and with Yes 
-road
-
 ##Is it more likely to Hit and Run in a specific Month / Week day / Hour?
 
 ```{r}
@@ -512,10 +503,18 @@ filtered_data <- dt_temporal %>%
 month_labels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 weekday_labels <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
+# Divide the crash hour into groups
+filtered_data$Crash_Hour_Group <- cut(filtered_data$Crash_Hour,
+  breaks = c(0, 4, 8, 12, 16, 20, 24),
+  labels = c("0-4", "4-8", "8-12", "12-16", "16-20", "20-24"),
+  include.lowest = TRUE
+)
+
+
 # Create a bar plot for Month
 plot_month <- ggplot(filtered_data) +
   geom_bar(aes(x = Month, fill = Hit_Run), position = "fill") +
-  scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
+  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
   labs(title = "Proportion of Hit-Run Accidents",
        subtitle = "Per Month of Year",
        x = "Month",
@@ -527,45 +526,35 @@ plot_month <- ggplot(filtered_data) +
 # Create a bar plot for Weekday
 plot_weekday <- ggplot(filtered_data) +
   geom_bar(aes(x = Week_day, fill = Hit_Run), position = "fill") +
-  scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
-  labs(title = "Proportion of Hit-Run Accidents",
-       subtitle = "Per Weekday",
+  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
+  labs(subtitle = "Per Weekday",
        x = "Weekday",
-       y = "Proportion") +
+       y = NULL) +
   scale_x_discrete(labels = weekday_labels) +  # Abbreviate Weekday names
-  theme_minimal()
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
+# Create a bar plot for Hours
+plot_hours <- ggplot(filtered_data) +
+  geom_bar(aes(x = Crash_Hour_Group, fill = Hit_Run), position = "fill") +
+  labs(subtitle = 'Per Hour',
+       x = "Crash Hour",
+       y = NULL) +
+  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +  # Customize colors if needed
+  theme_minimal() +
+  theme(legend.key.size = unit(0.5, "cm"))
 
 # Arrange the two plots side by side
-combined_plot <- plot_month + plot_weekday
+combined_plot <- plot_month + plot_weekday + plot_hours
 
 # Print the combined plot
 print(combined_plot)
-
-
-
-### Plot Hit-Run by hours
-### divide the crash hour into groups
-dt_temporal$Crash_Hour_Group <- cut(dt_temporal$Crash_Hour,
-  breaks = c(0, 4, 8, 12, 16, 20, 24),
-  labels = c("0-4", "4-8", "8-12", "12-16", "16-20", "20-24"),
-  include.lowest = TRUE
-)
-
-
-ggplot(dt_temporal %>%
-         filter(!is.na(Hit_Run))) +
-  geom_bar(aes(x = Crash_Hour_Group, fill = Hit_Run), position = "fill") +
-  labs(title = "Proportion of Hit and Run Incidents by Crash Hour",
-       x = "Crash Hour",
-       y = "Proportion") +
-  scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +  # Customize colors if needed
-  theme_minimal()
 
 ```
 + There doesn't appear to be a correlation between the month and Hit-Run incidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
 + However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays.
 
-+ Concerning the Hit-Run proportion per hour—there is an observed escalation in the proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
++ Concerning the Hit-Run proportion per hour, there is an observed escalation in the proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
 
 
 
@@ -583,15 +572,11 @@ df_for_harmful_event <- dt_temporal %>%
 
 ###Mosaic plot 1:
 mosaicplot(table(factor(df_for_harmful_event$First_Harmful_Event), df_for_harmful_event$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
-           color = c('tomato', 'darkgreen'), 
+           color = c('#FF9900', 'darkgreen'), 
            las = 2  # Rotate labels by 90 degrees
 )
 
-count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
-
-
-#+
- # scale_fill_manual(values = c("No" = "tomato", "Yes" = "darkgreen")) +
+#count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
 
 ```
 + We can see that the first harmful event has a great connection / correlation to the Hit-Run variable --> there are great variations between the proportion of Hit-Run vs. Not Hit-Run accidents given the different `First_Harmful_Event` categories.
@@ -599,13 +584,15 @@ count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
 + Note that for "Parked-Vehicle" the proportion of Hit-Run is 0.45 which is more than twice as big as the overall Hit-Run proportion (0.18):
 
 ```{r}
-dt_temporal |> count(Hit_Run) |> mutate("prop" = n/nrow(dt_temporal))
-a <- dt_temporal |> filter(grepl(c("Parked"), First_Harmful_Event, ignore.case = T)) |> count(Hit_Run, First_Harmful_Event) 
+# Calculate the proportion of Hit/Run in the dataset
+
+df_for_harmful_event |> count(Hit_Run) |> mutate("prop" = n/nrow(dt_temporal))
+a <- df_for_harmful_event |> filter(grepl(c("Parked"), First_Harmful_Event, ignore.case = T)) |> count(Hit_Run, First_Harmful_Event) 
 a|> mutate("prop" = n/sum(a$n)) 
 
 ```
 
-## Study of the influence of the characteristics of the roads on the number of accident and Hit&Run
+## Study of the influence of the characteristics of the roads on the number of accident and Hit/Run
 
 ```{r}
 # ## Explore the Categorical data we have
@@ -625,12 +612,11 @@ a|> mutate("prop" = n/sum(a$n))
 
 ```{r}
 ## Create 2 new datasets to explore different Categorical values
-dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Number_of_Lanes","Hit_Run")]
+dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Number_of_Lanes","Hit_Run","Longitude",'Latitude')]
 
 dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse")]
 
 ```
-
 
 
 ```{r}
@@ -647,27 +633,48 @@ dt_lane <- dt_lane %>%
   filter(Road_Division != 'Other') %>%
   na.omit()
 
-#Change the column Number of Lanes to remove the lanes with more than 6 lanes
-dt_lane <- dt_lane %>%
-  filter(Number_of_Lanes < 7) %>%
-  filter(Number_of_Lanes != 0)
-  
-# Change the order of factor 
-dt_lane$Road_Division <- factor(dt_lane$Road_Division, levels = c("1-way", "2-way, not divided", "2-way, divided", 'Other'))
-
-## This plot is less good and will most likely be deleted
-# ggplot(dt_lane, aes(x=Road_Division))+
+# #Change the column Number of Lanes to remove the lanes with more than 6 lanes
+# dt_lane <- dt_lane %>%
+#   filter(Number_of_Lanes < 7) %>%
+#   filter(Number_of_Lanes != 0)
+#   
+# # Change the order of factor 
+# dt_lane$Road_Division <- factor(dt_lane$Road_Division, levels = c("1-way", "2-way, not divided", "2-way, divided", 'Other'))
+# 
+# 
+# ggplot(dt_lane, aes(y=Road_Division))+
 #   geom_bar() +
-#   facet_wrap(~Number_of_Lanes)+
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-ggplot(dt_lane, aes(y=Road_Division))+
-  geom_bar() +
-  facet_grid(Number_of_Lanes~.)+
-  #theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-  labs(title ='Facet by number of Lanes' )
+#   facet_grid(Number_of_Lanes~.)+
+#   #theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+#   labs(title ='Facet by number of Lanes' )
+# <u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway). 
 ```
-<u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway). 
+
+### Traffic Control
+
+```{r}
+dt_lane <- dt_lane %>%
+   mutate(Traffic_Control = recode(Traffic_Control,
+        "FLASHING TRAFFIC SIGNAL" = "Traffic Light",
+        "TRAFFIC SIGNAL" = "Traffic Light",
+        "NO CONTROLS" = 'No Sign',
+        "RAILWAY CROSSING DEVICE	" = 'Warning Sign',
+        "WARNING SIGN" = 'Warning Sign',
+        "SCHOOL ZONE SIGN DEVICE" = 'Warning Sign',
+        "YIELD SIGN" = 'Warning Sign',
+        "STOP SIGN" = 'Stop Sign',
+        .default  = 'Other')) %>%
+  filter(!is.na(Traffic_Control))
+
+lane_freq <- dt_lane %>%
+  count(Traffic_Control, name = "Frequency_control")
+dt_lane <- left_join(lane_freq, dt_lane, by = "Traffic_Control")
+  
+# ggplot(dt_lane, aes(x = reorder(Traffic_Control, -Frequency_control))) +
+#   geom_bar() +
+#   labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
+#   theme_minimal()  # Adjust the theme if needed
+```
 
 ### Junction
 
@@ -691,53 +698,67 @@ dt_lane <- dt_lane %>%
 
 lane_freq <- dt_lane %>%
   count(Junction, name = "Frequency_junc")
-dt_lane <- left_join(lane_freq, dt_lane, by = "Junction")
+dt_lane_freq <- left_join(lane_freq, dt_lane, by = "Junction")
 
-ggplot(dt_lane, aes(x = reorder(Junction, -Frequency_junc))) +
+ggplot(dt_lane_freq, aes(x = reorder(Junction, -Frequency_junc))) +
   geom_bar(aes(fill = Traffic_Control)) +
-  labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
+  labs(title = "Relation between Junction Types and Traffic Control sign", x = "Junction Type", y = "Count", fill = "Signalisation for Traffic") +
+  scale_fill_viridis_d() +
   theme_minimal()  # Adjust the theme if needed
 ```
-### Traffic Control
++ It is important to note that most of the car accident happens at an intersection. Further, half of the crashes at these intersection have traffic lights. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this indicates that traffic light are not efficient for reducing car accident. 
+
 
 ```{r}
-dt_lane <- dt_lane %>%
-   mutate(Traffic_Control = recode(Traffic_Control,
-        "FLASHING TRAFFIC SIGNAL" = "Traffic Light",
-        "TRAFFIC SIGNAL" = "Traffic Light",
-        "NO CONTROLS" = 'No Controls',
-        "RAILWAY CROSSING DEVICE	" = 'Warning Sign',
-        "WARNING SIGN" = 'Warning Sign',
-        "SCHOOL ZONE SIGN DEVICE" = 'Warning Sign',
-        "YIELD SIGN" = 'Warning Sign',
-        "STOP SIGN" = 'Stop Sign',
-        .default  = 'Other')) %>%
-  filter(!is.na(Traffic_Control))
+# # Function to filter rows within a certain radius
+# filter_within_radius <- function(data, radius_meters = 100) {
+#   n <- nrow(data)
+#   keep_rows <- rep(FALSE, n)
+#   
+#   # Initialize with the first row
+#   keep_rows[1] <- TRUE
+#   
+#   for (i in 2:n) {
+#     distances <- geosphere::distVincentySphere(
+#       data[i, c("Longitude", "Latitude")],
+#       data[keep_rows, c("Longitude", "Latitude")]
+#     )
+#     
+#     too_close <- distances < radius_meters
+#     keep_rows[i] <- !any(too_close)
+#   }
+#   
+#   return(data[keep_rows, , drop = FALSE])
+# }
+# 
+# 
+# # Apply the function to your data
+# dt_lane_freq_filtered <- filter_within_radius(dt_lane_freq, radius_meters = 100)
 
-lane_freq <- dt_lane %>%
-  count(Traffic_Control, name = "Frequency_control")
-dt_lane <- left_join(lane_freq, dt_lane, by = "Traffic_Control")
-  
-ggplot(dt_lane, aes(x = reorder(Traffic_Control, -Frequency_control))) +
-  geom_bar() +
-  labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
-  theme_minimal()  # Adjust the theme if needed
+# library(sf)
+# 
+# # Convert your data to sf object
+# sf_data <- st_as_sf(dt_lane_freq, coords = c("Longitude", "Latitude"))
+# 
+# # Create a spatial index
+# spatial_index <- st_as_sfc(sf_data)
+# 
+# # Apply the buffer to create a circular region around each point
+# buffered_data <- st_buffer(sf_data, dist = 5000)  # Use a larger distance for a 5 km radius
+# 
+# # Check for overlaps with sf::st_intersects
+# overlap <- st_intersects(buffered_data, spatial_index)
+# 
+# # Keep rows with no overlaps
+# filtered_data <- sf_data[!overlap, ]
+# 
+# # Convert back to data frame if needed
+# dt_lane_freq_filtered <- as.data.frame(filtered_data)
+
+
 ```
-### Proportion of the unique roads by type (where there have been an accident)
-
-```{r}
-Nbroads = n_distinct(data_crash$Road_Name)
-#print(Nbroads)
-#count(dt_lane, Number_of_Lanes)
-
-road_counts <- dt_lane %>%
-  group_by(Road_Division) %>%
-  summarise(Unique_Roads = n_distinct(Road_Name)) %>%
-  mutate(Proportion = 100 * Unique_Roads / sum(Unique_Roads))
 
 
-print(road_counts)
-```
 
 ### Alluvial plot to see pattern
 
@@ -776,26 +797,11 @@ ggplot(data = dt_lane1,
             aes(label = after_stat(stratum))) +
   #scale_x_discrete(limits = c("Road Division", "Traffic Signal", "Junction type"),
                    #expand = c(0.15, 0.05, 0.05)) +
+  scale_fill_brewer(type = "seq", palette = "PuRd") +
+  labs(title = 'Alluvial plot combining characteristics about the crash location and the Hit/Run situation', fill= 'Hit/Run')+
   theme_void()
 ```
-<u>Comments :</u> The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. Hit&Run incidents
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<u>Comment :</u> One can see that crash accidents occur more during the commute time escpecially the way back home between 15h to 17h.
+<u>Comments :</u> The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be f
 
 
 # Spatial Representation
