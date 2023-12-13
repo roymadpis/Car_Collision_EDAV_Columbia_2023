@@ -1,7 +1,7 @@
 # Introduction
 
 ```{r, message=FALSE}
-library(dplyr)
+library(tidyverse)
 library(ggplot2)
 
 number_of_casualties <- read_csv("data/Number_of_casualties_usa.csv")
