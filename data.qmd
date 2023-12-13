@@ -1,59 +1,54 @@
 # Data
+
 ## Technical Description
 
-The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD (link = https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kfLinks to an external site). 
+The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD (link = https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kf Links to an external site). 
 
 The data is supplied by all the police departments of this county. Moreover, the description of the data set mentions that :
-"Please note that these collision reports are based on preliminary information supplied to the Police Department by the reporting parties. Therefore, the collision data available on this web page may reflect:
+*"Please note that these collision reports are based on preliminary information supplied to the Police Department by the reporting parties. Therefore, the collision data available on this web page may reflect:
 
--Information not yet verified by further investigation
--Information that may include verified and unverified collision data
--Preliminary collision classifications may be changed at a later date based upon further investigation
--Information may include mechanical or human error"
+- Information not yet verified by further investigation
+- Information that may include verified and unverified collision data
+- Preliminary collision classifications may be changed at a later date based upon further investigation
+- Information may include mechanical or human error"*
 
-According to the dataset description, the data is updated weekly. The source data comprises 95.6k rows and 44 columns, with each row representing a car collision that happened.The dataset, downloaded on November 22, 2023, is available as a .csv file in the repository under the 'data' file. We will stick to this version of the dataset fo the entire project. 
-The data has position features as well as a time feature and combinations of categorical and numerical data describing the accident.
+The above impose some limitations using the data.
 
-  
+As outlined in the dataset description, the data undergoes **weekly updates**. The source dataset comprises 95.6k rows and 44 columns, each representing a distinct car collision. The dataset encompasses geographical, numerical, categorical, and date-time information.
+
+The dataset, **which we acquired on November 22, 2023**, is accessible as a .csv file in the GitHub repository under the 'data' directory. For the purposes of this project, we conducted an analysis of the data up until that date. It is important for readers of this project to note that while our work can be replicated and extended with updated information, there may be a necessity for additional preprocessing to address novel issues that may have arisen after November 2023. Furthermore, some conclusions might need to be revisited and updated based on the latest data.
+
+To reiterate, all analyses presented in this work are based on data available until November 22, 2023.
+
+
+
 ## Research Plan
+In this course, we were introduced to various types of plots, and we intend to leverage these visualizations to uncover factors contributing to a higher number of collisions (car accidents) in the Montgomery county.
 
-In class, we were introduced to multiple plots and we are going to utilize them to drive insightful factors associating to higher number of collisions.
-First, we wish to explore are "Crash Date/Time" as a time-series to see if we can spot some trend or seasonality in the collision data. We wish to explore if there are more/less accidents in specific months/days of week/hours of day. Moreover, We wish to explore whether holiday days / weeks with holidays, tend to have more or less accidents.
+As sated in the introduction, we divide the analysis into **three parts**:
 
-Second, hit and run accidents is a problem which  
+Firstly, our exploration will focus **time-series analysis** of the "Crash Date/Time" to identify potential trends, seasonality and key insights in the collision data. We aim to investigate whether there is a fluctuation in the number of accidents during specific months, days of the week, or hours of the day as well as compare these between the different years. Additionally, we are interested in understanding if holidays or weeks with holidays exhibit a distinct pattern in terms of accident frequency. To enable that analysis, we downloaded "holiday" data which presents the american holiday-dates in each year, and we merge this information with the data we exported from the public safety website of the Montgomery county.
 
-a phenomena that 
-Similarly we want to use the geographical data (spatial data) to spot specific trends or interesting insights that are related to locations issues. 
-Moreover, we will study the quality of the roads or the configuration of the roads (whether it is curved or not, whether it is a two-way road or a single). Further the weather conditions will reveal some important trend.
-Some other paths to explore might be the "At Fault" column that describe whether the driver is at fault in the accident or a non-motorist. And the type of accidents thanks to "First Harmful Event". 
-Hence, our data offers various paths to explore, each potentially yielding distinct insights into car accidents.
+Our second area of inquiry addresses the pressing issue of **hit-and-run accidents**. Utilizing the available data, we plan to examine the correlation between various features and the "Hit-Run" column. For example, We use mosaic plots for exploring relationships, associations and patterns within "Hit-Run" variable to other categorical variables. Insights gained from this analysis could contribute to a better understanding of the Hit and Run type of accident problem and provide recommendations for policymakers to mitigate it.
+
+Lastly, we will employ **geographical**, or **spatial**, data to explore the relationship between accident density and geographical attributes. Specifically, we aim to identify roads with the highest concentration of accidents and analyze common attributes among them. This analysis may uncover patterns or characteristics that could inform recommendations for reducing accidents in these locations. Our approach involves utilizing spatial data to gain deeper insights into both "regular" accidents and "Hit and Run" incidents.
 
 Overall, our goal is to identify combinations of features that could elevate the risk of collisions. This information can then provide policymakers with valuable insights to implement meaningful changes or restrictions on the roads.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 ## Missing value analysis
-
 
 ```{r setup, include=FALSE}
 #Import the libraries
 
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(devtools)
 library(dplyr)
 
+library(devtools)
+library(ggthemr)
+ggthemr("flat")
 #install.packages("remotes")
 remotes::install_github("jtr13/redav")
 library("redav")
