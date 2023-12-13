@@ -1,15 +1,27 @@
-# Interactive graph
+<!DOCTYPE html>
+<html lang="en">
 
-<style>
-  * {
-    font-family: sans-serif;
-  }
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Point Plot Chart</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="scripts/mynewscript.js"></script>
 
-<div id="plot">
-</div>
+  <style>
+    * {
+      font-family: sans-serif;
+    }
 
+    .button {
+      margin: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
 
+    .active {
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
 
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script src="scripts/myscript.js"></script>
