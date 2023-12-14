@@ -24,24 +24,27 @@ library(sf)
 data_crash <- readr::read_csv2("data/data_crash.csv")
 
 #loading the holiday data
-holiday_data <- readr::read_csv("data/holiday_US.csv")
+#holiday_data <- readr::read_csv("data/holiday_US.csv")
+
+holiday_data <- readr::read_csv("data/holiday_dates.csv")
+holiday_data <- holiday_data |> filter(countryOrRegion == "United States") |> select(c(normalizeHolidayName,isPaidTimeOff, date)) 
+
 holiday_data$is_holiday <- "Yes"
 holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
+
 ```
 
 
-# Part 1 - Time Series Analysis
+## Part 1 - Time Series Analysis
 We begin our analysis with time-series analysis. In order to perform this examination, we take the date-time column `Crash_Date_Time` and extract from it the date, Year, Month, weekday, time, hour, etc. of the accident. Then we aggregate the data according to one or more of the date-time new columns to get the total number of accident within that time-frame. Finally we observe the time-series of the number of accident with respect to a given date/time dimension.
 
-We understood there could be some special significant to some  days during the year - those are the holidays in the american calendar. We assume the number of car accident might be influenced by the fact there is a holiday (and maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)
+We understood there could be some special significant to some days during the year - those are the holidays in the american calendar. We assume the number of car accident might be influenced by the fact there is a holiday (and maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)
 
 To get the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}.
-We filtered the relevant rows for our study (took dates between 2015 and 2023) and created the 'holiday_US.csv" file.
+We filter the relevant rows for our study (took dates between 2015 and 2023) 
 
-# Ethan - add the file name
-NB: one can find the code for the filtering of the data in the files name : ...
 
-## Preprocess the Date-Time column
+### Preprocess the Date-Time column
 
 Here we take the date/time column and transform it into the right data type as well as create some distinct date/time columns that will help us investigate and explore the data (time series analysis)
 
@@ -89,13 +92,19 @@ dt_temporal_Year_month <- dt_temporal |> group_by(Year, Month, first_day_of_mont
 # Getting the first and last date in the data
 start_date = min(dt_temporal$Crash_Date)
 end_date = max(dt_temporal$Crash_Date)
+
+### Filtering the holiday dates
+
+holiday_data <- holiday_data |> filter(date >= start_date & date <= end_date)
+
+
 ```
 
 ### Create Weekly car-accident data
 
 We wish to analyze the **weekly** trends of total number of car accidents in Montgomery county. In order to do so, we group the data by weeks and sum the number of accidents.
 Then we aggregarte the data again by **Month** to have the average weekly car accidents for every year-month combination. We plot this as a black line.
-At the same time we plot a time series line plot for each holiday-day category --> that is, every holiday has a line + points representing the total number of accidents that happened in the **week* of that holiday.
+At the same time we plot a time series line plot for each holiday-day category --> that is, every holiday has a line + points representing the total number of accidents that happened in the **week** of that holiday.
 Finally we can use the graph to compare between the total number of accidents in the different weeks of the years and see if a given holiday is able to "increase" or "decrease" the total number of accidents in the week it was celebrated at.
 
 ```{r}
@@ -165,7 +174,7 @@ data_for_plot <- rbind(dt_temporal_week_only_holiday|> select(Year, Month, Crash
 ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
   geom_line(aes(group=holiday, x = Crash_week, y = Count_week, color = holiday), size = 0.4)+
       geom_point(aes(color = holiday,x = Crash_week, y = Count_week)) +
-  geom_line(data = data_for_plot|> filter(holiday=="mean_month"),aes(x = Crash_week, y = Count_week)) +
+  geom_line(data = data_for_plot|> filter(holiday=="mean_month"),aes(x = Crash_week, y = Count_week), size = 0.7) +
   labs(title = "Weekly Car accidents per holiday",
        subtitle = "The black line is an average of accidents per month",
        x = "Year", y="Total Accidents in a given week")
@@ -173,7 +182,7 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
 ```
 
 
-### Using the graph we can get some interesting insights:
+#### Using the graph we can get some interesting insights:
 
 + First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a trend of decrease (that can be attributed to the Covid-19 outbreak) and seasonality 
 
@@ -388,33 +397,51 @@ plot_month <- ggplot(filtered_data) +
   theme_minimal() +
   theme(legend.position = "none")  # Remove the legend
 
+```
+
+```{r, fig.width=10}
+
+plot_month <- ggplot(filtered_data) +
+
+  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill", color = "black") +
+  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
+  labs(title = "Proportion of Hit-Run Accidents",
+       subtitle = "Per Month of Year",
+       x = "Month",
+       y = "Proportion") +
+  scale_x_discrete(labels = month_labels) +  # Abbreviate Month names
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
 # Create a bar plot for Weekday
 plot_weekday <- ggplot(filtered_data) +
   geom_bar(aes(x = Week_day, fill = Hit_Run), position = "fill", color = "black") +
   scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
   labs(subtitle = "Per Weekday",
-       x = "Weekday",
-       y = NULL) +
+       x = "Weekday") +
   scale_x_discrete(labels = weekday_labels) +  # Abbreviate Weekday names
   theme_minimal() +
-  theme(legend.position = "none")  # Remove the legend
+  theme(legend.position = "none", axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank())  # Remove y-axis components
 
-# Create a bar plot for Hours
+
+
 plot_hours <- ggplot(filtered_data) +
   geom_bar(aes(x = Crash_Hour_Group, fill = Hit_Run), position = "fill", color = "black") +
   labs(subtitle = 'Per Hour',
        x = "Crash Hour", y = NULL) +
   scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
   theme_minimal() +
-  theme(legend.key.size = unit(0.5, "cm"))
+  theme(legend.position = "none", axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank())  # Remove y-axis components
+
+
 
 # Arrange the two plots side by side
-combined_plot <- plot_month + plot_weekday + plot_hours
+combined_plot <- plot_month + plot_weekday + plot_hours +  theme(legend.position = "bottom") 
 
 # Print the combined plot
 print(combined_plot)
-
 ```
+
 
 + There doesn't appear to be a correlation between the month and Hit-Run incidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
 
@@ -425,7 +452,7 @@ print(combined_plot)
 
 ### Analyzing First_Harmful_Event with respect to Hit_Run
 
-```{r}
+```{r, fig.height=7}
 #count(dt_temporal, First_Harmful_Event) |> arrange(desc(n))
 
 ### taking only the 7 top categories in  First_Harmful_Event
@@ -438,7 +465,7 @@ df_for_harmful_event <- dt_temporal %>%
 ###Mosaic plot 1:
 mosaicplot(table(factor(df_for_harmful_event$First_Harmful_Event), df_for_harmful_event$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
            color = c('#FF9900', 'darkgreen'), 
-           las = 2  # Rotate labels by 90 degrees
+           las = 1  # Rotate labels by 90 degrees
 )
 
 #count(df_for_harmful_event, Hit_Run, First_Harmful_Event)

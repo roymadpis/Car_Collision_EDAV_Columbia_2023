@@ -99,7 +99,7 @@ tibble_nas |> arrange(desc(number_of_NA))
 ggplot(tibble_nas |> filter(number_of_NA >0 ))+
   geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA),
                fill = "cornflowerblue", color = "black") +
-  labs(title = "Number of Nas in the data columns",
+  labs(title = "Number of NAs in the data columns",
        subtitle = "Showing only columns with number of NAs > 0",
        y = 'Column name')
 
@@ -143,7 +143,7 @@ tibble_nas_filtered_data_crash <- tibble_nas
 ggplot(tibble_nas |> filter(number_of_NA >0 ))+
   geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA),
            fill = "cornflowerblue", color = "black") +
-  labs(title = "Number of Nas in the data_crash columns",
+  labs(title = "Number of NAs in the data_crash columns",
        subtitle = "Showing only columns with number of NAs > 0",
        y = 'Column name')
 ```
@@ -203,5 +203,20 @@ In conclusion, for all the columns in the array 'difference_both_ways' we can de
 
 ```{r}
 write_csv2(data_crash, "data/data_crash.csv")
+```
+
+### Holiday data
+
+We understood there could be some special significant to some days during the year - those are the holidays in the american calendar. We assume the number of car accident might be influenced by the fact there is a holiday (and maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)
+
+To get the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}.
+We filtered the relevant rows for our study (took dates between 2015 and 2023) and created the holiday_data data frame.
+
+```{r}
+holiday_data <- readr::read_csv("data/holiday_dates.csv")
+holiday_data <- holiday_data |> filter(countryOrRegion == "United States") |> select(c(normalizeHolidayName,isPaidTimeOff, date)) 
+
+holiday_data$is_holiday <- "Yes"
+holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
 ```
 
