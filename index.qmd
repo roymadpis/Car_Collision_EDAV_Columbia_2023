@@ -1,5 +1,6 @@
 # Introduction
 
+
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(ggplot2)
@@ -54,7 +55,6 @@ In each part we will answer some guiding question.
 
 
 To conclude, our project not only aims to visualize the data but also to provide meaningful interpretations that contribute to the broader topic of road safety and accident prevention. For readers unfamiliar with the subject, our visualizations and analyses will offer an accessible entry point into the multifaceted world of car accidents and their implications.
-
 
 
 
