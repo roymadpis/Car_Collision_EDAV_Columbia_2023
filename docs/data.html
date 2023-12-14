@@ -180,7 +180,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#research-plan" id="toc-research-plan" class="nav-link" data-scroll-target="#research-plan"><span class="header-section-number">2.2</span> Research Plan</a></li>
   <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</a></li>
   <li><a href="#analyzing-nas" id="toc-analyzing-nas" class="nav-link" data-scroll-target="#analyzing-nas"><span class="header-section-number">2.4</span> Analyzing NAs</a></li>
-  <li><a href="#repartition-of-the-nas-in-between-columns" id="toc-repartition-of-the-nas-in-between-columns" class="nav-link" data-scroll-target="#repartition-of-the-nas-in-between-columns"><span class="header-section-number">2.5</span> Repartition of the NAs in between columns</a></li>
+  <li><a href="#repartition-of-the-nas-in-between-columns" id="toc-repartition-of-the-nas-in-between-columns" class="nav-link" data-scroll-target="#repartition-of-the-nas-in-between-columns"><span class="header-section-number">2.5</span> Repartition of the NAs in between columns</a>
+  <ul class="collapse">
+  <li><a href="#holiday-data" id="toc-holiday-data" class="nav-link" data-scroll-target="#holiday-data"><span class="header-section-number">2.5.1</span> Holiday data</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023/edit/main/data.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -313,7 +316,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(tibble_nas <span class="sc">|&gt;</span> <span class="fu">filter</span>(number_of_NA <span class="sc">&gt;</span><span class="dv">0</span> ))<span class="sc">+</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y=</span><span class="fu">reorder</span>(column_name,number_of_NA), <span class="at">x =</span> number_of_NA),</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"cornflowerblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Nas in the data columns"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of NAs in the data columns"</span>,</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Showing only columns with number of NAs &gt; 0"</span>,</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Column name'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -383,7 +386,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(tibble_nas <span class="sc">|&gt;</span> <span class="fu">filter</span>(number_of_NA <span class="sc">&gt;</span><span class="dv">0</span> ))<span class="sc">+</span></span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y=</span><span class="fu">reorder</span>(column_name,number_of_NA), <span class="at">x =</span> number_of_NA),</span>
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"cornflowerblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Nas in the data_crash columns"</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of NAs in the data_crash columns"</span>,</span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Showing only columns with number of NAs &gt; 0"</span>,</span>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Column name'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -467,6 +470,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv2</span>(data_crash, <span class="st">"data/data_crash.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="holiday-data" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="holiday-data"><span class="header-section-number">2.5.1</span> Holiday data</h3>
+<p>We understood there could be some special significant to some days during the year - those are the holidays in the american calendar. We assume the number of car accident might be influenced by the fact there is a holiday (and maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)</p>
+<p>To get the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python <a href="https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets" class="class-to-style-as-link">Visit Microsoft Azure Open Datasets</a>. We filtered the relevant rows for our study (took dates between 2015 and 2023) and created the holiday_data data frame.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>holiday_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"data/holiday_dates.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 69557 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (4): countryOrRegion, holidayName, normalizeHolidayName, countryRegionCode
+lgl  (1): isPaidTimeOff
+date (1): date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>holiday_data <span class="ot">&lt;-</span> holiday_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(countryOrRegion <span class="sc">==</span> <span class="st">"United States"</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">c</span>(normalizeHolidayName,isPaidTimeOff, date)) </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>holiday_data<span class="sc">$</span>is_holiday <span class="ot">&lt;-</span> <span class="st">"Yes"</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>holiday_data <span class="ot">&lt;-</span> holiday_data <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="st">"Holiday"</span> <span class="ot">=</span> <span class="st">"normalizeHolidayName"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 

@@ -89,7 +89,7 @@ data_crash <- as_tibble(lapply(data_crash, replace_na))
 ## Analyzing NAs
 
 
-```{r,warning=FALSE, message=FALSE}
+```{r,warning=FALSE, message=FALSE, fig.height=6}
 ## PLot the number of NAs for each column
 
 b <- apply(data_crash, 2, function(c) sum(is.na(c)))

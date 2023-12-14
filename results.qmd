@@ -32,6 +32,12 @@ holiday_data <- holiday_data |> filter(countryOrRegion == "United States") |> se
 holiday_data$is_holiday <- "Yes"
 holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
 
+
+```
+
+```{r, echo=FALSE, results='hide'}
+# Set the local time to english to get the days in English (same for the month)
+Sys.setlocale("LC_TIME", "English")
 ```
 
 
@@ -48,8 +54,10 @@ We filter the relevant rows for our study (took dates between 2015 and 2023)
 
 Here we take the date/time column and transform it into the right data type as well as create some distinct date/time columns that will help us investigate and explore the data (time series analysis)
 
-```{r, message=FALSE}
 
+
+
+```{r, message=FALSE}
 dt_temporal <- dplyr::select(data_crash,c("Crash_Date_Time","Weather", "Hit_Run",
                        "First_Harmful_Event", "At_Fault"))
 
@@ -62,8 +70,6 @@ dt_temporal$Crash_Time <- format(dt_temporal$"Crash_Date_Time", "%H:%M:%S")
 dt_temporal$Crash_Time <- as_hms(dt_temporal$Crash_Time)
 dt_temporal$Crash_Hour <- hour(dt_temporal$Crash_Time) #Crash hour
 
-# Set the local time to english to get the days in English (same for the month)
-Sys.setlocale("LC_TIME", "English")
 
 ### add some "date slicers" columns
 dt_temporal$Week_day <- weekdays(dt_temporal$Crash_Date)
@@ -182,7 +188,7 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
 ```
 
 
-#### Using the graph we can get some interesting insights:
+### Using the graph we can get some interesting insights:
 
 + First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a trend of decrease (that can be attributed to the Covid-19 outbreak) and seasonality 
 
@@ -264,7 +270,7 @@ ggplot(dt_temporal, aes(x = Crash_Time)) +
 ### Distribution of the number of accidents by different time-slicers: Month, weekday, hour
 Let's explore the distribution of daily number of accidents per month, per weekday and per hour. Are the different categories have different distribution of the daily number of accidents?
 
-```{r, message=FALSE}
+```{r, message=FALSE, fig.height=10}
 
 dt_temporal_1 <- dt_temporal
 # Convert the Month column to display the abbreviation version
@@ -320,6 +326,9 @@ plot_weekday <- ggplot(dt_temporal_month) +
   theme_minimal() +
   labs(subtitle = "By weekday")
 
+```
+
+```{r}
 
 # Distribution of total number of accidents by Hour (the total number of accidents is with the total within in Year-Month combination)
 
@@ -332,7 +341,7 @@ plot_hours <- ggplot(dt_temporal_hour |> mutate(Crash_Hour = as.factor(Crash_Hou
 
 # Combine the plots side by side with one common title
 combined_plots <- plot_month + plot_weekday +
-  plot_layout(ncol = 2, heights = c(1, 2)) +
+  plot_layout(ncol = 1, heights = c(2, 1)) +
   plot_annotation(title = "Distribution of total number of accidents")
 
 # Print the combined plots
@@ -340,6 +349,7 @@ print(combined_plots)
 
 plot_hours + labs(title = "Distribution of total number of accidents by day-hour")
 ```
+
 
 + By combining histograms and density plots, we gain valuable insights into the distribution of total accidents aggregated by months per year, examining variations across different months, weekdays, and day-hours
 
@@ -355,7 +365,7 @@ The density plots unveil noticeable differences in the distribution of total acc
 Exploring the density plots illustrates significant disparities in the distribution of total accidents across different times of the day. Notably, there is typically an increase in accidents during the middle of the day, aligning with the expected higher traffic volumes during those hours.
 
 
-# Part 2 - Hit/run Analyis
+## Part 2 - Hit/run Analyis
 In this part we addresses the pressing issue of **hit-and-run accidents**. We examine correlation between various features and the "Hit-Run" column.
 
 ```{r, message=FALSE}
@@ -368,7 +378,7 @@ dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day
 
 ### Is it more likely to Hit and Run in a specific Month / Week day / Hour?
 
-```{r}
+```{r, fig.width=10}
 # Filter out NA values for Hit_Run
 filtered_data <- dt_temporal %>%
   filter(!is.na(Hit_Run))
@@ -382,24 +392,6 @@ filtered_data$Crash_Hour_Group <- cut(filtered_data$Crash_Hour,
   breaks = c(0, 4, 8, 12, 16, 20, 24),
   labels = c("0-4", "4-8", "8-12", "12-16", "16-20", "20-24"),
   include.lowest = TRUE)
-
-
-# Create a bar plot for Month
-plot_month <- ggplot(filtered_data) +
-
-  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill", color = "black") +
-  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
-  labs(title = "Proportion of Hit-Run Accidents",
-       subtitle = "Per Month of Year",
-       x = "Month",
-       y = "Proportion") +
-  scale_x_discrete(labels = month_labels) +  # Abbreviate Month names
-  theme_minimal() +
-  theme(legend.position = "none")  # Remove the legend
-
-```
-
-```{r, fig.width=10}
 
 plot_month <- ggplot(filtered_data) +
 
@@ -452,7 +444,7 @@ print(combined_plot)
 
 ### Analyzing First_Harmful_Event with respect to Hit_Run
 
-```{r, fig.height=7}
+```{r, fig.height=7, fig.width=12}
 #count(dt_temporal, First_Harmful_Event) |> arrange(desc(n))
 
 ### taking only the 7 top categories in  First_Harmful_Event
@@ -465,8 +457,7 @@ df_for_harmful_event <- dt_temporal %>%
 ###Mosaic plot 1:
 mosaicplot(table(factor(df_for_harmful_event$First_Harmful_Event), df_for_harmful_event$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
            color = c('#FF9900', 'darkgreen'), 
-           las = 1  # Rotate labels by 90 degrees
-)
+           las = 1)  # Rotate labels by 90 degrees
 
 #count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
 
@@ -485,23 +476,7 @@ a|> mutate("prop" = n/sum(a$n))
 
 ```
 
-## Study of the influence of the characteristics of the roads on the number of accident and Hit/Run
-
-```{r}
-# ## Explore the Categorical data we have
-# 
-# dt_lane <- data_crash[,c("Hit_Run","Route_Type","Number_of_Lanes","NonTraffic","Road_Grade","At_Fault","Cross_Street_Type","Collision_Type","Traffic_Control","Driver_Substance_Abuse","Road_Alignment","Junction","Road_Condition","Road_Division","First_Harmful_Event","Light","Surface_Condition")]
-# 
-# unique_values <- lapply(dt_lane, unique)
-# 
-# # Print unique value for each of the column
-# for (col_name in names(unique_values)) {
-#   cat("Column:", col_name, "\n")
-#   print(unique_values[[col_name]])
-#   cat("\n")
-# }
-
-```
+### Study of the influence of the characteristics of the roads on the number of accident and Hit/Run
 
 ```{r}
 ## Create 2 new datasets to explore different Categorical values
@@ -509,10 +484,6 @@ dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic
 
 dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse")]
 
-```
-
-
-```{r}
 #Rename the column in Road_type and get rid of the Na and the unknown values
 dt_lane <- dt_lane %>%
   mutate(Road_Division = recode(Road_Division,
@@ -541,11 +512,9 @@ dt_lane <- dt_lane %>%
 #   #theme(axis.text.x = element_text(angle = 45, hjust = 1))+
 #   labs(title ='Facet by number of Lanes' )
 # <u>Comment :</u> One can see that most of the accidents that happends on 3 lanes road are 2-way and divided (most likely highway). 
-```
 
-### Traffic Control
+#Traffic Control
 
-```{r}
 dt_lane <- dt_lane %>%
    mutate(Traffic_Control = recode(Traffic_Control,
         "FLASHING TRAFFIC SIGNAL" = "Traffic Light",
@@ -603,39 +572,6 @@ ggplot(dt_lane_freq, aes(x = reorder(Junction, -Frequency_junc))) +
 + We can observe that **most of the car accidents happen at an intersection**. Further, half of the crashes at these intersection have **traffic lights**. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this indicates that traffic light are not efficient for reducing car accident. 
 
 
-```{r}
-# dt_lane_freq_intersection <- dt_lane_freq %>%
-#   filter(Junction == 'Intersection')
-# 
-# # Function to filter rows within a certain radius
-# filter_within_radius <- function(data, radius_meters = 100) {
-#   n <- nrow(data)
-#   keep_rows <- rep(FALSE, n)
-# 
-#   # Initialize with the first row
-#   keep_rows[1] <- TRUE
-# 
-#   for (i in 2:n) {
-#     distances <- geosphere::distVincentySphere(
-#       data[i, c("Longitude", "Latitude")],
-#       data[keep_rows, c("Longitude", "Latitude")]
-#     )
-# 
-#     too_close <- distances < radius_meters
-#     keep_rows[i] <- !any(too_close)
-#   }
-# 
-#   return(data[keep_rows, , drop = FALSE])
-# }
-# 
-# 
-# # Apply the function to your data
-# dt_lane_freq_filtered <- filter_within_radius(dt_lane_freq_intersection, radius_meters = 100)
-
-```
-
-
-
 ### Alluvial plot to see pattern
 
 ```{r}
@@ -652,9 +588,6 @@ dt_lane1 <- dt_lane1 %>%
 
 # Map_pt <- dt_lane1$Road_Name
 # Map_pt
-```
-
-```{r}
 
 junction_order <- c("Crossover", "Intersection", "Driveway","Non Intersection", "Interchange")
 
@@ -682,9 +615,9 @@ ggplot(data = dt_lane1,
 
 
 
-# Spatial Representation
+## Part 3 - Spatial Representation
 
-To 
+We employ **geographical**, or **spatial**, data to explore the relationship between accident density and geographical attributes. Specifically, we aim to identify roads with the highest concentration of accidents and analyze common attributes among them. 
 
 ```{r, message= FALSE, warning= FALSE}
 ## We are removing the data points which are not in the county
@@ -719,12 +652,12 @@ leaflet(coordinate_Montgomery) %>%
 
 + One key element that can be taken from that interactive map is that parking are place with high density of Hit/Run incidents. This correlate with one of our previous mosaic plot that displayed the 'First_Harmful_Event' column. We saw there that the "Parked-Vehicle" is the category with the highest proportion of Hit/Run.
 
-  Moreover, it is visible that intersections are location with higher density of hit and run accidents. Overall, this heat map help us visualize the patterns we have discovered earlier, it is clear that there is almost no Hit/Run incidents on highway like 15A. 
++ Moreover, it is visible that intersections are location with higher density of hit and run accidents. Overall, this heat map help us visualize the patterns we have discovered earlier, it is clear that there is almost no Hit/Run incidents on highway like 15A. 
 
 
 ---------------------------------------------------------------------------
 
-# Overall findings from plots we didn't include in this project:
+## Overall findings from plots we didn't include in this project:
 
 Other than the plots we presented in this section, we created dozens more visualizations that were less informative thus excluded from the final report. However, we would like to highlight some of the findings and insights we derived from them.
 
@@ -763,24 +696,25 @@ The issue with that analysis is we don't have the overall proportion of "good" v
 ```
 
 
-## Speaking about Roads, where are we ?
 
 ```{r}
-dt_lane2 <- dt_lane %>%
-  group_by(Road_Name) %>%
-  mutate(Frequency_road = n()) %>%
-  ungroup() %>%
-  #filter(Frequency >= n_threshold) %>%
-  distinct(Road_Name, .keep_all = TRUE)
-
-top_10_roads <- dt_lane2 %>%
-  arrange(desc(Frequency_road)) %>%  # Arrange by Frequency in descending order
-  slice_head(n = 10) %>%       # Select the top 10 rows
-  select(Road_Name,Frequency_road) %>%
-  as.list()
-
-top10 <- top_10_roads$Road_Name
-top10
+# ### Speaking about Roads, where are we ?
+# 
+# dt_lane2 <- dt_lane %>%
+#   group_by(Road_Name) %>%
+#   mutate(Frequency_road = n()) %>%
+#   ungroup() %>%
+#   #filter(Frequency >= n_threshold) %>%
+#   distinct(Road_Name, .keep_all = TRUE)
+# 
+# top_10_roads <- dt_lane2 %>%
+#   arrange(desc(Frequency_road)) %>%  # Arrange by Frequency in descending order
+#   slice_head(n = 10) %>%       # Select the top 10 rows
+#   select(Road_Name,Frequency_road) %>%
+#   as.list()
+# 
+# top10 <- top_10_roads$Road_Name
+# top10
 ```
 
 + Time-plot displaying the total number of accidents trend over the years faceted by weekdays:
