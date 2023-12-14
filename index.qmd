@@ -49,7 +49,7 @@ In each part we will answer some guiding question.
 
 #### Part 3: Geospatial Exploration for Hit and Run accidents:
 
-+ Can we identify specific roads with a higher concentration of accidents, and what common attributes do they share?
++ Can we identify specific locations with a higher concentration of Hit and Run accidents, and what common attributes do they share?
 
 + Are there geographical patterns unique to "regular" accidents versus "Hit and Run" incidents?
 

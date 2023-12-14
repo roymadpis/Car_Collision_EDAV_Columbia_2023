@@ -767,46 +767,6 @@ leaflet(coordinate_Montgomery) %>%
 
 <u>NB:</u> We also explored the same visualization for only the non Hit and Run accidents and we could see indeed that density of accidents is more uniform than for Hit and Run accident across the county and there are less accudents in parking spots.
 
-```{r}
-dt_lane2 <- dt_lane %>%
-  group_by(Road_Name) %>%
-  mutate(Frequency_road = n()) %>%
-  ungroup() %>%
-  #filter(Frequency >= n_threshold) %>%
-  distinct(Road_Name, .keep_all = TRUE) %>%
-  filter(Hit_Run != 'Yes')
-
-top_10_roads <- dt_lane2 %>%
-  arrange(desc(Frequency_road)) %>%  # Arrange by Frequency in descending order
-  slice_head(n = 10) %>%       # Select the top 10 rows
-  select(Road_Name,Frequency_road) %>%
-  as.list()
-
-dt_top10 <- dt_lane %>%
-  filter(Road_Name %in% top10)
-
-top10 <- top_10_roads$Road_Name
-
-dt_without <- dt_lane %>%
-  filter(Hit_Run != 'Yes')
-
-# Create a new dataset with only the coordinate of points inisde the county
-coordinate_Montgomery2 <- dt_without %>%
-  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) %>%
-  st_intersection(montgomery_county) %>%
-  st_coordinates() %>%
-  as.data.frame() 
-  
-
-leaflet(coordinate_Montgomery2) %>%
-  addTiles() %>% 
-  addHeatmap(
-  lat = ~Y,
-  lng = ~X,
-  blur = 15,
-  radius = 10) 
-```
-
 
 ---------------------------------------------------------------------------
 
@@ -848,7 +808,7 @@ The issue with that analysis is we don't have the overall proportion of "good" v
 # mosaicplot(table(dt_temporal$Weather, dt_temporal$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event", color = c('tomato', 'darkgreen'), las = 2)  # Rotate labels by 90 degrees
 ```
 
-
+We also visualized with a map of the 10 roads with highest number of accidents. As expected these are the main axes of transportation across the county the accidents occur more near the South of the county, where the urban density is the highest. 
 
 ```{r}
 # ### Speaking about Roads, where are we ?
@@ -868,6 +828,28 @@ The issue with that analysis is we don't have the overall proportion of "good" v
 # 
 # top10 <- top_10_roads$Road_Name
 # top10
+
+# dt_top10 <- dt_lane %>%
+#   filter(Road_Name %in% top10)
+# 
+# dt_without <- dt_lane %>%
+#   filter(Hit_Run != 'Yes')
+# 
+# # Create a new dataset with only the coordinate of points inisde the county
+# coordinate_Montgomery2 <- dt_top10 %>%
+#   st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) %>%
+#   st_intersection(montgomery_county) %>%
+#   st_coordinates() %>%
+#   as.data.frame() 
+#   
+# 
+# leaflet(coordinate_Montgomery2) %>%
+#   addTiles() %>% 
+#   addHeatmap(
+#   lat = ~Y,
+#   lng = ~X,
+#   blur = 15,
+#   radius = 10) 
 ```
 
 + Time-plot displaying the total number of accidents trend over the years faceted by weekdays:
