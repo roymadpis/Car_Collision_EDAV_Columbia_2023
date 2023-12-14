@@ -1,13 +1,10 @@
 # Conclusion
 
-Discuss: main takeaways of your exploration, limitations, future directions, lessons learned.
-
-
-In the course of our project, we conducted a comprehensive analysis of car collision data in Montgomery County, extracting valuable insights outlined in detail in the results chapter.
+In the course of our project, we conducted a comprehensive analysis of car collision data in Montgomery County, extracting valuable insights outlined in detail in the results chapter. WE began to explore our data as a time series to spot seasonality and special days leading to higher or lower car accident. Then, we focused on Hit and Run accidents to find common pattern that could help the police reduce these accidents.
 
 #### Time Series Analysis
 In our examination of the time series aspect concerning the date and time of collisions, we identified notable patterns associated with specific holidays - there are some holidays that typically correspond to weeks with higher/lower number of accidents.
-Our recommendation to Montgomery Police Department is to increase the presence of officers during weeks corresponding to holidays such as Veterans Day and Columbus Day. While the analysis did not reveal a significant connection between a given month and the number of accidents, it highlighted a substantial correlation between the day of the week and the hour of the day with accident frequencies. Notably, weekends and late hours exhibited lower accident numbers, aligning with the expected lower volume of drivers during these periods.
+Our recommendation to Montgomery Police Department is to increase the presence of officers during weeks corresponding to holidays such as Veterans Day and Columbus Day. While the analysis did not reveal a significant connection between a given month and the number of accidents, it highlighted a substantial correlation between the day of the week and the hour of the day with accident frequencies. A line of thought could be to think about alternative way for workers to go home during commute hours when they feel too tired. Notably, weekends and late hours exhibited lower accident numbers, aligning with the expected lower volume of drivers during these periods.
 
 
 #### Hit-and-Run Incidents Analysis
@@ -35,37 +32,4 @@ Within the scope of the **Geospatial Exploration** we analyzed a heat-map of the
 
 
 
------------------- draft:
-In this project we analyzed car collision data in the Montgomery County. We crafted some valuable insights which were presented in elaboration in the `results` chapter.
 
-Within the scope of the **time series analysis** on the date/time of the collision, We discovered there are some holidays that usually corresponds to weeks with higher/lower number accident. We advise Montgomery police department to increase presense of police officers in the week of Veterans Day and Columbus days.
-We found there isn't a significant connection between a given month and the number of accidents, however the day of week and the hour of the day has a great correlation with the number of accidents. Weekends and late hours of the day typically habe lower number of accidents compared to the middle of the week and the middle-day hours. This is reasonable as the number of drivers on the road is higher at those times.
-
-Within the scope of the **Hit-and-Run Incidents** analysis we found out there is a higher proportion of Hit-Run accident on weekends and on late hours. That is, if an accident happen to occur at the middle of the week and or at an early time of the day, there is less chance the driver will run away after an accident. From that we can learn Montgomery police department need to increase the road-enforcment on wekeends and in later-hours. We suggest considering placment of "fake police cars" (without poice officers) in various dangerous intersectinos to lower the chances of hit-run accident in particular and of accidents at general.
-
-In addition, we discovered that accidents of the type "parked vehicle" - that is accidents where the driver hitted a vehicle that was parking, has more than half chance to hit and run (compared to the overall proportion of hit-run accidents). We suggest incoruaging people to install a camera in there car that works 24/7 and is able to record such incidents. If enough number of drivers will do that, drivers in general will be afraid to hit and run away since they would know they would probably get cuaght and get a more severe punsihment.
-
-Finally, using allovial diagram, we discovered that roads that are 2 ways without a division between them and without any control signs have the highest chance of hit and run accident. We suggest the police department to increase enforcment in such roads - one option is to install security camera in those problematic areas.
-We would like to note we have some hypothesis regarding this phenomena:
-Roads without traffic controls (such as stop signs or traffic signals) may lack regulated intersections, potentially leading to uncontrolled interactions between vehicles. The absence of clear right-of-way rules can contribute to chaotic traffic situations, increasing the risk of accidents, including hit-and-run cases, moreover, Roads without physical divisions may provide more opportunities for drivers involved in accidents to flee the scene. The absence of barriers or medians makes it easier for a driver to quickly leave the area without being easily identified. 
-However we want to emphasize that correlation cannot be interpeted as causation, so we can only try to reason about our findings, but we don't have the necessary data and tools to test those assumptions.
-
-
-
-
-
-
-
-
-
-
-
-
-that in the rest of the week, moreover,
-
-
-plot: (D3) Average number of accidents per day of month over the years 
-Average number of accidents per day of month over the years reveals a unique "trend" for each month. There are month a higher average of accidents on specific days then others. For example, the 4th of July has typically lower values than 4th of other months. In the same notion, the 2nd and 3rd of May tend to have, on average, more accidents than the 2nd and 3rd of other month.
-
-
-We saw there is an indicatino of seasonality in the car-accident data, therefore we can advice building a time-series forecasting model that will try to predict, for given roads
