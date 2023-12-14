@@ -450,9 +450,9 @@ print(combined_plot)
 ```
 
 
-+ There doesn't appear to be a correlation between the month and Hit-Run incidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
++ There doesn't appear to be a correlation between the month and Hit-Run accidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
 
-+ However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays. Knowing from one of the previous visualization that in average less accidents occur during weekends, it reinforces the idea that the increase amount of Hit and Run during the weekend is a significant trend that should be explored rather than mere coincidence.
++ However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays. Knowing from one of the previous visualization that in average less accidents occur during weekends, it reinforces the idea that the increased number of Hit and Run during the weekend is a significant trend that should be explored rather than mere coincidence.
 
 + Concerning the Hit-Run proportion per hour, we can observe there is a higher proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
 
@@ -523,11 +523,12 @@ vcd:: mosaic(Hit_Run ~ ACRS_Report_Type + Traffic ,
  direction = c("v", "v" ,"h"),
  highlighting_fill = c("grey84", "lightgreen"))
 ```
-+ This mosaic plots highlights 2 main trends about Hit and Run incidents. First, the proportion of hit and run is higher when nobody was injured. This correlates with the previous results about the parked vehicle in the first harmful event column. More people tend to flee when there is just material damage.
 
- + The second insight is that drivers tend to flee more when there is no traffic. Two conclusions can be made, either drivers feel less pressure to stop and report the damage done when there is no traffic or maybe it is simply easier to leave the incident location when there is no traffic. 
++ This mosaic plots highlights two main trends about Hit and Run accidents. First, the **proportion of hit and run is higher when nobody was injured**. This correlates with the previous results about the parked vehicle in the `first harmful event` column. More people tend to flee when there is just material damage.
+
+ + The second insight is that **drivers tend to flee more when there is no traffic**. Two conclusions can be made: either drivers feel less pressure to stop and report the damage done when there is no traffic or maybe it is simply easier to leave the incident location when there is no traffic. 
   
- + These two insights help us understand better the driver's behavior in the case of Hit and Run. However, this does not help us prevent these type of incidents. So in the following part we will explore the correlation between the characteristics of the roads and the number of Hit and Run accidents in order to give meaning full advice for reducing the proportion of these accidents.
+ + These two insights help us understand better the driver's behavior in the case of Hit and Run. However, this does not help us prevent these type of accident. So, in the following part we explore the correlation between the characteristics of the roads and the number of Hit and Run accidents in order to give meaningful advice for reducing the proportion of these accidents.
 
 ### Study of the influence of the characteristics of the roads on the number of accident and Hit/Run
 
@@ -622,7 +623,8 @@ ggplot(dt_lane_freq, aes(x = reorder(Junction, -Frequency_junc))) +
   scale_fill_viridis_d() +
   theme_minimal()  
 ```
-+ We can observe that **most of the car accidents happen at an intersection**. Further, half of the crashes at these intersection have **traffic lights**. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. The data set provides the name of the intersection so we can explore the proportion of intersections with traffic light and compare that to the proportion of accidents happening at an intersection with traffic light. So in the next plot we will compare these two proportions.
+
++ We can observe that **most of the car accidents happen at an intersection**. Further, half of the crashes at these intersection have **traffic lights**. This highlights an important issue: traffic light are not sufficient to mitigate the risk of car accident. The data set provides the name of the intersection so we can explore the proportion of intersections with traffic light and compare that to the proportion of accidents happening at an intersection with traffic light. In the following plot we compare these two proportions.
 
 
 ```{r}
@@ -659,7 +661,8 @@ ggplot(dt_lane_freq %>% filter(Junction == 'Intersection'), aes(x = reorder(Junc
 
 
 ```
-Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this histogram seems to indicate that traffic light are not efficient enough for reducing car accident. Indeed, even though there are less than 40% of intersection with traffic lights in the county, overall more than 60% of the accidents occur at these intersection. A possible reason is that drivers rely too much on the traffic light and do not proceed to do the safety check when crossing an intersection. 
+
+Despite not having information regarding the portion of cars crossing intersection with traffic light vs car crossing intersection without traffic light, this histogram indicates that traffic light are not efficient enough for reducing car accidents. Indeed, even though less than 40% of the intersection in the county have traffic lights, overall more than 60% of the accidents occur at these intersection. A possible reason is that drivers rely too much on the traffic light and do not proceed to do the safety check when crossing an intersection. 
 <u>NB:</u> In this study we focus only on the number of accidents and not on the fluidity of the traffic for instance. Needless to say that reducing the number of accidents cannot be the only factor to consider when designing traffic sign on the roads. 
 
 
@@ -701,7 +704,7 @@ ggplot(data = dt_lane1,
   theme_void()
 ```
 
-To conclude this part about Hit and Run situation we will analyze this alluvial plot. It assists us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be used to understand how the police could reduce this type of incidents. Without inferring causation from these correlation results, one might consider that the absence of traffic signs could potentially contribute to a sense of impunity among certain drivers, leading them to flee more frequently, assuming they are not being observed. For a more in-depth examination of this pattern, we would suggest law enforcement conduct a targeted study specifically focusing on roads without traffic signs to determine whether their presence has an impact on the occurrence of hit and run incidents. It's important to note that these findings are purely correlational; other factors, such as accident severity, may play a role. If our dataset included a severity column, we could have explored this aspect further.
+To conclude this part about Hit and Run accidents we will analyze this alluvial plot. It assists us in visualizing the most common scenarios leading to Hit and Run accidents. Indeed, the majority of these accidents occur on **undivided two-way roads at non-intersections with no traffic controls**. This visible pattern in the scenario of Hit and Run can be used to understand how the police could reduce this type of accident. Without inferring causation from these correlation results, one might consider that the absence of traffic signs could potentially contribute to a sense of impunity among certain drivers, leading them to flee more frequently, assuming they are not being observed. For a more in-depth examination of this pattern, we would suggest law enforcement to conduct a targeted study focusing on roads without traffic signs to determine whether their presence has an impact on the occurrence of hit and run accidents. It's important to note that these findings are purely correlational; other factors, such as accident severity, may play a role. If our dataset included a severity column, or even number of casualties/injured/property damage assessment we could have explored this aspect further.
 
 
 ## Part 3 - Spatial Representation
@@ -878,8 +881,8 @@ We also visualized with a map of the 10 roads with highest number of accidents. 
 
 + **Influence of Substances**:
 
-We also wanted to explore the affect of taking substance on the the number of accidents and Hit and Run. In most of the car accidents no substance were detected, the second highest number of accidents was made under the effect of alcohol. Then, the next category is called 'unknown'. At first we thought it was related to accidents in which testing the substance was forgotten however by looking at the correlation with Hit/Run we saw an suprisingly high proportion of Hit and Run for this category. So despite having more information about this category we assumed that in most of these accidents the driver was not found leading to a lack of information about whether or not they consumed any substance. 
-Furthermore, there was no significant difference in proportions among the various substances when examining hit and run incidents.
+We also wanted to explore the affect of taking substance on the the number of accidents and Hit and Run. In most of the car accidents no substance were detected, the second highest number of accidents was made under the effect of alcohol. Then, the next category is called 'unknown'. At first we thought it was related to accidents in which testing the substance was forgotten however by looking at the correlation with Hit/Run we surprisingly saw high proportion of Hit and Run for this category. So, despite having more information about this category we assumed that in most of these accidents the driver was not found leading to a lack of information about whether or not they consumed any substance (Or when the police caught the driver, it was too late to test for those substances).
+Furthermore, there was no significant difference in proportions among the various substances when examining hit and run accidents.
 Similarly we didn't see any important trend when looking at who is at fault in the accident. The large majority of the time, the driver is at fault. However, there is a slight decrease of accident for which the non driver is not at fault when the driver took substance ; the proportion drop from 10% to 2% but it is not worth interpreting it further more. 
 
 ```{r}
