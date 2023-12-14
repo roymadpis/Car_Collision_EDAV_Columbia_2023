@@ -406,8 +406,8 @@ filtered_data$Crash_Hour_Group <- cut(filtered_data$Crash_Hour,
 
 plot_month <- ggplot(filtered_data) +
 
-  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill", color = "black") +
-  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
+  geom_bar(aes(x = Month, fill = Hit_Run), position = "fill", color = "grey40") +
+  scale_fill_manual(values = c("No" = "grey84", "Yes" = "lightgreen")) +
   labs(title = "Proportion of Hit-Run Accidents",
        subtitle = "Per Month of Year",
        x = "Month",
@@ -418,8 +418,8 @@ plot_month <- ggplot(filtered_data) +
 
 # Create a bar plot for Weekday
 plot_weekday <- ggplot(filtered_data) +
-  geom_bar(aes(x = Week_day, fill = Hit_Run), position = "fill", color = "black") +
-  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
+  geom_bar(aes(x = Week_day, fill = Hit_Run), position = "fill", color = "grey40") +
+  scale_fill_manual(values = c("No" = "grey84", "Yes" = "lightgreen")) +
   labs(subtitle = "Per Weekday",
        x = "Weekday") +
   scale_x_discrete(labels = weekday_labels) +  # Abbreviate Weekday names
@@ -429,10 +429,10 @@ plot_weekday <- ggplot(filtered_data) +
 
 
 plot_hours <- ggplot(filtered_data) +
-  geom_bar(aes(x = Crash_Hour_Group, fill = Hit_Run), position = "fill", color = "black") +
+  geom_bar(aes(x = Crash_Hour_Group, fill = Hit_Run), position = "fill", color = "grey40") +
   labs(subtitle = 'Per Hour',
        x = "Crash Hour", y = NULL) +
-  scale_fill_manual(values = c("No" = "#FF9900", "Yes" = "darkgreen")) +
+  scale_fill_manual(values = c("No" = "grey84", "Yes" = "lightgreen")) +
   theme_minimal() +
   theme(legend.position = "none", axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank())  # Remove y-axis components
 
@@ -467,7 +467,7 @@ df_for_harmful_event <- dt_temporal %>%
 
 ###Mosaic plot 1:
 mosaicplot(table(factor(df_for_harmful_event$First_Harmful_Event), df_for_harmful_event$Hit_Run), main= "Mosaic plot for Hit Run vs First Harmful Event",
-           color = c('#FF9900', 'darkgreen'), 
+           color = c(rgb(0.5,0.5,0.5, alpha = 0.5), rgb(0,1,0, alpha = 0.5)), 
            las = 1)  # Rotate labels by 90 degrees
 
 #count(df_for_harmful_event, Hit_Run, First_Harmful_Event)
@@ -486,6 +486,41 @@ a <- df_for_harmful_event |> filter(grepl(c("Parked"), First_Harmful_Event, igno
 a|> mutate("prop" = n/sum(a$n)) 
 
 ```
+```{r}
+# Create a data set of interest
+dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","ACRS_Report_Type")]
+
+
+# Rename the element in "ACRS_Report_Type"
+dt_responsible <- dt_responsible %>%
+   mutate(ACRS_Report_Type = recode(ACRS_Report_Type,
+    "Injury Crash" ="Injury",
+    "Fatal Crash" = "Fatal",
+    "Property Damage Crash" = "Property Damage")) %>%
+    filter(ACRS_Report_Type != "Fatal")
+
+# Rename the element in "ACRS_Report_Type"
+dt_responsible <- dt_responsible %>%
+   mutate(Traffic = recode(NonTraffic,
+    "Yes" ="No",
+    "No" = "Yes"))%>%
+  select(-NonTraffic)
+
+#redav::plot_missing(dt_responsible) # We see that more than 80% of the rows does not have Na so I will drop all the Na
+
+dt_responsible <- dt_responsible %>%
+  na.omit() 
+
+vcd:: mosaic(Hit_Run ~ ACRS_Report_Type + Traffic ,
+ data = dt_responsible,
+ direction = c("v", "v" ,"h"),
+ highlighting_fill = c("grey84", "lightgreen"))
+```
++ This mosaic plots highlights 2 main trends about Hit and Run incidents. First, the proportion of hit and run is higher when nobody was injured. This correlates with the previous results about the parked vehicle in the first harmful event column. More people tend to flee when there is just material damage.
+
+  The second insight is that drivers tend to flee more when there is no traffic. Two conclusions can be made, either drivers feel less pressure to stop and report the damage done when there is no traffic or maybe it is simply easier to leave the incident location when there is no traffic. 
+  
+  These two insights help us understand better the driver's behavior in the case of Hit and Run. However, this does not help us prevent these type of incidents. So in the following part we will explore the correlation between the characteristics of the roads and the number of Hit and Run accidents in order to give meaning full advice for reducing the proportion of these incidents.
 
 ### Study of the influence of the characteristics of the roads on the number of accident and Hit/Run
 
@@ -547,7 +582,8 @@ dt_lane <- left_join(lane_freq, dt_lane, by = "Traffic_Control")
 #   theme_minimal()  # Adjust the theme if needed
 ```
 
-### Junction
+
+#### Insight about accidents around intersection
 
 First, let's observe the typical situation in which accidents occur :
 
@@ -620,7 +656,7 @@ Despite not having the proportion of number of cars crossing intersection with t
 <u>NB:</u> In this study we focus only on the number of accidents and not on the fluidity of the traffic for instance. Needless to say that reducing the number of accidents cannot be the only factor to consider when designing traffic sign on the roads. 
 
 
-### Alluvial plot to see pattern
+#### Alluvial plot to understand Hit/Run pattern
 
 ```{r}
 
@@ -663,81 +699,9 @@ The alluvial plots assist us in visualizing the most common scenarios leading to
 
 ## Who's at Fault ?
 
-```{r}
-count(dt_responsible, ACRS_Report_Type)
-```
+One thing with Hit and Run is that most of the people are not caught after the accident so we can not have information on them. However some of them 
 
-## Who's at Fault ?
-```{r}
-# Create a data set of interest
-dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse","ACRS_Report_Type")]
 
-# Rename the elements in "Driver_Substance_Abuse" and filter the Na
-dt_responsible <- dt_responsible %>%
-  mutate(Driver_Substance_Abuse = str_extract(Driver_Substance_Abuse, "^[^,]+")) %>%
-  mutate(Driver_Substance_Abuse = recode(Driver_Substance_Abuse,
-    "ALCOHOL CONTRIBUTED" ="alcohol",
-    "ALCOHOL PRESENT" = "alcohol",
-    "COMBINATION CONTRIBUTED" = "combined substance",
-    "COMBINED SUBSTANCE PRESENT" = "combined substance",
-    "ILLEGAL DRUG CONTRIBUTED" = "illegal drug",
-    "ILLEGAL DRUG PRESENT" = "illegal drug",
-    "MEDICATION CONTRIBUTED" = "under medication",
-    "MEDICATION PRESENT" = "under medication",
-    "UNKNOWN" = 'unknown',
-    "OTHER" = 'unknown',
-    "NONE DETECTED" = 'none detected'
-  )) %>%
-  filter(Driver_Substance_Abuse != "N/A")
-
-# Rename the element in "ACRS_Report_Type"
-dt_responsible <- dt_responsible %>%
-   mutate(ACRS_Report_Type = recode(ACRS_Report_Type,
-    "Injury Crash" ="Injury",
-    "Fatal Crash" = "Fatal",
-    "Property Damage Crash" = "Property Damage")) %>%
-    filter(ACRS_Report_Type != "Fatal")
-
-# Rename the element in "ACRS_Report_Type"
-dt_responsible <- dt_responsible %>%
-   mutate(Traffic = recode(NonTraffic,
-    "Yes" ="No",
-    "No" = "Yes"))%>%
-  select(-NonTraffic)
-
-#redav::plot_missing(dt_responsible) # We see that more than 80% of the rows does not have Na so I will drop all the Na
-
-dt_responsible <- dt_responsible %>%
-  na.omit() %>%
-  filter(Driver_Substance_Abuse != 'none detected') # %>% # remove the none detected because they are too much
-  # filter(Driver_Substance_Abuse != 'alcohol') %>%
-  # filter(Driver_Substance_Abuse != 'unknown')
-responsible_freq <- dt_responsible %>%
-  count(Driver_Substance_Abuse, name = "Frequency_drug")
-dt_responsible <- left_join(responsible_freq, dt_responsible, by = "Driver_Substance_Abuse")
-  
-# ggplot(dt_responsible, aes(x = reorder(Driver_Substance_Abuse, -Frequency_drug))) +
-#   geom_bar() +
-#   labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
-#   theme_minimal()  # Adjust the theme if needed
-```
-
-```{r}
-library(gridExtra)
-# count(dt_responsible, Driver_Substance_Abuse)
-dt_responsible <- dt_responsible %>%
-  mutate(
-    Driver_Substance_Abuse_A = if_else(Driver_Substance_Abuse %in% c('alcohol', 'unknown'), Driver_Substance_Abuse, NA_character_),
-    Driver_Substance_Abuse_B = if_else(!Driver_Substance_Abuse %in% c('alcohol', 'unknown'), Driver_Substance_Abuse, NA_character_)
-  )
-mp1 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_A + Traffic + ACRS_Report_Type ,
- data = dt_responsible,
- direction = c("v", "v","h", "h" ))
-
-mp2 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_B  + Traffic + ACRS_Report_Type,
- data = dt_responsible,
- direction = c("v", "v","h" ,"h"))
-```
 There is more Hit and Run instance when there is no traffic (yes instance for the column NonTraffic) most likely due to the fact that it is easier to go away without traffic on the road.
 
 
@@ -867,5 +831,49 @@ The issue with that analysis is we don't have the overall proportion of "good" v
 
 ```
 
++ **Influence of Substances**:
+
+We also wanted to explore the affect of taking substance on the the number of accidents and Hit and Run. In most of the car accidents no substance were detected, the second highest number of accidents was made under the effect of alcohol. Then, the next category is called 'unknown'. At first we thought it was related to accidents in which testing the substance was forgotten however by looking at the correlation with Hit/Run we saw an suprisingly high proportion of Hit and Run for this category. So despite having more information about this category we assumed that in most of these accidents the driver was not found leading to a lack of information about whether or not they consumed any substance. 
+Furthermore, there was no significant difference in proportions among the various substances when examining hit and run incidents.
+Similarly we didn't see any important trend when looking at who is at fault in the accident. The large majority of the time, the driver is at fault. However, there is a slight decrease of accident for which the non driver is not at fault when the driver took substance ; the proportion drop from 10% to 2% but it is not worth interpreting it further more. 
+
+```{r}
+dt_responsible <- data_crash[,c("At_Fault","Driver_Substance_Abuse")]
+# Rename the elements in "Driver_Substance_Abuse" and filter the Na
+dt_responsible <- dt_responsible %>%
+  mutate(Driver_Substance_Abuse = str_extract(Driver_Substance_Abuse, "^[^,]+")) %>%
+  mutate(Driver_Substance_Abuse = recode(Driver_Substance_Abuse,
+    "ALCOHOL CONTRIBUTED" ="alcohol",
+    "ALCOHOL PRESENT" = "alcohol",
+    "COMBINATION CONTRIBUTED" = "combined substance",
+    "COMBINED SUBSTANCE PRESENT" = "combined substance",
+    "ILLEGAL DRUG CONTRIBUTED" = "illegal drug",
+    "ILLEGAL DRUG PRESENT" = "illegal drug",
+    "MEDICATION CONTRIBUTED" = "under medication",
+    "MEDICATION PRESENT" = "under medication",
+    "UNKNOWN" = 'unknown',
+    "OTHER" = 'unknown',
+    "NONE DETECTED" = 'none detected'
+  )) %>%
+  filter(Driver_Substance_Abuse != "N/A")
+
+dt_responsible <- dt_responsible %>%
+  #filter(Driver_Substance_Abuse != 'none detected')  %>% # remove the none detected because they are too much
+  #filter(Driver_Substance_Abuse != 'alcohol') %>%
+  filter(Driver_Substance_Abuse != 'unknown')
+
+responsible_freq <- dt_responsible %>%
+  count(Driver_Substance_Abuse, name = "Frequency_drug")
+dt_responsible <- left_join(responsible_freq, dt_responsible, by = "Driver_Substance_Abuse")
+  
+# ggplot(dt_responsible, aes(x = reorder(Driver_Substance_Abuse, -Frequency_drug))) +
+#   geom_bar() +
+#   labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
+#   theme_minimal()  # Adjust the theme if needed
+# 
+# vcd::mosaic(At_Fault ~ Driver_Substance_Abuse,
+#              data = dt_responsible,
+#   direction = c("v", "h" ))
+```
 
 
