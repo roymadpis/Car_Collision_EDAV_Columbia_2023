@@ -264,7 +264,7 @@ ggplot(dt_temporal, aes(x = Crash_Time)) +
   labs(title = "Total number of accidents per day-hour",
        x = 'Hours in the day', y = 'Number of Crashes')
 ```
-+ <u>Comment :</u> We can see that crash accidents occur more during the work commute time and especially in the way back home between 15h to 17h.
++ Car crash accidents occur more during the work commute time and especially in the way back home between 15h to 17h. This specific time of the day is known for having a high number of car on the road explaining the increase number of accidents. This plot confirms that driver must be more careful on the road around late afternoon/evening.
 
 
 ### Distribution of the number of accidents by different time-slicers: Month, weekday, hour
