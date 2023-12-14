@@ -250,8 +250,9 @@ ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
 ###Data for D3
 c |> filter(Month == "January") |> write_csv("data/data_for_d3/Jan_data.csv")
 c |> filter(Month == "February") |> write_csv("data/data_for_d3/Feb_data.csv")
+c |> filter(Month == "March") |> write_csv("data/data_for_d3/March_data.csv")
 
-
+c |> filter(Month == "January" | Month == "February") |> write_csv("data/data_for_d3/Jan_data.csv")
 
 ```
 
