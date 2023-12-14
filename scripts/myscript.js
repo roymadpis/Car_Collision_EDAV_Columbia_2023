@@ -17,14 +17,14 @@ const monthColors = {
     'January': 'steelblue',
     'February': 'darkorange',
     'March': 'forestgreen',
-    'April': 'purple',
+    'April': 'DarkMagenta',
     'May': 'brown',
     'June': 'teal',
     'July': 'indigo',
     'August': 'red',
-    'September': 'orange',
+    'September': 'DeepPink',
     'October': 'yellow',
-    'November': 'green',
+    'November': 'DarkOliveGreen',
     'December': 'blue'
 };
 
@@ -153,13 +153,16 @@ function loadData() {
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        function showTooltip(event, d) {
+       function showTooltip(event, d) {
             tooltip.transition()
                 .duration(200)
-                .style("opacity", .9);
+                .style("opacity", 2.5);
+
             tooltip.html(`${d.Month}<br>Day: ${d.day_only}<br>Average Crashes: ${d.total_crash.toFixed(2)}`)
-                .style("left", (event.pageX + 5) + "px")
-                .style("top", (event.pageY - 28) + "px");
+                .style("left", width / 1.1 + "px" ) // Center the tooltip horizontally
+                .style("top", height + margin.top + margin.bottom + 10 + 20 + "px")
+                .style("font-size", "17px");
+
         }
 
         function hideTooltip() {
@@ -187,6 +190,7 @@ function loadData() {
                     visibleMonths.splice(index, 1);
                     button.style("background-color", "gray");
                 }
+
 
                 // Reload data and update visualization
                 loadData();

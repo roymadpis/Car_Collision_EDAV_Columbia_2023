@@ -160,7 +160,7 @@ result_df <- merged_df %>%
 
 We display here a time-series graph describing the total number of accidents per week throught 2015-2023. 
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 dt_temporal_week <- left_join(dt_temporal_week_without_first_last_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
 
 dt_temporal_week <- mutate(dt_temporal_week, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
