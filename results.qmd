@@ -44,7 +44,7 @@ Sys.setlocale("LC_TIME", "English")
 ## Part 1 - Time Series Analysis
 We begin our analysis with time-series analysis. In order to perform this examination, we take the date-time column `Crash_Date_Time` and extract from it the date, Year, Month, weekday, time, hour, etc. of the accident. Then we aggregate the data according to one or more of the date-time new columns to get the total number of accident within that time-frame. Finally we observe the time-series of the number of accident with respect to a given date/time dimension.
 
-We understood there could be some special significant to some days during the year - those are the holidays in the american calendar. We assume the number of car accident might be influenced by the fact there is a holiday (and maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)
+We understood there could be some special meaningful factor explaining the values observed for some days during the year - those are for example the holidays in the american calendar. We assume the number of car accident might be influenced by the presence of holidays ( maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)
 
 To get the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}.
 We filter the relevant rows for our study (took dates between 2015 and 2023) 
@@ -108,8 +108,8 @@ holiday_data <- holiday_data |> filter(date >= start_date & date <= end_date)
 
 ### Create Weekly car-accident data
 
-We wish to analyze the **weekly** trends of total number of car accidents in Montgomery county. In order to do so, we group the data by weeks and sum the number of accidents.
-Then we aggregarte the data again by **Month** to have the average weekly car accidents for every year-month combination. We plot this as a black line.
+We wish to analyze the **weekly** trends of the total number of car accidents in Montgomery county. In order to do so, we group the data by weeks and sum the number of accidents.
+Then we aggregate the data again by **Month** to have the average weekly car accidents for every year-month combination. We plot this as a black line.
 At the same time we plot a time series line plot for each holiday-day category --> that is, every holiday has a line + points representing the total number of accidents that happened in the **week** of that holiday.
 Finally we can use the graph to compare between the total number of accidents in the different weeks of the years and see if a given holiday is able to "increase" or "decrease" the total number of accidents in the week it was celebrated at.
 
@@ -158,7 +158,7 @@ result_df <- merged_df %>%
 
 ```
 
-We display here a time-series graph describing the total number of accidents per week throught 2015-2023. 
+We display here a time-series graph describing the total number of accidents per week from 2015 to 2023. 
 
 ```{r, message=FALSE, warning=FALSE}
 dt_temporal_week <- left_join(dt_temporal_week_without_first_last_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
@@ -188,13 +188,13 @@ ggplot(data_for_plot |> filter(holiday != "mean_month"), ) +
 ```
 
 
-### Using the graph we can get some interesting insights:
+**Using the graph we can get some interesting insights :**
 
-+ First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a trend of decrease (that can be attributed to the Covid-19 outbreak) and seasonality 
++ First, looking at the black line, which represents the average accidents over a period of month (over the years), we can see the car-accidents is a time-series with a decreasing trend (that can be attributed to the Covid-19 outbreak) and seasonality that we will explore later in this study.
 
-+ The **Veterans Day** and **Columbus Day** tend to have higher amount of car accidents compared to the other holidays and compared to the average car accidents.
++ About the holiday, the **Veterans Day** and **Columbus Day** tend to have higher amount of car accidents compared to the other holidays and compared to the average car accidents.
 
-+ Surprisingly, the **Independence day** has relatively lower car accidents compared to the average car accidents 
++ Surprisingly, the **Independence day** has relatively lower car accidents compared to the average car accidents.
 
 + Additionally, there is a noticeable decline in the number of car accidents observed between 2020 and 2021. This decrease can be attributed to the impact of the COVID-19 outbreak, which resulted in extensive lockdowns and a substantial reduction in the presence of drivers on the roads. Subsequent to this period, the average number of accidents has remained slightly lower than the pre-COVID levels.
 It is worth noting that we generated box plots for each year, illustrating the total crashes per day. Due to space constraints, we won't present them here, but it is important to highlight our observations. For the years 2015 to 2019, the box plots exhibited remarkable similarity, indicating comparable sizes of the interquartile range (IQR), Q1, Q3, and median. However, the box plot for 2020 stood out as notably lower than the preceding years. Furthermore, the box plots for 2021 and beyond were lower than those before 2020 but higher than the values observed in 2020.
@@ -259,7 +259,7 @@ ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
 ```
 
 
-Average number of accidents per day of month over the years reveals a unique "trend" for each month. There are month a higher average of accidents on specific days then others. For example, the 4th of July has typically lower values than 4th of other months. The 1st of Dec has, on average more accidents than the the 1st of the other months, it is quite surprising the the 1st of January, the "new-year" day has the lowest average car accidents compared to the other months, (Maybe there is higher police enforcement leading to this outcome?) In the same notion, the 2nd and 3rd of November May tend to have, on average, more accidents than the 2nd and 3rd of other month.
+Average number of accidents per day of month over the years reveals a unique "trend" for each month. There are month a higher average of accidents on specific days then others. For example, the 4th of July has typically lower values than 4th of other months and similarly the 25th of December (Christmas) has on average less accidents. The 1st of Dec has, on average more accidents than the the 1st of the other months, it is quite surprising the the 1st of January, the "new-year" day has the lowest average car accidents compared to the other months, (Maybe there is higher police enforcement leading to this outcome?) In the same notion, the 2nd and 3rd of November May tend to have, on average, more accidents than the 2nd and 3rd of other month.
 
 **Note that We also plot this graph in `D3` - the power of D3 in this sense is to enable comparing different months easily. The above graph has too many months displayed all at once, and it could be hard to compare some specific months to each other.**
 
