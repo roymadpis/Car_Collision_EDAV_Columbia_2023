@@ -40,8 +40,8 @@
     }
 
     .active {
-      background-color: #4CAF50;
-      color: white;
+      background-color: #660000;
+      color: #ffffff;
     }
 
     .tooltip {
@@ -144,16 +144,7 @@
           .on("mouseover", showTooltip)
           .on("mouseout", hideTooltip);
 
-        // Add buttons
-        const buttons = d3.select("body")
-          .append("div")
-          .selectAll("button")
-          .data([...groupedData.keys()])
-          .enter()
-          .append("button")
-          .attr("class", "button")
-          .text(d => d)
-          .on("click", toggleVisibility);
+
 
         // Add legend
         const legend = d3.select("body")

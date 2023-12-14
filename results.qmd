@@ -245,6 +245,17 @@ ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
 
 ```
 
+
+```{r}
+###Data for D3
+c |> filter(Month == "January") |> write_csv("data/data_for_d3/Jan_data.csv")
+c |> filter(Month == "February") |> write_csv("data/data_for_d3/Feb_data.csv")
+
+
+
+```
+
+
 Average number of accidents per day of month over the years reveals a unique "trend" for each month. There are month a higher average of accidents on specific days then others. For example, the 4th of July has typically lower values than 4th of other months. The 1st of Dec has, on average more accidents than the the 1st of the other months, it is quite surprising the the 1st of January, the "new-year" day has the lowest average car accidents compared to the other months, (Maybe there is higher police enforcement leading to this outcome?) In the same notion, the 2nd and 3rd of Novemeber May tend to have, on average, more accidents than the 2nd and 3rd of other month.
 We also plot this graph in D3.
 
