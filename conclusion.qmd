@@ -25,6 +25,10 @@ However we want to emphasize that correlation cannot be interpreted as causation
 Within the scope of the **Geospatial Exploration** we analyzed a heat-map of accidents of hit-run type. We confirmed our previous assumptions about the location of Hit and Run accidents. They occur more often in dense urban area around intersections or parking spots. The map also helps to identify specific parking spot in the county with high density of Hit and Run accidents, therefore police could do some experimentation like adding more cameras and see if it impacts the overall number of these accidents.
 
 
+#### Future possible reasearch
+Future research could be conducted using data regarding car traffic data, that is - the number of cars driving on each one of the roads in the county. In that way, we could calculate for each road the proportion of accidents out of the total number of cars driving on that road. Roads with a higher proportion of accidents could be regarded as dangerous roads, and an inspection of their characteristics could reveal some "dangerous factors" leading to more accidents.
+
+
 To conclude, this project aims to help the police mitigate the number of accidents as whole and specifically reduce the Hit and Run ones. Additionally, it seeks to contribute to the public discourse on this issue.
 
 
