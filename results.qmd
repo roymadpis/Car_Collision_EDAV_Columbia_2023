@@ -450,9 +450,9 @@ print(combined_plot)
 ```
 
 
-+ There doesn't appear to be a correlation between the month and Hit-Run incidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
++ There doesn't appear to be a correlation between the month and Hit-Run accidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
 
-+ However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays. Knowing from one of the previous visualization that in average less accidents occur during weekends, it reinforces the idea that the increase amount of Hit and Run during the weekend is a significant trend that should be explored rather than mere coincidence.
++ However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays. Knowing from one of the previous visualization that in average less accidents occur during weekends, it reinforces the idea that the increased number of Hit and Run during the weekend is a significant trend that should be explored rather than mere coincidence.
 
 + Concerning the Hit-Run proportion per hour, we can observe there is a higher proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
 
