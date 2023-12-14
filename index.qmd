@@ -1,7 +1,60 @@
 # Introduction
 
-This project will analyze car accidents and collisions within Montgomery County in United States. Our goal is to understand what attributes or combination of attributes are more correlated with the number of accidents and their severity. Indeed, in 2022, 42,795 peoples died on the road in United States. Understanding the leading factors in car accidents can help policy makers to focus their efforts on the conditions which seems more favorable to cause car accidents. For instance, our data visualization might reveal that some roads are more dangerous than others and thus they need to be improved by the state of 
-Maryland. Or maybe at specific times of the week more accidents happen, then driver should be aware of this and take more precaution driving at this specific time.
 
-Overall, the goals of this project is to highlight compelling correlations between the number of accidents over the years and the different features of the data set. This aims for both educating drivers on what to be aware on the road and showcasing to government officials the infrastructure they can improve. 
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+
+number_of_casualties <- read_csv("data/Number_of_casualties_usa.csv")
+
+ggplot(number_of_casualties %>%
+         filter(Year >= 2005)) +
+  geom_col(aes(x = Year, y = Deaths), fill = "#CC0000", color = "black") +
+  geom_text(aes(x = Year, y = Deaths, label = Deaths), 
+            vjust = -0.5, color = "black", size = 3) +  # Adjust vjust and size as needed
+  scale_x_continuous(breaks = seq(2005, 2021, 1)) +
+  labs(title = "Number of Deaths from car accidents in the USA",
+       subtitle = "From 2005 to 2021",
+       caption = "Source: https://www.iihs.org/topics/fatality-statistics/detail/yearly-snapshot")
+
+```
+
+Our data visualization project delves into the complex and painful landscape of car accidents. The choice of exploring car accidents stems from the societal impact and safety considerations associated with road incidents. over 30,000 people are killed every year from car accidents in the USA. Just in 2022 almost 43,000 people in the USA died in car accidents*1. Understanding the underlying factors contributing to accidents can provide policy makers insights and key action items to help reduce the number and or severity of accidents. By leveraging data visualization techniques, we intend to unravel hidden trends and relationships that could inform policymakers, law enforcement, and the community at large.
+
+*1 [source link](https://www.nhtsa.gov/press-releases/traffic-crash-death-estimates-2022#:~:text=The%20National%20Highway%20Traffic%20Safety,42%2C939%20fatalities%20reported%20for%202021){.class-to-style-as-link}
+
+*2 [Graph data source link](https://www.iihs.org/topics/fatality-statistics/detail/yearly-snapshot){.class-to-style-as-link}
+
+
+The dataset we are using encompasses diverse attributes, ranging from temporal details like "Crash Date/Time" to factors such as "Hit/Run," "Weather," and "Road Condition." This comprehensive dataset, sourced from the Public-Safety website of the Montgomery County, serves as a valuable resource for understanding the dynamics of vehicular incidents.
+
+**Our goal in this project can be divided into three parts**.
+In each part we will answer some guiding question.
+
+#### Part 1: Time Series Analysis
+
++ What temporal trends or seasonality can be identified in the collision data?
+
++ Are there variations in accident frequencies across different months, days of the week, or hours of the day?
+
++ How do holidays impact the frequency of accidents? (that is - do weeks with holidays tend to have different frequency of accidents)
+
+
+#### Part 2: Hit-and-Run Incidents:
+
++ What correlations exist between various features and the occurrence of hit-and-run accidents?
+
++ Can insights derived from the dataset offer recommendations for mitigating hit-and-run incidents?
+
+
+#### Part 3: Geospatial Exploration:
+
++ Can we identify specific roads with a higher concentration of accidents, and what common attributes do they share?
+
++ Are there geographical patterns unique to "regular" accidents versus "Hit and Run" incidents?
+
+
+To conclude, our project not only aims to visualize the data but also to provide meaningful interpretations that contribute to the broader topic of road safety and accident prevention. For readers unfamiliar with the subject, our visualizations and analyses will offer an accessible entry point into the multifaceted world of car accidents and their implications.
+
+
 

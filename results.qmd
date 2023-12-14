@@ -160,7 +160,7 @@ result_df <- merged_df %>%
 
 We display here a time-series graph describing the total number of accidents per week throught 2015-2023. 
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 dt_temporal_week <- left_join(dt_temporal_week_without_first_last_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
 
 dt_temporal_week <- mutate(dt_temporal_week, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
@@ -228,6 +228,19 @@ Month_list <-  c("January", "February", "March", "April", "May", "June", "July",
 c <- dt_temporal_day |> filter(Year!=2020 & Year<2023)|> group_by(Month, crash_day_no_year) |> summarise(total_crash = mean(total_crash)) |>  mutate(day_only = factor(substr(crash_day_no_year, 4, 5)))
 write_csv(c, "data/mean_crash_per_day_over_years.csv")
 
+###Data for D3
+c |> filter(Month == "January") |> write_csv("data/data_for_d3/Jan_data.csv")
+c |> filter(Month == "February") |> write_csv("data/data_for_d3/Feb_data.csv")
+c |> filter(Month == "March") |> write_csv("data/data_for_d3/March_data.csv")
+c |> filter(Month == "April") |> write_csv("data/data_for_d3/April_data.csv")
+c |> filter(Month == "May") |> write_csv("data/data_for_d3/May_data.csv")
+c |> filter(Month == "June") |> write_csv("data/data_for_d3/June_data.csv")
+c |> filter(Month == "July") |> write_csv("data/data_for_d3/July_data.csv")
+c |> filter(Month == "August") |> write_csv("data/data_for_d3/August_data.csv")
+c |> filter(Month == "September") |> write_csv("data/data_for_d3/September_data.csv")
+c |> filter(Month == "October") |> write_csv("data/data_for_d3/October_data.csv")
+c |> filter(Month == "November") |> write_csv("data/data_for_d3/November_data.csv")
+c |> filter(Month == "December") |> write_csv("data/data_for_d3/December_data.csv")
 
 ###########################################################
 ### let's see how this graph should look like in d3:
@@ -246,20 +259,11 @@ ggplot(b, aes(x = day_only, y = total_crash, color = Month, group=Month)) +
 ```
 
 
-```{r}
-###Data for D3
-c |> filter(Month == "January") |> write_csv("data/data_for_d3/Jan_data.csv")
-c |> filter(Month == "February") |> write_csv("data/data_for_d3/Feb_data.csv")
+Average number of accidents per day of month over the years reveals a unique "trend" for each month. There are month a higher average of accidents on specific days then others. For example, the 4th of July has typically lower values than 4th of other months. The 1st of Dec has, on average more accidents than the the 1st of the other months, it is quite surprising the the 1st of January, the "new-year" day has the lowest average car accidents compared to the other months, (Maybe there is higher police enforcement leading to this outcome?) In the same notion, the 2nd and 3rd of November May tend to have, on average, more accidents than the 2nd and 3rd of other month.
+
+**Note that We also plot this graph in `D3` - the power of D3 in this sense is to enable comparing different months easily. The above graph has too many months displayed all at once, and it could be hard to compare some specific months to each other.**
 
 
-
-```
-
-
-Average number of accidents per day of month over the years reveals a unique "trend" for each month. There are month a higher average of accidents on specific days then others. For example, the 4th of July has typically lower values than 4th of other months. The 1st of Dec has, on average more accidents than the the 1st of the other months, it is quite surprising the the 1st of January, the "new-year" day has the lowest average car accidents compared to the other months, (Maybe there is higher police enforcement leading to this outcome?) In the same notion, the 2nd and 3rd of Novemeber May tend to have, on average, more accidents than the 2nd and 3rd of other month.
-We also plot this graph in D3.
-
-# D3 - ???
 
 ### Hours of the day
 We would like to see the number of accidents per hour of day - are there any hours in the day that typically have more accidents than others?

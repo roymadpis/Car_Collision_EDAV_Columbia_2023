@@ -6,8 +6,39 @@
     <title>D3 Scatter Plot with Lines</title>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <!-- Add any additional styling if needed -->
+    <style>
+     body {
+            font-family: 'Roboto', sans-serif;
+        }
+        button {
+            margin: 5px;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
+
+<div class="title">Average number of car accidents per day of month over the years</div>
+<div class="subtitle">Click on the month buttons to display each one in the plot.
+You can also hover on the different points to see the average number of car accidents in those days.</div>
 
 <div id="chart"></div>
 <div id="buttons"></div>
@@ -15,43 +46,78 @@
 <script>
 const dataUrls = {
     'January': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/Jan_data.csv',
-    'February': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/Feb_data.csv'
+    'February': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/Feb_data.csv',
+    'March': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/March_data.csv',
+    'April': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/April_data.csv',
+    'May': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/May_data.csv',
+    'June': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/June_data.csv',
+    'July': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/July_data.csv',
+    'August': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/August_data.csv',
+    'September': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/September_data.csv',
+    'October': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/October_data.csv',
+    'November': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/November_data.csv',
+    'December': 'https://raw.githubusercontent.com/roymadpis/Car_Collision_EDAV_Columbia_2023/main/data/data_for_d3/December_data.csv'
 };
 
-let currentMonth = 'January';
+const monthColors = {
+    'January': 'steelblue',
+    'February': 'darkorange',
+    'March': 'forestgreen',
+    'April': 'purple',
+    'May': 'brown',
+    'June': 'teal',
+    'July': 'indigo',
+    'August': 'red',
+    'September': 'orange',
+    'October': 'yellow',
+    'November': 'green',
+    'December': 'blue'
+};
+
+let visibleMonths = ['January']; // Initial visible months
 
 // Load initial data
-loadData(dataUrls[currentMonth]);
+loadData();
 
 // Load data from CSV
-function loadData(url) {
-    d3.csv(url).then(data => {
+function loadData() {
+    const urls = Object.entries(dataUrls).filter(([month]) => visibleMonths.includes(month));
+
+    Promise.all(urls.map(([month, url]) => d3.csv(url))).then(data => {
+        const allData = data.flat(); // Combine data for all visible months
+
         // Parse data types if needed
-        data.forEach(d => {
+        allData.forEach(d => {
             d.day_only = +d.day_only;
             d.total_crash = +d.total_crash;
         });
 
         // Create SVG container
-        const width = 600;
-        const height = 400;
+        const margin = { top: 20, right: 20, bottom: 60, left: 70 };
+        const plotWidth = 850; // Adjust the plot width as needed
+        const legendWidth = 200; // Adjust the legend width as needed
+        const width = plotWidth + legendWidth + margin.left + margin.right;
+        const height = 400 - margin.top - margin.bottom;
+
         const svg = d3.select("#chart")
             .html("") // Clear previous content
             .append("svg")
             .attr("width", width)
-            .attr("height", height);
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // Create scales
         const xScale = d3.scaleLinear()
             .domain([1, 31]) // Assuming days go from 1 to 31
-            .range([0, width]);
+            .range([0, plotWidth]);
 
         const yScale = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.total_crash)])
+            .domain([0, d3.max(allData, d => d.total_crash)])
             .range([height, 0]);
 
         // Create axes
-        const xAxis = d3.axisBottom(xScale);
+        const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")); // Format ticks as integers
         const yAxis = d3.axisLeft(yScale);
 
         svg.append("g")
@@ -62,11 +128,11 @@ function loadData(url) {
             .call(yAxis);
 
         // Create color scale for months
-        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+        const colorScale = d3.scaleOrdinal().domain(Object.keys(monthColors)).range(Object.values(monthColors));
 
         // Create scatter plot points
         const points = svg.selectAll("circle")
-            .data(data)
+            .data(allData)
             .enter()
             .append("circle")
             .attr("cx", d => xScale(d.day_only))
@@ -83,10 +149,10 @@ function loadData(url) {
             .y(d => yScale(d.total_crash));
 
         const paths = svg.selectAll(".line")
-            .data(d3.groups(data, d => d.Month))
+            .data(d3.groups(allData, d => d.Month))
             .enter()
             .append("path")
-            .attr("class", d => `line ${d[0] === currentMonth ? 'visible' : 'hidden'}`)
+            .attr("class", d => `line ${visibleMonths.includes(d[0]) ? 'visible' : 'hidden'}`)
             .attr("d", d => line(d[1]))
             .attr("stroke", d => colorScale(d[0]))
             .attr("stroke-width", 2)
@@ -99,20 +165,34 @@ function loadData(url) {
             .enter()
             .append("g")
             .attr("class", "legend")
-            .attr("transform", (d, i) => "translate(0," + i * 20 + ")");
+            .attr("transform", (d, i) => "translate(" + (plotWidth + 10) + "," + (i * 20) + ")");
 
         legend.append("rect")
-            .attr("x", width - 18)
+            .attr("x", 0)
             .attr("width", 18)
             .attr("height", 18)
             .attr("fill", colorScale);
 
         legend.append("text")
-            .attr("x", width - 24)
+            .attr("x", 25)
             .attr("y", 9)
             .attr("dy", ".35em")
-            .style("text-anchor", "end")
+            .style("text-anchor", "start")
             .text(d => d);
+
+        // Axis labels
+        svg.append("text")
+            .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 35) + ")")
+            .style("text-anchor", "middle")
+            .text("Day of Month");
+
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Total Crashes");
 
         // Tooltip
         const tooltip = d3.select("body").append("div")
@@ -123,7 +203,7 @@ function loadData(url) {
             tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
-            tooltip.html(`${d.Month}<br>Day: ${d.day_only}<br>Average Crashes: ${d.total_crash}`)
+            tooltip.html(`${d.Month}<br>Day: ${d.day_only}<br>Average Crashes: ${d.total_crash.toFixed(2)}`)
                 .style("left", (event.pageX + 5) + "px")
                 .style("top", (event.pageY - 28) + "px");
         }
@@ -135,16 +215,27 @@ function loadData(url) {
         }
 
         // Button functionality
-        d3.select("#buttons")
+        const buttons = d3.select("#buttons")
             .selectAll("button")
             .data(Object.keys(dataUrls))
             .enter()
             .append("button")
             .text(d => d)
+            .style("background-color", d => visibleMonths.includes(d) ? colorScale(d) : "gray")
             .on("click", function (event, d) {
-                // Toggle visibility of lines based on the selected month
-                svg.selectAll(".line")
-                    .attr("class", m => `line ${m[0] === d ? 'visible' : 'hidden'}`);
+                const button = d3.select(this);
+                const index = visibleMonths.indexOf(d);
+
+                if (index === -1) {
+                    visibleMonths.push(d);
+                    button.style("background-color", colorScale(d));
+                } else {
+                    visibleMonths.splice(index, 1);
+                    button.style("background-color", "gray");
+                }
+
+                // Reload data and update visualization
+                loadData();
             });
 
     }).catch(error => {
