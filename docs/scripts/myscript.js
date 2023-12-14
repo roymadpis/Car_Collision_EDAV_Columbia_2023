@@ -146,7 +146,7 @@ function loadData() {
             .attr("x", 0 - (height / 2))
             .attr("dy", "1em")
             .style("text-anchor", "middle")
-            .text("Total Crashes");
+            .text("Average Crashes");
 
         // Tooltip
         const tooltip = d3.select("body").append("div")

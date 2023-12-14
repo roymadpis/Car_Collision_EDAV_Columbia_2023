@@ -47,7 +47,7 @@ In each part we will answer some guiding question.
 + Can insights derived from the dataset offer recommendations for mitigating hit-and-run incidents?
 
 
-#### Part 3: Geospatial Exploration:
+#### Part 3: Geospatial Exploration for Hit and Run accidents:
 
 + Can we identify specific roads with a higher concentration of accidents, and what common attributes do they share?
 

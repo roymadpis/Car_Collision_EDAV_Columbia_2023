@@ -279,11 +279,11 @@ ggplot(dt_temporal, aes(x = Crash_Time)) +
   labs(title = "Total number of accidents per day-hour",
        x = 'Hours in the day', y = 'Number of Crashes')
 ```
-Car crash accidents tend to spike during the work commute hours, particularly between 15:00 to 17:00. This timeframe, associated with the journey back home, is notorious for having a higher number of car on the roads leading to an increased number of accidents. This visualization serves as a reminder for drivers to exercise extra caution on the road during the late afternoon and evening hours. Besides, the data reveals a significant increase in accidents during the afternoon compared to the morning. This pattern suggests that fatigue accumulated throughout the day might influence people's driving behavior. The increased number of accidents during the afternoon hours serves as a noteworthy observation, emphasizing the potential impact of daily tiredness on driving safety.
+Car crash accidents tend to spike during the work commute hours, particularly between 15:00 to 17:00. This timeframe, associated with the journey back home, is notorious for having a higher number of car on the roads leading to an increased number of accidents. This visualization serves as a reminder for drivers to exercise extra caution on the road during the late afternoon and evening hours. Besides, the data reveals a significant increase in accidents during the afternoon compared to the morning. This pattern suggests that fatigue accumulated throughout the day might influence people's driving behavior. The increased number of accidents during the afternoon hours serves as a important observation, emphasizing the potential impact of daily tiredness on driving safety. Maybe the state should focus on encouraging workers to use public transportation or provide alternative options for a safe commute home when they feel tired from work. 
 
 
 ### Distribution of the number of accidents by different time-slicers: Month, weekday, hour
-Let's explore the distribution of daily number of accidents per month, per weekday and per hour. Are the different categories have different distribution of the daily number of accidents?
+Let's explore more into detail the distribution of number of accidents per month, per weekday and per hour. Is there a difference in the distribution of accidents across months, weekdays, and hours?
 
 ```{r, message=FALSE, fig.height=10}
 
@@ -374,14 +374,14 @@ Analyzing the density plots reveals a similar distribution in the total number o
 
 
 + **Number of accidents per weekday**:
-The density plots unveil noticeable differences in the distribution of total accidents between weekends and weekdays, providing insights into the varying patterns throughout the week.
+The density plots unveil noticeable differences in the distribution of total accidents between weekends and weekdays, providing insights into the varying patterns throughout the week. This difference may be explained by the fact that people tends to use less their car during weekend.
 
 + **Number of accidents per Hour in day**:
-Exploring the density plots illustrates significant disparities in the distribution of total accidents across different times of the day. During the night time, there is a lower disparity in the number of accidents, making predictions more manageable. On the contrary, daytime accidents exhibit higher disparity, suggesting that factors beyond the time of day play a significant role. Identifying predictors, such as holidays, could be useful in preventing unnecessary accidents. Notably, it confirms the increase in accidents during the middle of the day, aligning with the expected higher traffic volumes during those hours.
+Exploring the density plots illustrates significant disparities in the distribution of total accidents across different times of the day. During the night time, there is a lower disparity in the number of accidents, making predictions more manageable. On the contrary, daytime accidents exhibit higher disparity, suggesting that factors beyond the time of day play a significant role. Identifying predictors, such as holidays or specific events, could be useful in preventing unnecessary accidents. Notably, it confirms the increase in accidents during the middle of the day, aligning with the expected higher traffic volumes during those hours.
 
 
 ## Part 2 - Hit/run Analyis
-In this part we addresses the pressing issue of **hit-and-run accidents**. We examine correlation between various features and the "Hit-Run" column. Hit and Run accidents involve perpetrators who attempt to flee the scene without taking responsibility for the consequences of their actions. Identifying patterns in the behavior of these accidents could assist the police in reducing the proportion of such incidents. 
+In this part we address the pressing issue of **hit-and-run accidents**. We examine correlation between various features and the "Hit-Run" column. Hit and Run accidents involve perpetrators who attempt to flee the scene without taking responsibility for the consequences of their actions. Identifying patterns in the behavior of these accidents could assist the police in reducing the proportion of such incidents. This could help victims of accidents to be compensated for the damage.
 
 ```{r, message=FALSE}
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
@@ -452,7 +452,7 @@ print(combined_plot)
 
 + There doesn't appear to be a correlation between the month and Hit-Run incidents; in other words, there isn't a particular month with a higher likelihood of a Hit-Run accident.
 
-+ However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays.
++ However, we observe a higher proportion of Hit-Run incidents during weekends (Saturday and Sunday) compared to the proportions on other weekdays. Knowing from one of the previous visualization that in average less accidents occur during weekends, it reinforces the idea that the increase amount of Hit and Run during the weekend is a significant trend that should be explored rather than mere coincidence.
 
 + Concerning the Hit-Run proportion per hour, we can observe there is a higher proportion of Hit-Run accidents during late hours. Furthermore, there seems to be a consistent "linear trend" in Hit-Run incidents as the day unfolds.
 
@@ -480,7 +480,7 @@ mosaicplot(table(factor(df_for_harmful_event$First_Harmful_Event), df_for_harmfu
 
 + We can see that the first harmful event has a great connection / correlation to the Hit-Run variable --> there are great variations between the proportion of Hit-Run vs. Non Hit-Run accidents given the different `First_Harmful_Event` categories.
 
-+ Note that for "Parked-Vehicle" the proportion of Hit-Run is 0.45 which is more than twice as big as the overall Hit-Run proportion (0.18):
++ Note that for "Parked-Vehicle" the proportion of Hit-Run is 0.45 which is more than twice as big as the overall Hit-Run proportion (0.18) 
 
 ```{r}
 # Calculate the proportion of Hit/Run in the dataset
@@ -490,6 +490,9 @@ a <- df_for_harmful_event |> filter(grepl(c("Parked"), First_Harmful_Event, igno
 a|> mutate("prop" = n/sum(a$n)) 
 
 ```
+
++ So we observe the beginning of a pattern about Hit and Run incidents that we will continue to explore.
+
 ```{r}
 # Create a data set of interest
 dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","ACRS_Report_Type")]
@@ -522,9 +525,9 @@ vcd:: mosaic(Hit_Run ~ ACRS_Report_Type + Traffic ,
 ```
 + This mosaic plots highlights 2 main trends about Hit and Run incidents. First, the proportion of hit and run is higher when nobody was injured. This correlates with the previous results about the parked vehicle in the first harmful event column. More people tend to flee when there is just material damage.
 
-  The second insight is that drivers tend to flee more when there is no traffic. Two conclusions can be made, either drivers feel less pressure to stop and report the damage done when there is no traffic or maybe it is simply easier to leave the incident location when there is no traffic. 
+ + The second insight is that drivers tend to flee more when there is no traffic. Two conclusions can be made, either drivers feel less pressure to stop and report the damage done when there is no traffic or maybe it is simply easier to leave the incident location when there is no traffic. 
   
-  These two insights help us understand better the driver's behavior in the case of Hit and Run. However, this does not help us prevent these type of incidents. So in the following part we will explore the correlation between the characteristics of the roads and the number of Hit and Run accidents in order to give meaning full advice for reducing the proportion of these incidents.
+ + These two insights help us understand better the driver's behavior in the case of Hit and Run. However, this does not help us prevent these type of incidents. So in the following part we will explore the correlation between the characteristics of the roads and the number of Hit and Run accidents in order to give meaning full advice for reducing the proportion of these accidents.
 
 ### Study of the influence of the characteristics of the roads on the number of accident and Hit/Run
 
@@ -698,20 +701,13 @@ ggplot(data = dt_lane1,
   theme_void()
 ```
 
-The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be used to understand how the police could reduce this type of incidents. Without inferring causation from these correlation results, one might consider that the absence of traffic signs could potentially contribute to a sense of impunity among certain drivers, leading them to flee more frequently, assuming they are not being observed. For a more in-depth examination of this pattern, we would suggest law enforcement conduct a targeted study specifically focusing on roads without traffic signs to determine whether their presence has an impact on the occurrence of hit and run incidents. It's important to note that these findings are purely correlational; other factors, such as accident severity, may play a role. If our dataset included a severity column, we could have explored this aspect further.
-
-
-## Who's at Fault ?
-
-One thing with Hit and Run is that most of the people are not caught after the accident so we can not have information on them. However some of them 
-
-
-There is more Hit and Run instance when there is no traffic (yes instance for the column NonTraffic) most likely due to the fact that it is easier to go away without traffic on the road.
+To conclude this part about Hit and Run situation we will analyze this alluvial plot. It assists us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be used to understand how the police could reduce this type of incidents. Without inferring causation from these correlation results, one might consider that the absence of traffic signs could potentially contribute to a sense of impunity among certain drivers, leading them to flee more frequently, assuming they are not being observed. For a more in-depth examination of this pattern, we would suggest law enforcement conduct a targeted study specifically focusing on roads without traffic signs to determine whether their presence has an impact on the occurrence of hit and run incidents. It's important to note that these findings are purely correlational; other factors, such as accident severity, may play a role. If our dataset included a severity column, we could have explored this aspect further.
 
 
 ## Part 3 - Spatial Representation
 
 We employ **geographical**, or **spatial**, data to explore the relationship between accident density and geographical attributes. Specifically, we aim to identify roads with the highest concentration of accidents and analyze common attributes among them. 
+
 
 ```{r, message= FALSE, warning= FALSE}
 ## We are removing the data points which are not in the county
@@ -720,7 +716,9 @@ We employ **geographical**, or **spatial**, data to explore the relationship bet
 montgomery_geojson_url <- 'https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/MD/Montgomery.geo.json'
 montgomery_county <- st_read(montgomery_geojson_url)
 
-
+```
+<u> **Heatmap of the number of Hit and Run accidents** </u>
+```{r}
 # 2nd step : Filter the data to keep only the Hit/Run incidents
 hit_run_pos <- data_crash %>%
   filter(Hit_Run == 'Yes')
@@ -732,21 +730,82 @@ coordinate_Montgomery <- hit_run_pos %>%
   st_coordinates() %>%
   as.data.frame()
 
+
 leaflet(coordinate_Montgomery) %>%
   addTiles() %>% 
   addHeatmap(
   lat = ~Y,
   lng = ~X,
-  blur = 15,  # Adjust the blur parameter
-  radius = 10) # Adjust the radius parameter
-  #addControl(title = "Density of Hit/Run accidents", position = "topright")
+  blur = 15,
+  radius = 10) 
 
-
+# dt_without <- dt_lane %>%
+#   filter(Hit_Run != 'Yes')
+# 
+# # Create a new dataset with only the coordinate of points inisde the county
+# coordinate_Montgomery2 <- dt_without %>%
+#   st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) %>%
+#   st_intersection(montgomery_county) %>%
+#   st_coordinates() %>%
+#   as.data.frame() 
+#   
+# 
+# leaflet(coordinate_Montgomery2) %>%
+#   addTiles() %>% 
+#   addHeatmap(
+#   lat = ~Y,
+#   lng = ~X,
+#   blur = 15,
+#   radius = 10) 
 ```
 
-+ One key element that can be taken from that interactive map is that parking are place with high density of Hit/Run incidents. This correlate with one of our previous mosaic plot that displayed the 'First_Harmful_Event' column. We saw there that the "Parked-Vehicle" is the category with the highest proportion of Hit/Run.
++ First, we can see that the density of Hit and Run accidents is higher in the southern part of the county when compared to the northern region. This follows the urban area characteristic of the county. The denser city area tends to have more Hit and Run accidents.
 
-+ Moreover, it is visible that intersections are location with higher density of hit and run accidents. Overall, this heat map help us visualize the patterns we have discovered earlier, it is clear that there is almost no Hit/Run incidents on highway like 15A. 
++ One key element that can be taken from that interactive map is that parking spots are places with high density of Hit and Run accidents. This correlates with one of our previous mosaic plot that displayed the 'First_Harmful_Event' column. We saw there that the "Parked-Vehicle" is the category with the highest proportion of Hit and Run.
+
++ Moreover, it is visible that intersections are locations with higher density of Hit and Run accidents. Overall, this heat map helps us visualize the patterns we have discovered earlier, it is clear that there is almost no Hit and Run accidents on highways like the 15A. 
+
+<u>NB:</u> We also explored the same visualization for only the non Hit and Run accidents and we could see indeed that density of accidents is more uniform than for Hit and Run accident across the county and there are less accudents in parking spots.
+
+```{r}
+dt_lane2 <- dt_lane %>%
+  group_by(Road_Name) %>%
+  mutate(Frequency_road = n()) %>%
+  ungroup() %>%
+  #filter(Frequency >= n_threshold) %>%
+  distinct(Road_Name, .keep_all = TRUE) %>%
+  filter(Hit_Run != 'Yes')
+
+top_10_roads <- dt_lane2 %>%
+  arrange(desc(Frequency_road)) %>%  # Arrange by Frequency in descending order
+  slice_head(n = 10) %>%       # Select the top 10 rows
+  select(Road_Name,Frequency_road) %>%
+  as.list()
+
+dt_top10 <- dt_lane %>%
+  filter(Road_Name %in% top10)
+
+top10 <- top_10_roads$Road_Name
+
+dt_without <- dt_lane %>%
+  filter(Hit_Run != 'Yes')
+
+# Create a new dataset with only the coordinate of points inisde the county
+coordinate_Montgomery2 <- dt_without %>%
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) %>%
+  st_intersection(montgomery_county) %>%
+  st_coordinates() %>%
+  as.data.frame() 
+  
+
+leaflet(coordinate_Montgomery2) %>%
+  addTiles() %>% 
+  addHeatmap(
+  lat = ~Y,
+  lng = ~X,
+  blur = 15,
+  radius = 10) 
+```
 
 
 ---------------------------------------------------------------------------
