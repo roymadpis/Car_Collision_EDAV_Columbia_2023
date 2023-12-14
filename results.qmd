@@ -491,9 +491,7 @@ a|> mutate("prop" = n/sum(a$n))
 
 ```{r}
 ## Create 2 new datasets to explore different Categorical values
-dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Number_of_Lanes","Hit_Run","Longitude",'Latitude')]
-
-dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse")]
+dt_lane <- data_crash[,c("Road_Division", "Junction", "Road_Alignment" ,"Traffic_Control","Road_Name","Cross_Street_Name","Number_of_Lanes","Hit_Run","Longitude",'Latitude')]
 
 #Rename the column in Road_type and get rid of the Na and the unknown values
 dt_lane <- dt_lane %>%
@@ -579,10 +577,47 @@ ggplot(dt_lane_freq, aes(x = reorder(Junction, -Frequency_junc))) +
   geom_bar(aes(fill = Traffic_Control)) +
   labs(title = "Relation between Junction Types and Traffic Control sign", x = "Junction Type", y = "Count", fill = "Signalisation for Traffic") +
   scale_fill_viridis_d() +
-  theme_minimal()  # Adjust the theme if needed
+  theme_minimal()  
 ```
++ We can observe that **most of the car accidents happen at an intersection**. Further, half of the crashes at these intersection have **traffic lights**. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. The data set provides the name of the intersection so we can explore the proportion of intersections with traffic light and compare that to the proportion of accidents happening at an intersection with traffic light. So in the next plot we will compare these two proportions.
 
-+ We can observe that **most of the car accidents happen at an intersection**. Further, half of the crashes at these intersection have **traffic lights**. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this indicates that traffic light are not efficient for reducing car accident. To improve the interpretation of these results it would be better if there was a data set giving us the proportion of intersection with traffic light and stop sign in the county. Without this information it is hard to tell if stop sign are better than traffic light to reduce the number of accidents. <u>NB:</u> In this study we focus only on the number of accidents and not on the fluidity of the traffic for instance. Needless to say that reducing cannot be the only factor to consider when designing traffic sign and the roads. 
+
+```{r}
+# Calculate the total number of unique intersection
+total_combinations_intersec <- dt_lane_freq %>%
+  filter(Junction == "Intersection") %>%
+  summarise(total_combinations_count = n_distinct(paste(Cross_Street_Name, Road_Name, sep = "_")))
+
+# Calculate the number of unique intersection with a traffic light
+with_traffic_light <- dt_lane_freq %>%
+  filter(Junction == "Intersection") %>%
+  filter(Traffic_Control == "Traffic Light") %>%
+  summarise(with_traffic_light_count = n_distinct(paste(Cross_Street_Name, Road_Name, sep = "_")))
+
+# Calculate the proportion
+proportion_with_traffic_light <- with_traffic_light$with_traffic_light_count / total_combinations_intersec$total_combinations_count
+
+#print(paste("Proportion of Intersection with Traffic Light: ", proportion_with_traffic_light))
+
+
+ggplot(dt_lane_freq %>% filter(Junction == 'Intersection'), aes(x = reorder(Junction, -Frequency_junc), fill = Traffic_Control)) +
+  geom_bar(position = "fill", width = 0.6) +
+  labs(
+    title = "Proportion of accident on intersection depending on the signalisation",
+    subtitle = paste0("Knowing that ", round(proportion_with_traffic_light * 100,1), "% of the intersection has a traffic light"),
+    x = "Junction Type",
+    y = "Proportion",
+    fill = "Signalisation for Traffic"
+  ) +
+  scale_fill_viridis_d() +
+  theme_minimal()+
+  coord_flip()+
+   theme(aspect.ratio = 0.4)
+
+
+```
+Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this histogram seems to indicate that traffic light are not efficient enough for reducing car accident. Indeed, even though there are less than 40% of intersection with traffic lights in the county, overall more than 60% of the accidents occur at these intersection. A possible reason is that drivers rely too much on the traffic light and do not proceed to do the safety check when crossing an intersection. 
+<u>NB:</u> In this study we focus only on the number of accidents and not on the fluidity of the traffic for instance. Needless to say that reducing the number of accidents cannot be the only factor to consider when designing traffic sign on the roads. 
 
 
 ### Alluvial plot to see pattern
@@ -625,6 +660,85 @@ ggplot(data = dt_lane1,
 
 The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be used to understand how the police could reduce this type of incidents. Without inferring causation from these correlation results, one might consider that the absence of traffic signs could potentially contribute to a sense of impunity among certain drivers, leading them to flee more frequently, assuming they are not being observed. For a more in-depth examination of this pattern, we would suggest law enforcement conduct a targeted study specifically focusing on roads without traffic signs to determine whether their presence has an impact on the occurrence of hit and run incidents. It's important to note that these findings are purely correlational; other factors, such as accident severity, may play a role. If our dataset included a severity column, we could have explored this aspect further.
 
+
+## Who's at Fault ?
+
+```{r}
+count(dt_responsible, ACRS_Report_Type)
+```
+
+## Who's at Fault ?
+```{r}
+# Create a data set of interest
+dt_responsible <- data_crash[,c("Hit_Run","NonTraffic","At_Fault","Driver_Substance_Abuse","ACRS_Report_Type")]
+
+# Rename the elements in "Driver_Substance_Abuse" and filter the Na
+dt_responsible <- dt_responsible %>%
+  mutate(Driver_Substance_Abuse = str_extract(Driver_Substance_Abuse, "^[^,]+")) %>%
+  mutate(Driver_Substance_Abuse = recode(Driver_Substance_Abuse,
+    "ALCOHOL CONTRIBUTED" ="alcohol",
+    "ALCOHOL PRESENT" = "alcohol",
+    "COMBINATION CONTRIBUTED" = "combined substance",
+    "COMBINED SUBSTANCE PRESENT" = "combined substance",
+    "ILLEGAL DRUG CONTRIBUTED" = "illegal drug",
+    "ILLEGAL DRUG PRESENT" = "illegal drug",
+    "MEDICATION CONTRIBUTED" = "under medication",
+    "MEDICATION PRESENT" = "under medication",
+    "UNKNOWN" = 'unknown',
+    "OTHER" = 'unknown',
+    "NONE DETECTED" = 'none detected'
+  )) %>%
+  filter(Driver_Substance_Abuse != "N/A")
+
+# Rename the element in "ACRS_Report_Type"
+dt_responsible <- dt_responsible %>%
+   mutate(ACRS_Report_Type = recode(ACRS_Report_Type,
+    "Injury Crash" ="Injury",
+    "Fatal Crash" = "Fatal",
+    "Property Damage Crash" = "Property Damage")) %>%
+    filter(ACRS_Report_Type != "Fatal")
+
+# Rename the element in "ACRS_Report_Type"
+dt_responsible <- dt_responsible %>%
+   mutate(Traffic = recode(NonTraffic,
+    "Yes" ="No",
+    "No" = "Yes"))%>%
+  select(-NonTraffic)
+
+#redav::plot_missing(dt_responsible) # We see that more than 80% of the rows does not have Na so I will drop all the Na
+
+dt_responsible <- dt_responsible %>%
+  na.omit() %>%
+  filter(Driver_Substance_Abuse != 'none detected') # %>% # remove the none detected because they are too much
+  # filter(Driver_Substance_Abuse != 'alcohol') %>%
+  # filter(Driver_Substance_Abuse != 'unknown')
+responsible_freq <- dt_responsible %>%
+  count(Driver_Substance_Abuse, name = "Frequency_drug")
+dt_responsible <- left_join(responsible_freq, dt_responsible, by = "Driver_Substance_Abuse")
+  
+# ggplot(dt_responsible, aes(x = reorder(Driver_Substance_Abuse, -Frequency_drug))) +
+#   geom_bar() +
+#   labs(title = "Bar Plot of Junction Types with Count", x = "Junction Type", y = "Count") +
+#   theme_minimal()  # Adjust the theme if needed
+```
+
+```{r}
+library(gridExtra)
+# count(dt_responsible, Driver_Substance_Abuse)
+dt_responsible <- dt_responsible %>%
+  mutate(
+    Driver_Substance_Abuse_A = if_else(Driver_Substance_Abuse %in% c('alcohol', 'unknown'), Driver_Substance_Abuse, NA_character_),
+    Driver_Substance_Abuse_B = if_else(!Driver_Substance_Abuse %in% c('alcohol', 'unknown'), Driver_Substance_Abuse, NA_character_)
+  )
+mp1 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_A + Traffic + ACRS_Report_Type ,
+ data = dt_responsible,
+ direction = c("v", "v","h", "h" ))
+
+mp2 <- vcd:: mosaic(Hit_Run ~  Driver_Substance_Abuse_B  + Traffic + ACRS_Report_Type,
+ data = dt_responsible,
+ direction = c("v", "v","h" ,"h"))
+```
+There is more Hit and Run instance when there is no traffic (yes instance for the column NonTraffic) most likely due to the fact that it is easier to go away without traffic on the road.
 
 
 ## Part 3 - Spatial Representation
