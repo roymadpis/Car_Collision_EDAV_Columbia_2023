@@ -172,7 +172,7 @@
     "href": "d3graph.html",
     "title": "4  Interactive graph",
     "section": "",
-    "text": "D3 Scatter Plot with Lines\n\n\n\n\n\n\n\nAverage number of car accidents per day of month over the years\n\n\nClick on the month buttons to display each one in the plot. You can also hover on the different points to see the average number of car accidents in those days."
+    "text": "D3 Scatter Plot with Lines\n\n\n\n\n\n\n\nAverage number of car accidents per day of month over the years\n\n\nClick on the month buttons to display each one in the plot. You can also hover on the different points to see the average number of car accidents in those days.\n\n\n\n\n\n\n\n\n\n\n\n\nThe interactive visualization can help us compare the average number of accidents between the different months. For example if we click on months: February and December, you can see that, on average, most of December days have higher average accidents than February. Moreover you can see a sharp decrease on the 24-25 of December, which is reasonable as this is the Christmas holiday and less people drive in those days. Moreover, we can see that some months have small variance between the different day values - for example: September, October and May. There are other months, like July, with higher variance in the average number of daily accidents. You can try different combinations of months to derive those interesting insights.\n\n\nOverall, this interactive graph simplifies a crowded graph by reducing visual overload."
   },
   {
     "objectID": "data.html#nas-in-multiple-columns-columns-that-tend-to-have-nas-in-the-same-time",
