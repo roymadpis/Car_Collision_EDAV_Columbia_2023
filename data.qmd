@@ -14,30 +14,19 @@ The data is supplied by all the police departments of this county. Moreover, the
 
 The above impose some limitations using the data.
 
-As outlined in the dataset description, the data undergoes **weekly updates**. The source dataset comprises 95.6k rows and 44 columns, each representing a distinct car collision. The dataset encompasses geographical, numerical, categorical, and date-time information.
+As outlined in the dataset description, the data undergoes **weekly updates**. The source dataset comprises 44 columns and 95.6k rows, each representing a distinct car collision (car accident). The dataset encompasses geographical, numerical, categorical, and date-time information.
 
 The dataset, **which we acquired on November 22, 2023**, is accessible as a .csv file in the GitHub repository under the 'data' directory. For the purposes of this project, we conducted an analysis of the data up until that date. It is important for readers of this project to note that while our work can be replicated and extended with updated information, there may be a necessity for additional preprocessing to address novel issues that may have arisen after November 2023. Furthermore, some conclusions might need to be revisited and updated based on the latest data.
 
 To reiterate, all analyses presented in this work are based on data available until November 22, 2023.
 
+### Holiday data
 
+We understood there could be some special significant to some days during the year - those are the holidays in the american calendar. We assume the number of car accident might be influenced by the fact there is a holiday (and maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)
 
-## Research Plan
-In this course, we were introduced to various types of plots, and we intend to leverage these visualizations to uncover factors contributing to a higher number of collisions (car accidents) in the Montgomery county.
+To get the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}.
+We filtered the relevant rows for our study (took dates between 2015 and 2023) and created the `holiday_data` data frame.
 
-As sated in the introduction, we divide the analysis into **three parts**:
-
-Firstly, our exploration will focus **time-series analysis** of the "Crash Date/Time" to identify potential trends, seasonality and key insights in the collision data. We aim to investigate whether there is a fluctuation in the number of accidents during specific months, days of the week, or hours of the day as well as compare these between the different years. Additionally, we are interested in understanding if holidays or weeks with holidays exhibit a distinct pattern in terms of accident frequency. To enable that analysis, we downloaded "holiday" data which presents the american holiday-dates in each year, and we merge this information with the data we exported from the public safety website of the Montgomery county.
-
-Our second area of inquiry addresses the pressing issue of **hit-and-run accidents**. Utilizing the available data, we plan to examine the correlation between various features and the "Hit-Run" column. For example, We use mosaic plots for exploring relationships, associations and patterns within "Hit-Run" variable to other categorical variables. Insights gained from this analysis could contribute to a better understanding of the Hit and Run type of accident problem and provide recommendations for policymakers to mitigate it.
-
-Lastly, we will employ **geographical**, or **spatial**, data to explore the relationship between accident density and geographical attributes. Specifically, we aim to identify roads with the highest concentration of accidents and analyze common attributes among them. This analysis may uncover patterns or characteristics that could inform recommendations for reducing accidents in these locations. Our approach involves utilizing spatial data to gain deeper insights into both "regular" accidents and "Hit and Run" incidents.
-
-Overall, our goal is to identify combinations of features that could elevate the risk of collisions. This information can then provide policymakers with valuable insights to implement meaningful changes or restrictions on the roads.
-
-
-
-## Missing value analysis
 
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 #Import the libraries
@@ -55,7 +44,33 @@ library("redav")
 
 ```
 
+```{r, warning=FALSE, message=FALSE}
+holiday_data <- readr::read_csv("data/holiday_dates.csv")
+holiday_data <- holiday_data |> filter(countryOrRegion == "United States") |> select(c(normalizeHolidayName,isPaidTimeOff, date)) 
 
+holiday_data$is_holiday <- "Yes"
+holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
+```
+
+
+## Research Plan
+In this course, we were introduced to various types of plots, and we intend to leverage these visualizations to uncover factors contributing to a higher number of collisions (car accidents) in the Montgomery county.
+
+As stated in the introduction, we divide the analysis into **three parts**:
+
+Firstly, our exploration will focus on **time-series analysis** of the `Crash Date/Time` to identify potential trends, seasonality and key insights in the collision data. We aim to investigate whether there is a fluctuation in the number of accidents during specific months, days of the week, or hours of the day as well as compare these between the different years. Additionally, we are interested in understanding if holidays or weeks with holidays exhibit a distinct pattern in terms of accident frequency. To enable that analysis, we downloaded `holiday data` which presents the american holiday-dates in each year, and we merge this information with the data we exported from the public safety website of the Montgomery county.
+
+Our second area of inquiry addresses the pressing issue of **hit-and-run accidents**. Utilizing the available data, we plan to examine the correlation between various features and the `Hit-Run` column. For example, We use mosaic plots for exploring relationships, associations and patterns within the `Hit-Run` variable to other categorical variables. Insights gained from this analysis could contribute to a better understanding of the Hit and Run type of accident problem and provide recommendations for policymakers to mitigate it.
+
+Lastly, we will employ **geographical**, or **spatial**, data to explore the relationship between accident density and geographical attributes. Specifically, we aim to identify roads with the highest concentration of accidents and analyze common attributes among them. This analysis may uncover patterns or characteristics that could inform recommendations for reducing accidents in these locations. Our approach involves utilizing spatial data to gain deeper insights into both "regular" accidents and "Hit and Run" incidents.
+
+Overall, our goal is to identify combinations of features that could elevate the risk of collisions. This information can then provide policymakers with valuable insights to implement meaningful changes or restrictions on the roads.
+
+
+
+## Missing value analysis
+
+In this part we analyze the missing values in the data and conduct some pre-processing to it.
 
 ```{r, warning=FALSE, message=FALSE}
 data_crash <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv", col_types = cols('Local Case Number' = col_character())) # the 2nd column contains string and not number that's why we specify it.
@@ -71,11 +86,12 @@ new_col_names <- gsub(" ", "_", new_col_names)
 new_col_names <- gsub("-", "_", new_col_names)
 colnames(data_crash) <- new_col_names
 
-data_crash |> head()
+data_crash |> select(-c(Local_Case_Number, Agency_Name)) |> head()
 ```
++ We saw there are columns (for example: Municipality) with values like: "N/A" which we would like to transform into explicit `NA`
 
 ```{r, warning=FALSE, message=FALSE}
-# Function to replace "N/A" with NA in a vector
+# Function to replace "N/A" with explicit NA in a vector
 replace_na <- function(x) {
   x[x == "N/A"] <- NA
   return(x)
@@ -87,7 +103,7 @@ data_crash <- as_tibble(lapply(data_crash, replace_na))
 
 
 ## Analyzing NAs
-
+Let's analyze the NAs in the different columns - how many NAs we have in each one of the columns?
 
 ```{r,warning=FALSE, message=FALSE, fig.height=6}
 ## PLot the number of NAs for each column
@@ -116,11 +132,15 @@ paste0("Number of columns without any NAs = ", tibble_nas |> filter(number_of_NA
 
 ```
 
-There are 9 columns with "too many" NAs (more than 45% of the rows)
++ There are some columns that have "too many" NA values - those are columns that more than 45% of the values in the column has an NA value. Those columns may be less relevant for our analysis. Let's see how many such columns we have and what are those columns:
+
 ```{r}
 columns_with_too_many_nas <- tibble_nas|> filter(number_of_NA>0) |> arrange(number_of_NA) |> filter(number_of_NA > 45000)
 columns_with_too_many_nas
 ```
+
++ There are **9 columns** with "too many" NA rows (more than 45% of the rows):
+
 We will remove those columns :
 
 ```{r}
@@ -128,7 +148,7 @@ data_crash <- dplyr::select(data_crash,-as.vector(columns_with_too_many_nas$colu
 ```
 
 
-+ Further, there are many columns with NA values that mostly overlap each other (if there is NA in one of those columns it appears also in the other ones), The following code reflect that fact --> if we filter the NAs from the column: Cross-Street Type --> and we can observe that the number of columns with NAs reduced significantly.
++ Further, there are many columns with NA values that mostly overlap each other (if there is NA in one of those columns it also appears in the other ones), The following code reflects that fact --> if we filter the NAs from the column: Cross-Street Type --> we can observe that the number of columns with NAs reduces significantly.
 
 
 ```{r}
@@ -150,9 +170,9 @@ ggplot(tibble_nas |> filter(number_of_NA >0 ))+
 
 For now we won't deal with those NAs. Later in the project we would choose the specific columns to analyze together and then we will decide on the best method to deal with the NAs in those columns.
 
-## Repartition of the NAs in between columns
+## NAs in multiple columns --> columns that tend to have NAs in the same time
 
-We want to get a list of columns that has the same "NA" pattern:
+We want to get a list of columns that have the same "NA" pattern:
 
 ```{r}
 b <- apply(data_crash, 2, function(c) sum(is.na(c)))
@@ -167,13 +187,17 @@ difference_both_ways <- union(setdiff(a$column_name, b$column_name), setdiff(b$c
 print(difference_both_ways)
 ```
 
-We want to use the `plot_missing` function for `redav` package to see the NAs pattern regarding the columns that we suspect has NAs in the same rows:
+We want to use the `plot_missing` function from the `redav` package to see the NA pattern regarding the columns that we suspect have NA in the same rows:
 
 ```{r, warning=FALSE, message=FALSE}
 redav::plot_missing(data_crash |>dplyr::select(difference_both_ways,))
 ```
 
-Using the `plot_missing` function, we can clearly see that those columns indeed has NAs in the same rows. We can conclude that their NAs are correlated.
+Using the `plot_missing` function and looking at the *second row of the main plot*, we can see that the most common NA pattern, that is visible in almost 25% of the rows, is the one where there is an NA value in all of the specified columns:
+```{r}
+print(difference_both_ways)
+```
+we can clearly see that those columns indeed have NA in the same rows. We can conclude that their NAs are correlated.
 
 Further, we will take one of those columns: `Cross_Street_Type` and use it as a representative of the 12 columns group and then see if there is any pattern between the NAs of the other columns:
 
@@ -194,9 +218,9 @@ print(differences)
 redav::plot_missing(data_crash |>dplyr::select(differences,))
 ```
 
-One can see that there is no common pattern between all the NAs for these 10 columns.
+We can see that there is no common pattern between all the NAs for these 10 columns.
 
-In conclusion, for all the columns in the array 'difference_both_ways' we can deal with the NAs in the same way in the future. However, for the other columns which still has a lot of NAs like Weather or Traffic Control, we need to be more careful when removing the NAs because we could end up with very few rows in the data set. We will take care of them on a case-by-case basis.
+In conclusion, for all the columns in the array `difference_both_ways` we can deal with the NAs in the same way in the future. However, for the other columns which still have a lot of NA values, like `Weather` or `Traffic Control`, we need to be more careful when removing the NAs because we could end up with very few rows in the data set. We will take care of them on a case-by-case basis.
 
 
 #### Saving the updated data so we can read it in the "results" tab
@@ -205,18 +229,4 @@ In conclusion, for all the columns in the array 'difference_both_ways' we can de
 write_csv2(data_crash, "data/data_crash.csv")
 ```
 
-### Holiday data
-
-We understood there could be some special significant to some days during the year - those are the holidays in the american calendar. We assume the number of car accident might be influenced by the fact there is a holiday (and maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)
-
-To get the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}.
-We filtered the relevant rows for our study (took dates between 2015 and 2023) and created the holiday_data data frame.
-
-```{r}
-holiday_data <- readr::read_csv("data/holiday_dates.csv")
-holiday_data <- holiday_data |> filter(countryOrRegion == "United States") |> select(c(normalizeHolidayName,isPaidTimeOff, date)) 
-
-holiday_data$is_holiday <- "Yes"
-holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
-```
 

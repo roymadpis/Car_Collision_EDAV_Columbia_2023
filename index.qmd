@@ -20,9 +20,12 @@ ggplot(number_of_casualties %>%
 
 Our data visualization project delves into the complex and painful landscape of car accidents. The choice of exploring car accidents stems from the societal impact and safety considerations associated with road incidents. over 30,000 people are killed every year from car accidents in the USA. Just in 2022 almost 43,000 people in the USA died in car accidents*1. Understanding the underlying factors contributing to accidents can provide policy makers insights and key action items to help reduce the number and or severity of accidents. By leveraging data visualization techniques, we intend to unravel hidden trends and relationships that could inform policymakers, law enforcement, and the community at large.
 
-*1 source: https://www.nhtsa.gov/press-releases/traffic-crash-death-estimates-2022#:~:text=The%20National%20Highway%20Traffic%20Safety,42%2C939%20fatalities%20reported%20for%202021.
+*1 [source link](https://www.nhtsa.gov/press-releases/traffic-crash-death-estimates-2022#:~:text=The%20National%20Highway%20Traffic%20Safety,42%2C939%20fatalities%20reported%20for%202021){.class-to-style-as-link}
 
-The dataset we are using encompasses diverse attributes, ranging from temporal details like "Crash Date/Time" to factors such as "Hit/Run," "Weather," and "Road Condition." This comprehensive dataset, sourced from the Public-Safety website of the Montgomery County serves as a valuable resource for understanding the dynamics of vehicular incidents.
+*2 [Graph data source link](https://www.iihs.org/topics/fatality-statistics/detail/yearly-snapshot){.class-to-style-as-link}
+
+
+The dataset we are using encompasses diverse attributes, ranging from temporal details like "Crash Date/Time" to factors such as "Hit/Run," "Weather," and "Road Condition." This comprehensive dataset, sourced from the Public-Safety website of the Montgomery County, serves as a valuable resource for understanding the dynamics of vehicular incidents.
 
 **Our goal in this project can be divided into three parts**.
 In each part we will answer some guiding question.
@@ -33,7 +36,7 @@ In each part we will answer some guiding question.
 
 + Are there variations in accident frequencies across different months, days of the week, or hours of the day?
 
-+ How do holidays or weeks with holidays impact the frequency of accidents?
++ How do holidays impact the frequency of accidents? (that is - do weeks with holidays tend to have different frequency of accidents)
 
 
 #### Part 2: Hit-and-Run Incidents:
