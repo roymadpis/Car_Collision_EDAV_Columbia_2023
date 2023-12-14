@@ -156,13 +156,10 @@ function loadData() {
         function showTooltip(event, d) {
             tooltip.transition()
                 .duration(200)
-                .style("opacity", 2.5);
-
+                .style("opacity", .9);
             tooltip.html(`${d.Month}<br>Day: ${d.day_only}<br>Average Crashes: ${d.total_crash.toFixed(2)}`)
-                .style("left", width / 1.1 + "px" ) // Center the tooltip horizontally
-                .style("top", height + margin.top + margin.bottom + 10 + 20 + "px")
-                .style("font-size", "17px");
-
+                .style("left", (event.pageX + 5) + "px")
+                .style("top", (event.pageY - 28) + "px");
         }
 
         function hideTooltip() {
