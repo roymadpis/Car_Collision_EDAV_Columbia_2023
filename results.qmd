@@ -264,7 +264,7 @@ ggplot(dt_temporal, aes(x = Crash_Time)) +
   labs(title = "Total number of accidents per day-hour",
        x = 'Hours in the day', y = 'Number of Crashes')
 ```
-+ Car crash accidents occur more during the work commute time and especially in the way back home between 15h to 17h. This specific time of the day is known for having a high number of car on the road explaining the increase number of accidents. This plot confirms that driver must be more careful on the road around late afternoon/evening.
++ Car crash accidents tend to spike during the work commute hours, particularly between 15:00 to 17:00. This timeframe, associated with the journey back home, is notorious for having a higher number of car on the roads leading to an increased number of accidents. This visualization serves as a reminder for drivers to exercise extra caution on the road during the late afternoon and evening hours. Besides, the data reveals a significant increase in accidents during the afternoon compared to the morning. This pattern suggests that fatigue accumulated throughout the day might influence people's driving behavior. The increased number of accidents during the afternoon hours serves as a noteworthy observation, emphasizing the potential impact of daily tiredness on driving safety.
 
 
 ### Distribution of the number of accidents by different time-slicers: Month, weekday, hour
@@ -362,7 +362,7 @@ Analyzing the density plots reveals a similar distribution in the total number o
 The density plots unveil noticeable differences in the distribution of total accidents between weekends and weekdays, providing insights into the varying patterns throughout the week.
 
 + **Number of accidents per Hour in day**:
-Exploring the density plots illustrates significant disparities in the distribution of total accidents across different times of the day. Notably, there is typically an increase in accidents during the middle of the day, aligning with the expected higher traffic volumes during those hours.
+Exploring the density plots illustrates significant disparities in the distribution of total accidents across different times of the day. During the night time, there is a lower disparity in the number of accidents, making predictions more manageable. On the contrary, daytime accidents exhibit higher disparity, suggesting that factors beyond the time of day play a significant role. Identifying predictors, such as holidays, could be useful in preventing unnecessary accidents. Notably, it confirms the increase in accidents during the middle of the day, aligning with the expected higher traffic volumes during those hours.
 
 
 ## Part 2 - Hit/run Analyis
