@@ -176,10 +176,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description"><span class="header-section-number">2.1</span> Description</a></li>
-  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</a></li>
-  <li><a href="#analyzing-nas" id="toc-analyzing-nas" class="nav-link" data-scroll-target="#analyzing-nas"><span class="header-section-number">2.3</span> Analyzing NAs</a></li>
-  <li><a href="#repartition-of-the-nas-in-between-columns" id="toc-repartition-of-the-nas-in-between-columns" class="nav-link" data-scroll-target="#repartition-of-the-nas-in-between-columns"><span class="header-section-number">2.4</span> Repartition of the NAs in between columns</a></li>
+  <li><a href="#technical-description" id="toc-technical-description" class="nav-link active" data-scroll-target="#technical-description"><span class="header-section-number">2.1</span> Technical Description</a></li>
+  <li><a href="#research-plan" id="toc-research-plan" class="nav-link" data-scroll-target="#research-plan"><span class="header-section-number">2.2</span> Research Plan</a></li>
+  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</a></li>
+  <li><a href="#analyzing-nas" id="toc-analyzing-nas" class="nav-link" data-scroll-target="#analyzing-nas"><span class="header-section-number">2.4</span> Analyzing NAs</a></li>
+  <li><a href="#repartition-of-the-nas-in-between-columns" id="toc-repartition-of-the-nas-in-between-columns" class="nav-link" data-scroll-target="#repartition-of-the-nas-in-between-columns"><span class="header-section-number">2.5</span> Repartition of the NAs in between columns</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023/edit/main/data.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/roymadpis/Car_Collision_EDAV_Columbia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -203,17 +204,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD (link = https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kfLinks to an external site).</p>
-<p>The data is supplied by all the police departments of this county. Moreover, the description of the data set mentions that : “Please note that these collision reports are based on preliminary information supplied to the Police Department by the reporting parties. Therefore, the collision data available on this web page may reflect:</p>
-<p>-Information not yet verified by further investigation -Information that may include verified and unverified collision data -Preliminary collision classifications may be changed at a later date based upon further investigation -Information may include mechanical or human error”</p>
-<p>According to the dataset description, the data is updated weekly. The source data comprises 95.6k rows and 44 columns, with each row representing a car collision that happened.The dataset, downloaded on November 22, 2023, is available as a .csv file in the repository under the ‘data’ file. We will stick to this version of the dataset fo the entire project. The data has position features as well as a time feature and combinations of categorical and numerical data describing the accident.</p>
-<section id="description" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="description"><span class="header-section-number">2.1</span> Description</h2>
-<p>In class, we were introduced to multiple plots and we are going to utilize them to drive insightful factors associating to higher number of collisions. Some of the interesting columns we wish to explore are “Crash Date/Time” to see if we can spot some trend or seasonality in the collision data based on the days of the week, hours in the day, etc. Similarly we want to use the geographical data to spot specific trends. Moreover, we will also study the quality of the roads or the configuration of the roads (whether it is curved or not, whether it is a two-way road or a single). Further the weather conditions will reveal some important trend. Some other paths to explore might be the “At Fault” column that describe whether the driver is at fault in the accident or a non-motorist. And the type of accidents thanks to “First Harmful Event”. Hence, our data offers various paths to explore, each potentially yielding distinct insights into car accidents.</p>
+<section id="technical-description" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="technical-description"><span class="header-section-number">2.1</span> Technical Description</h2>
+<p>The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD <a href="https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kf" class="class-to-style-as-link">link</a></p>
+<p>The data is supplied by all the police departments of this county. Moreover, the description of the data set mentions that : <em>“Please note that these collision reports are based on preliminary information supplied to the Police Department by the reporting parties. Therefore, the collision data available on this web page may reflect:</em></p>
+<ul>
+<li><em>Information not yet verified by further investigation</em></li>
+<li><em>Information that may include verified and unverified collision data</em></li>
+<li><em>Preliminary collision classifications may be changed at a later date based upon further investigation</em></li>
+<li><em>Information may include mechanical or human error”</em></li>
+</ul>
+<p>The above impose some limitations using the data.</p>
+<p>As outlined in the dataset description, the data undergoes <strong>weekly updates</strong>. The source dataset comprises 95.6k rows and 44 columns, each representing a distinct car collision. The dataset encompasses geographical, numerical, categorical, and date-time information.</p>
+<p>The dataset, <strong>which we acquired on November 22, 2023</strong>, is accessible as a .csv file in the GitHub repository under the ‘data’ directory. For the purposes of this project, we conducted an analysis of the data up until that date. It is important for readers of this project to note that while our work can be replicated and extended with updated information, there may be a necessity for additional preprocessing to address novel issues that may have arisen after November 2023. Furthermore, some conclusions might need to be revisited and updated based on the latest data.</p>
+<p>To reiterate, all analyses presented in this work are based on data available until November 22, 2023.</p>
+</section>
+<section id="research-plan" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="research-plan"><span class="header-section-number">2.2</span> Research Plan</h2>
+<p>In this course, we were introduced to various types of plots, and we intend to leverage these visualizations to uncover factors contributing to a higher number of collisions (car accidents) in the Montgomery county.</p>
+<p>As sated in the introduction, we divide the analysis into <strong>three parts</strong>:</p>
+<p>Firstly, our exploration will focus <strong>time-series analysis</strong> of the “Crash Date/Time” to identify potential trends, seasonality and key insights in the collision data. We aim to investigate whether there is a fluctuation in the number of accidents during specific months, days of the week, or hours of the day as well as compare these between the different years. Additionally, we are interested in understanding if holidays or weeks with holidays exhibit a distinct pattern in terms of accident frequency. To enable that analysis, we downloaded “holiday” data which presents the american holiday-dates in each year, and we merge this information with the data we exported from the public safety website of the Montgomery county.</p>
+<p>Our second area of inquiry addresses the pressing issue of <strong>hit-and-run accidents</strong>. Utilizing the available data, we plan to examine the correlation between various features and the “Hit-Run” column. For example, We use mosaic plots for exploring relationships, associations and patterns within “Hit-Run” variable to other categorical variables. Insights gained from this analysis could contribute to a better understanding of the Hit and Run type of accident problem and provide recommendations for policymakers to mitigate it.</p>
+<p>Lastly, we will employ <strong>geographical</strong>, or <strong>spatial</strong>, data to explore the relationship between accident density and geographical attributes. Specifically, we aim to identify roads with the highest concentration of accidents and analyze common attributes among them. This analysis may uncover patterns or characteristics that could inform recommendations for reducing accidents in these locations. Our approach involves utilizing spatial data to gain deeper insights into both “regular” accidents and “Hit and Run” incidents.</p>
 <p>Overall, our goal is to identify combinations of features that could elevate the risk of collisions. This information can then provide policymakers with valuable insights to implement meaningful changes or restrictions on the roads.</p>
 </section>
-<section id="missing-value-analysis" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</h2>
+<section id="missing-value-analysis" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -265,8 +281,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 </section>
-<section id="analyzing-nas" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="analyzing-nas"><span class="header-section-number">2.3</span> Analyzing NAs</h2>
+<section id="analyzing-nas" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="analyzing-nas"><span class="header-section-number">2.4</span> Analyzing NAs</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -274,31 +290,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">apply</span>(data_crash, <span class="dv">2</span>, <span class="cf">function</span>(c) <span class="fu">sum</span>(<span class="fu">is.na</span>(c)))</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>tibble_nas <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">column_name =</span> <span class="fu">names</span>(b), <span class="at">number_of_NA =</span> b)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>tibble_nas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>tibble_nas <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(number_of_NA))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 44 × 2
-   column_name          number_of_NA
-   &lt;chr&gt;                       &lt;int&gt;
- 1 Report_Number                   0
- 2 Local_Case_Number               0
- 3 Agency_Name                     0
- 4 ACRS_Report_Type                0
- 5 Crash_Date_Time                 0
- 6 Hit_Run                         2
- 7 Route_Type                  12746
- 8 Mile_Point                  12117
- 9 Mile_Point_Direction        12742
-10 Lane_Direction              12106
+   column_name                  number_of_NA
+   &lt;chr&gt;                               &lt;int&gt;
+ 1 Non_Motorist_Substance_Abuse        91406
+ 2 Related_Non_Motorist                90311
+ 3 Lane_Type                           86261
+ 4 Municipality                        85404
+ 5 Off_Road_Description                83479
+ 6 Fixed_Oject_Struck                  75409
+ 7 Second_Harmful_Event                71550
+ 8 Intersection_Area                   69682
+ 9 Intersection_Type                   48164
+10 Junction                            25588
 # ℹ 34 more rows</code></pre>
 </div>
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(tibble_nas <span class="sc">|&gt;</span> <span class="fu">filter</span>(number_of_NA <span class="sc">&gt;</span><span class="dv">0</span> ))<span class="sc">+</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y=</span><span class="fu">reorder</span>(column_name,number_of_NA), <span class="at">x =</span> number_of_NA)) <span class="sc">+</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Nas in the data columns"</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Showing only columns with number of NAs &gt; 0"</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Column name'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y=</span><span class="fu">reorder</span>(column_name,number_of_NA), <span class="at">x =</span> number_of_NA),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"cornflowerblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Nas in the data columns"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Showing only columns with number of NAs &gt; 0"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Column name'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
@@ -364,10 +381,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(tibble_nas <span class="sc">|&gt;</span> <span class="fu">filter</span>(number_of_NA <span class="sc">&gt;</span><span class="dv">0</span> ))<span class="sc">+</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y=</span><span class="fu">reorder</span>(column_name,number_of_NA), <span class="at">x =</span> number_of_NA)) <span class="sc">+</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Nas in the data_crash columns"</span>,</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Showing only columns with number of NAs &gt; 0"</span>,</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Column name'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y=</span><span class="fu">reorder</span>(column_name,number_of_NA), <span class="at">x =</span> number_of_NA),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"cornflowerblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Nas in the data_crash columns"</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Showing only columns with number of NAs &gt; 0"</span>,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">'Column name'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="data_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
@@ -375,8 +393,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>For now we won’t deal with those NAs. Later in the project we would choose the specific columns to analyze together and then we will decide on the best method to deal with the NAs in those columns.</p>
 </section>
-<section id="repartition-of-the-nas-in-between-columns" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="repartition-of-the-nas-in-between-columns"><span class="header-section-number">2.4</span> Repartition of the NAs in between columns</h2>
+<section id="repartition-of-the-nas-in-between-columns" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="repartition-of-the-nas-in-between-columns"><span class="header-section-number">2.5</span> Repartition of the NAs in between columns</h2>
 <p>We want to get a list of columns that has the same “NA” pattern:</p>
 <div class="cell">
 <details>
@@ -405,23 +423,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>redav<span class="sc">::</span><span class="fu">plot_missing</span>(data_crash <span class="sc">|&gt;</span>dplyr<span class="sc">::</span><span class="fu">select</span>(difference_both_ways,))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
-ℹ Please use `all_of()` or `any_of()` instead.
-  # Was:
-  data %&gt;% select(difference_both_ways)
-
-  # Now:
-  data %&gt;% select(all_of(difference_both_ways))
-
-See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Scale for y is already present.
-Adding another scale for y, which will replace the existing scale.
-Scale for y is already present.
-Adding another scale for y, which will replace the existing scale.</code></pre>
-</div>
 <div class="cell-output-display">
 <p><img src="data_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -431,18 +432,18 @@ Adding another scale for y, which will replace the existing scale.</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">apply</span>(data_crash, <span class="dv">2</span>, <span class="cf">function</span>(c) <span class="fu">sum</span>(<span class="fu">is.na</span>(c)))</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>tibble_nas <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">column_name =</span> <span class="fu">names</span>(b), <span class="at">number_of_NA =</span> b)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>columns_with_na <span class="ot">&lt;-</span> tibble_nas <span class="sc">|&gt;</span> <span class="fu">filter</span>(number_of_NA<span class="sc">&gt;</span><span class="dv">500</span>) </span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>columns_with_na <span class="ot">&lt;-</span> columns_with_na<span class="sc">$</span>column_name</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>differences <span class="ot">&lt;-</span> <span class="fu">union</span>(<span class="fu">setdiff</span>(columns_with_na, difference_both_ways), <span class="fu">setdiff</span>(difference_both_ways, columns_with_na))</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>differences <span class="ot">&lt;-</span> <span class="fu">c</span>(differences, <span class="st">"Cross_Street_Type"</span>)</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(differences)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">apply</span>(data_crash, <span class="dv">2</span>, <span class="cf">function</span>(c) <span class="fu">sum</span>(<span class="fu">is.na</span>(c)))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>tibble_nas <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">column_name =</span> <span class="fu">names</span>(b), <span class="at">number_of_NA =</span> b)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>columns_with_na <span class="ot">&lt;-</span> tibble_nas <span class="sc">|&gt;</span> <span class="fu">filter</span>(number_of_NA<span class="sc">&gt;</span><span class="dv">500</span>) </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>columns_with_na <span class="ot">&lt;-</span> columns_with_na<span class="sc">$</span>column_name</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>differences <span class="ot">&lt;-</span> <span class="fu">union</span>(<span class="fu">setdiff</span>(columns_with_na, difference_both_ways), <span class="fu">setdiff</span>(difference_both_ways, columns_with_na))</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>differences <span class="ot">&lt;-</span> <span class="fu">c</span>(differences, <span class="st">"Cross_Street_Type"</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(differences)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Weather"                "Surface_Condition"      "Light"                 
@@ -452,39 +453,25 @@ Adding another scale for y, which will replace the existing scale.</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>redav<span class="sc">::</span><span class="fu">plot_missing</span>(data_crash <span class="sc">|&gt;</span>dplyr<span class="sc">::</span><span class="fu">select</span>(differences,))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>redav<span class="sc">::</span><span class="fu">plot_missing</span>(data_crash <span class="sc">|&gt;</span>dplyr<span class="sc">::</span><span class="fu">select</span>(differences,))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
-ℹ Please use `all_of()` or `any_of()` instead.
-  # Was:
-  data %&gt;% select(differences)
-
-  # Now:
-  data %&gt;% select(all_of(differences))
-
-See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Scale for y is already present.
-Adding another scale for y, which will replace the existing scale.
-Scale for y is already present.
-Adding another scale for y, which will replace the existing scale.</code></pre>
-</div>
 <div class="cell-output-display">
 <p><img src="data_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>One can see that there is no common pattern between all the NAs for these 10 columns.</p>
 <p>In conclusion, for all the columns in the array ‘difference_both_ways’ we can deal with the NAs in the same way in the future. However, for the other columns which still has a lot of NAs like Weather or Traffic Control, we need to be more careful when removing the NAs because we could end up with very few rows in the data set. We will take care of them on a case-by-case basis.</p>
+<section id="saving-the-updated-data-so-we-can-read-it-in-the-results-tab" class="level4" data-number="2.5.0.1">
+<h4 data-number="2.5.0.1" class="anchored" data-anchor-id="saving-the-updated-data-so-we-can-read-it-in-the-results-tab"><span class="header-section-number">2.5.0.1</span> Saving the updated data so we can read it in the “results” tab</h4>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv2</span>(data_crash, <span class="st">"data/data_crash.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv2</span>(data_crash, <span class="st">"data/data_crash.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

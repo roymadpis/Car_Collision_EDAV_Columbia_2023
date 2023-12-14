@@ -1,6 +1,6 @@
 # Introduction
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(ggplot2)
 

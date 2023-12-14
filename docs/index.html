@@ -8,7 +8,7 @@
 
 <meta name="author" content="Ethan Olivier (eto2111)">
 <meta name="author" content="Roy Madpis (rmm2286)">
-<meta name="dcterms.date" content="2023-12-12">
+<meta name="dcterms.date" content="2023-12-13">
 
 <title>Car Collion within Montgomery County</title>
 <style>
@@ -22,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -171,7 +205,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 12, 2023</p>
+      <p class="date">December 13, 2023</p>
     </div>
   </div>
   
@@ -183,10 +217,57 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>This project will analyze car accidents and collisions within Montgomery County in United States. Our goal is to understand what attributes or combination of attributes are more correlated with the number of accidents and their severity. Indeed, in 2022, 42,795 peoples died on the road in United States. Understanding the leading factors in car accidents can help policy makers to focus their efforts on the conditions which seems more favorable to cause car accidents. For instance, our data visualization might reveal that some roads are more dangerous than others and thus they need to be improved by the state of Maryland. Or maybe at specific times of the week more accidents happen, then driver should be aware of this and take more precaution driving at this specific time.</p>
-<p>Overall, the goals of this project is to highlight compelling correlations between the number of accidents over the years and the different features of the data set. This aims for both educating drivers on what to be aware on the road and showcasing to government officials the infrastructure they can improve.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>number_of_casualties <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Number_of_casualties_usa.csv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(number_of_casualties <span class="sc">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>         <span class="fu">filter</span>(Year <span class="sc">&gt;=</span> <span class="dv">2005</span>)) <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Deaths), <span class="at">fill =</span> <span class="st">"#CC0000"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Deaths, <span class="at">label =</span> Deaths), </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Adjust vjust and size as needed</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">2005</span>, <span class="dv">2021</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Deaths from car accidents in the USA"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"From 2005 to 2021"</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Source: https://www.iihs.org/topics/fatality-statistics/detail/yearly-snapshot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Our data visualization project delves into the complex and painful landscape of car accidents. The choice of exploring car accidents stems from the societal impact and safety considerations associated with road incidents. over 30,000 people are killed every year from car accidents in the USA. Just in 2022 almost 43,000 people in the USA died in car accidents*1. Understanding the underlying factors contributing to accidents can provide policy makers insights and key action items to help reduce the number and or severity of accidents. By leveraging data visualization techniques, we intend to unravel hidden trends and relationships that could inform policymakers, law enforcement, and the community at large.</p>
+<p>*1 source: https://www.nhtsa.gov/press-releases/traffic-crash-death-estimates-2022#:~:text=The%20National%20Highway%20Traffic%20Safety,42%2C939%20fatalities%20reported%20for%202021.</p>
+<p>The dataset we are using encompasses diverse attributes, ranging from temporal details like “Crash Date/Time” to factors such as “Hit/Run,” “Weather,” and “Road Condition.” This comprehensive dataset, sourced from the Public-Safety website of the Montgomery County serves as a valuable resource for understanding the dynamics of vehicular incidents.</p>
+<p><strong>Our goal in this project can be divided into three parts</strong>. In each part we will answer some guiding question.</p>
+<section id="part-1-time-series-analysis" class="level4" data-number="1.0.0.1">
+<h4 data-number="1.0.0.1" class="anchored" data-anchor-id="part-1-time-series-analysis"><span class="header-section-number">1.0.0.1</span> Part 1: Time Series Analysis</h4>
+<ul>
+<li><p>What temporal trends or seasonality can be identified in the collision data?</p></li>
+<li><p>Are there variations in accident frequencies across different months, days of the week, or hours of the day?</p></li>
+<li><p>How do holidays or weeks with holidays impact the frequency of accidents?</p></li>
+</ul>
+</section>
+<section id="part-2-hit-and-run-incidents" class="level4" data-number="1.0.0.2">
+<h4 data-number="1.0.0.2" class="anchored" data-anchor-id="part-2-hit-and-run-incidents"><span class="header-section-number">1.0.0.2</span> Part 2: Hit-and-Run Incidents:</h4>
+<ul>
+<li><p>What correlations exist between various features and the occurrence of hit-and-run accidents?</p></li>
+<li><p>Can insights derived from the dataset offer recommendations for mitigating hit-and-run incidents?</p></li>
+</ul>
+</section>
+<section id="part-3-geospatial-exploration" class="level4" data-number="1.0.0.3">
+<h4 data-number="1.0.0.3" class="anchored" data-anchor-id="part-3-geospatial-exploration"><span class="header-section-number">1.0.0.3</span> Part 3: Geospatial Exploration:</h4>
+<ul>
+<li><p>Can we identify specific roads with a higher concentration of accidents, and what common attributes do they share?</p></li>
+<li><p>Are there geographical patterns unique to “regular” accidents versus “Hit and Run” incidents?</p></li>
+</ul>
+<p>To conclude, our project not only aims to visualize the data but also to provide meaningful interpretations that contribute to the broader topic of road safety and accident prevention. For readers unfamiliar with the subject, our visualizations and analyses will offer an accessible entry point into the multifaceted world of car accidents and their implications.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

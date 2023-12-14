@@ -1,6 +1,7 @@
 # Results
 
 ```{r, warning = FALSE, message=FALSE}
+#Loading libraries and the data
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
@@ -19,8 +20,10 @@ library(ggmap)
 library(sf) 
 
 
-
+#loading the pre-processed car-crash data
 data_crash <- readr::read_csv2("data/data_crash.csv")
+
+#loading the holiday data
 holiday_data <- readr::read_csv("data/holiday_US.csv")
 holiday_data$is_holiday <- "Yes"
 holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
@@ -28,10 +31,18 @@ holiday_data <- holiday_data |> rename("Holiday" = "normalizeHolidayName")
 
 
 # Part 1 - Time Series Analysis
+We begin our analysis with time-series analysis. In order to perform this examination, we take the date-time column `Crash_Date_Time` and extract from it the date, Year, Month, weekday, time, hour, etc. of the accident. Then we aggregate the data according to one or more of the date-time new columns to get the total number of accident within that time-frame. Finally we observe the time-series of the number of accident with respect to a given date/time dimension.
 
-We decided then to use the date of special holidays to observe possible correlation with the time series. To have the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}. We then filtered the relevant rows for our study and created the 'holiday_US.csv" file that we are going to use with R. NB: one can find the code for the filtering of the data in the files name : ...
+We understood there could be some special significant to some  days during the year - those are the holidays in the american calendar. We assume the number of car accident might be influenced by the fact there is a holiday (and maybe more/less people will drive and/or people might be more likely to drink and drive or act in a more dangerous/safe manner)
+
+To get the dates of these holidays we used a dataset from Microsoft Azure that we downloaded using Python [Visit Microsoft Azure Open Datasets](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-public-holidays?tabs=azureml-opendatasets){.class-to-style-as-link}.
+We filtered the relevant rows for our study (took dates between 2015 and 2023) and created the 'holiday_US.csv" file.
+
+# Ethan - add the file name
+NB: one can find the code for the filtering of the data in the files name : ...
 
 ## Preprocess the Date-Time column
+
 Here we take the date/time column and transform it into the right data type as well as create some distinct date/time columns that will help us investigate and explore the data (time series analysis)
 
 ```{r, message=FALSE}
@@ -81,8 +92,11 @@ end_date = max(dt_temporal$Crash_Date)
 ```
 
 ### Create Weekly car-accident data
-We wish to analyze the weekly trends of total number of car accidents in Montgomery county. In order to do so, we group the data by weeks and sum the number of accidents.
-Finally we display a time-series graph describing the 
+
+We wish to analyze the **weekly** trends of total number of car accidents in Montgomery county. In order to do so, we group the data by weeks and sum the number of accidents.
+Then we aggregarte the data again by **Month** to have the average weekly car accidents for every year-month combination. We plot this as a black line.
+At the same time we plot a time series line plot for each holiday-day category --> that is, every holiday has a line + points representing the total number of accidents that happened in the **week* of that holiday.
+Finally we can use the graph to compare between the total number of accidents in the different weeks of the years and see if a given holiday is able to "increase" or "decrease" the total number of accidents in the week it was celebrated at.
 
 ```{r}
 date_sequence <- seq(as.Date("2014-12-28"), end_date, by = "week")
@@ -99,22 +113,11 @@ dt_temporal_week <- dt_temporal_red %>%
   distinct(Crash_week, Count_week, .keep_all = TRUE)%>%
   mutate(Crash_week = as.Date(Crash_week, format = "%Y-%m-%d")) %>%
   mutate(Crash_month = month(Crash_week))
-#   
-#   mutate(is_holiday = ifelse(Week_with_holiday %in% weeks_with_holiday$Week_with_holiday, "Yes", is_holiday)) %>%
-#   select(-Week_with_holiday)
 
 ### The first and last week in the data aren't complete - they include less than 7 days, so we wish to remove them from the  plot
 dt_temporal_week_without_first_last_week <- filter(dt_temporal_week, Crash_week!=dt_temporal_week$Crash_week[1] & Crash_week!=dt_temporal_week$Crash_week[nrow(dt_temporal_week)])
 
-# ggplot(dt_temporal_week_without_first_last_week, aes(x = Crash_week, y = Count_week)) +
-#   geom_line(aes(group=1)) + #because we grouped earlier by Crash_week we need now to specify that we treat all the data as one group.
-#   geom_point() +
-#   labs(title='Number of car crash per week',
-#        x = "Year", y = "Total Crashes")+
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-# # Set breaks to 1 month interval
-#   scale_x_date(date_breaks = "1 year", date_labels = "%Y",)
-#   #scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")  
+
 ```
 
 
@@ -140,6 +143,7 @@ result_df <- merged_df %>%
 
 ```
 
+We display here a time-series graph describing the total number of accidents per week throught 2015-2023. 
 
 ```{r, message=FALSE}
 dt_temporal_week <- left_join(dt_temporal_week_without_first_last_week, result_df, by = c("Crash_week" = "first_day_of_week_new"))
@@ -147,7 +151,6 @@ dt_temporal_week <- left_join(dt_temporal_week_without_first_last_week, result_d
 dt_temporal_week <- mutate(dt_temporal_week, is_holiday = ifelse(is.na(is_holiday), "No", is_holiday))
 
 dt_temporal_week_only_holiday <- dt_temporal_week |> filter(is_holiday == "Yes")
-
 
 ####################################
 dt_temporal_week_average_by_month <- dt_temporal_week |> group_by(Year, Month) |>

@@ -5,12 +5,12 @@
 The data we are analyzing in this project is provided by the Public-Safety website of the Montgomery County, MD [link](https://data.montgomerycountymd.gov/Public-Safety/Crash-Reporting-Incidents-Data/bhju-22kf){.class-to-style-as-link}
 
 The data is supplied by all the police departments of this county. Moreover, the description of the data set mentions that :
-*"Please note that these collision reports are based on preliminary information supplied to the Police Department by the reporting parties. Therefore, the collision data available on this web page may reflect:
+*"Please note that these collision reports are based on preliminary information supplied to the Police Department by the reporting parties. Therefore, the collision data available on this web page may reflect:*
 
-- Information not yet verified by further investigation
-- Information that may include verified and unverified collision data
-- Preliminary collision classifications may be changed at a later date based upon further investigation
-- Information may include mechanical or human error"*
+- *Information not yet verified by further investigation*
+- *Information that may include verified and unverified collision data*
+- *Preliminary collision classifications may be changed at a later date based upon further investigation*
+- *Information may include mechanical or human error"*
 
 The above impose some limitations using the data.
 
@@ -39,7 +39,7 @@ Overall, our goal is to identify combinations of features that could elevate the
 
 ## Missing value analysis
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 #Import the libraries
 
 knitr::opts_chunk$set(echo = TRUE)
@@ -57,7 +57,7 @@ library("redav")
 
 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 data_crash <- read_csv("data/Crash_Reporting_-_Incidents_Data.csv", col_types = cols('Local Case Number' = col_character())) # the 2nd column contains string and not number that's why we specify it.
 data_crash <- rename(data_crash, "Hit_Run" = `Hit/Run`) 
 data_crash <- rename(data_crash,"Crash_Date_Time" = `Crash Date/Time`)
@@ -74,7 +74,7 @@ colnames(data_crash) <- new_col_names
 data_crash |> head()
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 # Function to replace "N/A" with NA in a vector
 replace_na <- function(x) {
   x[x == "N/A"] <- NA
@@ -89,15 +89,16 @@ data_crash <- as_tibble(lapply(data_crash, replace_na))
 ## Analyzing NAs
 
 
-```{r}
+```{r,warning=FALSE, message=FALSE}
 ## PLot the number of NAs for each column
 
 b <- apply(data_crash, 2, function(c) sum(is.na(c)))
 tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
-tibble_nas
+tibble_nas |> arrange(desc(number_of_NA))
 
 ggplot(tibble_nas |> filter(number_of_NA >0 ))+
-  geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA)) +
+  geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA),
+               fill = "cornflowerblue", color = "black") +
   labs(title = "Number of Nas in the data columns",
        subtitle = "Showing only columns with number of NAs > 0",
        y = 'Column name')
@@ -140,7 +141,8 @@ tibble_nas_filtered_data_crash <- tibble_nas
 
 
 ggplot(tibble_nas |> filter(number_of_NA >0 ))+
-  geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA)) +
+  geom_col(mapping = aes(y=reorder(column_name,number_of_NA), x = number_of_NA),
+           fill = "cornflowerblue", color = "black") +
   labs(title = "Number of Nas in the data_crash columns",
        subtitle = "Showing only columns with number of NAs > 0",
        y = 'Column name')
@@ -167,7 +169,7 @@ print(difference_both_ways)
 
 We want to use the `plot_missing` function for `redav` package to see the NAs pattern regarding the columns that we suspect has NAs in the same rows:
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 redav::plot_missing(data_crash |>dplyr::select(difference_both_ways,))
 ```
 
@@ -175,7 +177,7 @@ Using the `plot_missing` function, we can clearly see that those columns indeed 
 
 Further, we will take one of those columns: `Cross_Street_Type` and use it as a representative of the 12 columns group and then see if there is any pattern between the NAs of the other columns:
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 b <- apply(data_crash, 2, function(c) sum(is.na(c)))
 tibble_nas <- tibble(column_name = names(b), number_of_NA = b)
 
@@ -197,6 +199,7 @@ One can see that there is no common pattern between all the NAs for these 10 col
 In conclusion, for all the columns in the array 'difference_both_ways' we can deal with the NAs in the same way in the future. However, for the other columns which still has a lot of NAs like Weather or Traffic Control, we need to be more careful when removing the NAs because we could end up with very few rows in the data set. We will take care of them on a case-by-case basis.
 
 
+#### Saving the updated data so we can read it in the "results" tab
 
 ```{r}
 write_csv2(data_crash, "data/data_crash.csv")
