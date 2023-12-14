@@ -366,7 +366,7 @@ Exploring the density plots illustrates significant disparities in the distribut
 
 
 ## Part 2 - Hit/run Analyis
-In this part we addresses the pressing issue of **hit-and-run accidents**. We examine correlation between various features and the "Hit-Run" column.
+In this part we addresses the pressing issue of **hit-and-run accidents**. We examine correlation between various features and the "Hit-Run" column. Hit and Run accidents involve perpetrators who attempt to flee the scene without taking responsibility for the consequences of their actions. Identifying patterns in the behavior of these accidents could assist the police in reducing the proportion of such incidents. 
 
 ```{r, message=FALSE}
 dt_temporal_Year_month_hit_run <- dt_temporal |> group_by(Year, Month, first_day_of_month, Week_day, Hit_Run) |> summarise(total_accidents = n())
@@ -540,6 +540,8 @@ dt_lane <- left_join(lane_freq, dt_lane, by = "Traffic_Control")
 
 ### Junction
 
+First, let's observe the typical situation in which accidents occur :
+
 ```{r}
 dt_lane <- dt_lane %>%
   mutate(Junction = recode(Junction,
@@ -569,7 +571,7 @@ ggplot(dt_lane_freq, aes(x = reorder(Junction, -Frequency_junc))) +
   theme_minimal()  # Adjust the theme if needed
 ```
 
-+ We can observe that **most of the car accidents happen at an intersection**. Further, half of the crashes at these intersection have **traffic lights**. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this indicates that traffic light are not efficient for reducing car accident. 
++ We can observe that **most of the car accidents happen at an intersection**. Further, half of the crashes at these intersection have **traffic lights**. This highlights an important issue : traffic light are not sufficient to mitigate the risk of car accident. Despite not having the proportion of number of cars crossing intersection with traffic light vs the number of car crossing intersection without traffic light this indicates that traffic light are not efficient for reducing car accident. To improve the interpretation of these results it would be better if there was a data set giving us the proportion of intersection with traffic light and stop sign in the county. Without this information it is hard to tell if stop sign are better than traffic light to reduce the number of accidents. <u>NB:</u> In this study we focus only on the number of accidents and not on the fluidity of the traffic for instance. Needless to say that reducing cannot be the only factor to consider when designing traffic sign and the roads. 
 
 
 ### Alluvial plot to see pattern
@@ -610,8 +612,7 @@ ggplot(data = dt_lane1,
   theme_void()
 ```
 
-<u>Comments :</u> The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be f
-# Ethan - what did you want to write here?
+The alluvial plots assist us in visualizing the most common scenarios leading to Hit & Run incidents. Indeed, the majority of these incidents occur on undivided two-way roads at non-intersections with no traffic controls. This visible pattern in the scenario of Hit/Run can be used to understand how the police could reduce this type of incidents. Without inferring causation from these correlation results, one might consider that the absence of traffic signs could potentially contribute to a sense of impunity among certain drivers, leading them to flee more frequently, assuming they are not being observed. For a more in-depth examination of this pattern, we would suggest law enforcement conduct a targeted study specifically focusing on roads without traffic signs to determine whether their presence has an impact on the occurrence of hit and run incidents. It's important to note that these findings are purely correlational; other factors, such as accident severity, may play a role. If our dataset included a severity column, we could have explored this aspect further.
 
 
 
